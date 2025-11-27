@@ -161,7 +161,7 @@ Segundo a fiscalização, por volta das __hora__, o veículo programado apresent
 Em virtude de um passageiro alterado no coletivo, foi acionado a GMF que prontamente deslocou uma viatura para abordar o veículo. Após a abordagem feita na Rua __local__, o ônibus seguiu viagem por volta das __hora__.`,
 
   "VANDALISMO_GMF_ESCOLTA": `VANDALISMO COM ABORDAGEM DA GMF E ACOMPANHAMENTO DA VIAGEM:
-Em virtude de torcedores alterados no coletivo, foi acionado a GMF que prontamente deslocou uma viatura para abordar o coletivo. Após a abordagem feita na Rua __local__, a viatura escoltou o ônibus até o TIRIO e acompanhou a situação no terminal.`,
+Em virtude de torcedores alterados no coletivo, foi acionado a GMF que prontamente deslocou uma viatura para abordar o coletivo. Após a abordagem feita na Rua __local__, a viatura escoltou o ônibus até o __terminal__ e acompanhou a situação até o destino final.`,
 
   "AVARIA_VITIMA_CONTINUOU": `AVARIA/INCIDENTE COM VÍTIMA EM QUE O ÔNIBUS CONTINUOU A VIAGEM:
 Segundo informações da fiscalização, por volta das __hora__, o veículo programado se envolveu em uma colisão com __veiculo_terceiro__ na Rua __local__, próximo ao __proximo__. Foi acionado o SAMU para prestar atendimento ao condutor do veículo de terceiro, que após os primeiros socorros, foi levado ao hospital. O motorista do coletivo confeccionou o boletim de ocorrência, e em seguida continuou a viagem, aproximadamente às __hora_partida__.`,
@@ -290,8 +290,10 @@ const FIELDS_BY_CATEGORY = {
      {k:'local', label:'Rua / Local da abordagem'},
      {k:'hora', label:'Hora (ex: 13:05)'}
   ],
-  "VANDALISMO_GMF_ESCOLTA":[
-     {k:'local', label:'Rua / Local da abordagem'}
+ "VANDALISMO_GMF_ESCOLTA":[
+     {k:'local', label:'Rua / Local da abordagem'},
+     {k:'terminal', label:'Terminal de destino'}
+],
   ],
   "AVARIA_VITIMA_CONTINUOU":[
      {k:'hora', label:'Hora (ocorrência)'},
