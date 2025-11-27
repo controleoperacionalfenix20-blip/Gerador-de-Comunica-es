@@ -452,6 +452,26 @@ function toggleEditar(){
   if(!t.readOnly){ t.focus(); t.style.border='1px solid #888'; }
   else t.style.border='1px solid #ddd';
 }
+
+/* ======== FORMATAÇÃO DE HORA AUTOMÁTICA (NOVO) ======== */
+document.addEventListener('input', function(e) {
+  const el = e.target;
+
+  // aplica somente em campos que sejam de hora
+  if (!el.id.startsWith("f_hora")) return;
+
+  let v = el.value.replace(/\D/g, ""); // remove tudo que não é número
+
+  if (v.length > 4) v = v.substring(0, 4);
+
+  // coloca automaticamente os dois pontos
+  if (v.length >= 3) {
+    el.value = v.substring(0,2) + ":" + v.substring(2);
+  } else {
+    el.value = v;
+  }
+});
+
 </script>
 </body>
 </html>
