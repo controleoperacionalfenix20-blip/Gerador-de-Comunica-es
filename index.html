@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Gerador de Comunicações — Consórcio Fênix</title>
+<style>
+:root{
+  --bg:#fff7cc; --accent:#e0b500; --card:#fff; --muted:#666;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter, "Helvetica Neue", Arial, sans-serif;background:var(--bg);color:#222}
+.container{max-width:1100px;margin:18px auto;padding:18px}
+h1{font-size:32px;margin:6px 0 18px}
+.card{background:var(--card);border-radius:12px;padding:18px;border-left:10px solid var(--accent);box-shadow:0 8px 22px rgba(0,0,0,0.06);margin-bottom:18px}
+.row{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.col{flex:1;min-width:250px}
+label{display:block;font-weight:700;margin:8px 0 6px}
+select,input,textarea,button{font-family:inherit}
+select,input,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;font-size:15px}
+textarea{min-height:160px;resize:vertical}
+.btn{background:var(--accent);border:none;color:#fff;padding:10px 14px;border-radius:8px;font-weight:700;cursor:pointer}
+.btn.ghost{background:#fff;border:1px solid #ddd;color:#222}
+.helper{font-size:13px;color:var(--muted);margin-top:6px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.field{margin-bottom:8px}
+.preview{background:#fafafa;padding:12px;border-radius:8px;border:1px dashed #e6e6e6;white-space:pre-wrap;color:#333}
+.small{font-size:13px;color:var(--muted)}
+.actions{display:flex;gap:8px;align-items:center;margin-top:10px}
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Gerador de Comunicações</h1>
+
+    <div class="card">
+      <div class="row">
+        <div class="col">
+          <label for="categoria">Categoria (escolha uma):</label>
+          <select id="categoria" onchange="onCategoriaChange()">
+            <option value="">-- selecione categoria --</option>
+
+            <optgroup label="Problemas mecânicos / validador">
+              <option value="PM_SEM_SOCORRO">PROBLEMAS MECÂNICOS (SEM SOCORRO)</option>
+              <option value="PM_COM_SOCORRO">PROBLEMAS MECÂNICOS (COM SOCORRO)</option>
+              <option value="PM_VNR_OUTRO_SENTIDO">PROBLEMAS MECÂNICOS (SEM SOCORRO) — VNR NO OUTRO SENTIDO</option>
+              <option value="VAL_SEM_ENVOIO">PROBLEMAS NO VALIDADOR (NÃO FOI ENVIADO OUTRO ÔNIBUS)</option>
+              <option value="VAL_COM_ENVOIO">PROBLEMAS NO VALIDADOR (FOI ENVIADO OUTRO ÔNIBUS)</option>
+              <option value="VAL_REINICIOU">PROBLEMAS NO VALIDADOR (REINICIOU E CONTINUOU)</option>
+            </optgroup>
+
+            <optgroup label="Vandalismo / GMF">
+              <option value="VANDALISMO_GMF">VANDALISMO COM ABORDAGEM DA GMF</option>
+              <option value="VANDALISMO_GMF_ESCOLTA">VANDALISMO COM ABORDAGEM DA GMF E ACOMPANHAMENTO</option>
+            </optgroup>
+
+            <optgroup label="Avarias / Acidentes">
+              <option value="AVARIA_VITIMA_CONTINUOU">AVARIA/INCIDENTE COM VÍTIMA — ÔNIBUS CONTINUOU</option>
+              <option value="AVARIA_VITIMA_NAO_CONTINUOU">AVARIA/INCIDENTE COM VÍTIMA — ÔNIBUS NÃO CONTINUOU</option>
+              <option value="AVARIA_SEM_VITIMA_ENVIO">AVARIA SEM VÍTIMA — FOI ENVIADO OUTRO ÔNIBUS</option>
+              <option value="AVARIA_SEM_VITIMA_NENVIO">AVARIA SEM VÍTIMA — NÃO FOI ENVIADO OUTRO ÔNIBUS</option>
+            </optgroup>
+
+            <optgroup label="Partida / Atrasos">
+              <option value="ADIANTADO">ADIANTADO</option>
+              <option value="ADIANTADO_FISCALIZACAO">ADIANTADO (FISCALIZAÇÃO)</option>
+              <option value="ATRASADO_OPERACIONAL">ATRASADO OPERACIONAL</option>
+              <option value="ATRASO_TRANSITO">ATRASO — TRÂNSITO</option>
+              <option value="VIAGEM_INTERROMPIDA_MANOBRA">VIAGEM INTERROMPIDA — MANOBRA PONTO FINAL</option>
+            </optgroup>
+
+            <optgroup label="Desvio de itinerário">
+              <option value="DESVIO_MAIS_HORARIOS_FIM_OPERACAO">DESVIO — MAIS DE UM HORÁRIO ATÉ O FIM DA OPERAÇÃO</option>
+              <option value="DESVIO_MAIS_HORARIOS_ENCERROU">DESVIO — MAIS DE UM HORÁRIO (ENCERR0U)</option>
+              <option value="DESVIO_1_ONIBUS">DESVIO — REALIZADO POR UM DETERMINADO ÔNIBUS</option>
+              <option value="DESVIO_1_ONIBUS_OBSTRUCAO">DESVIO — 1 ÔNIBUS POR OBSTRUÇÃO</option>
+              <option value="DESVIO_TRIPULANTE_CONFUNDIU">DESVIO — TRIPULANTE SE CONFUNDIU E FOI ORIENTADO</option>
+            </optgroup>
+
+            <optgroup label="VNR (viagem não realizada)">
+              <option value="VNR_TRANSITO_INTENSO">VNR — TRÂNSITO INTENSO</option>
+              <option value="VNR_MECANICO_OUTRO_SENTIDO">VNR — PROBLEMAS MECÂNICOS (OUTRO SENTIDO)</option>
+              <option value="VNR_PROBLEMAS_OPERACIONAIS">VNR — FALTA DE VEÍCULOS / OPERACIONAL</option>
+              <option value="VNR_MECANICO_ANTES_PARTIDA">VNR — PROBLEMAS MECÂNICOS ANTES DA PARTIDA</option>
+              <option value="VNR_SUSPENSAO_LINHAS_D">SUSPENSÃO LINHAS “D” (PMF)</option>
+              <option value="VNR_CONFUSOES_TRIPULANTE">VNR — TRIPULANTE SE CONFUNDIU</option>
+            </optgroup>
+
+            <optgroup label="GMF / Carros">
+              <option value="GMF_CARROS_IRREGULARES">GMF — CARROS ESTACIONADOS IRREGULAR</option>
+              <option value="GMF_CARROS_DESVIO">GMF — CARROS FORÇAM DESVIO</option>
+              <option value="GMF_CONTATO_DONO">GMF — CONTATO COM DONO</option>
+              <option value="GMF_CARROS_GMF_PM">GMF+PM NO LOCAL</option>
+            </optgroup>
+
+            <optgroup label="Queda de sistema / infra">
+              <option value="QUEDA_MOBILIBUS">QUEDA DE SISTEMA (Mobilibus)</option>
+              <option value="QUEDA_EMPRESA1">QUEDA DE SISTEMA (Empresa1)</option>
+              <option value="QUEDA_OPERADORA">QUEDA — OPERADORA INTERNET</option>
+              <option value="QUEDA_ENERGIA">QUEDA DE ENERGIA</option>
+            </optgroup>
+
+          </select>
+        </div>
+
+        <div style="min-width:220px;display:flex;align-items:center;gap:8px">
+          <button class="btn" onclick="gerarTexto()">Gerar Texto</button>
+          <button class="btn ghost" onclick="limparTudo()">Limpar</button>
+        </div>
+      </div>
+
+      <div id="camposArea" style="margin-top:18px"></div>
+      <div class="small">Os campos aparecem automaticamente conforme o modelo selecionado.</div>
+    </div>
+
+    <div class="card">
+      <label>Preview do modelo (lacunas marcadas):</label>
+      <div id="previewModelo" class="preview" style="margin-top:8px;min-height:80px"></div>
+    </div>
+
+    <div class="card">
+      <label>Resultado:</label>
+      <textarea id="resultado" placeholder="Aqui aparecerá o texto gerado..."></textarea>
+      <div class="actions" style="margin-top:10px">
+        <button class="btn" onclick="copiar()">Copiar</button>
+        <button class="btn ghost" onclick="toggleEditar()">Editar manual</button>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+/* ============================
+  Templates (textos originais que você mandou)
+   - uso tokens nomeados para facilitar substituição
+   - tokens: __hora__, __minutos__, __veiculo_programado__, __outro_veiculo__, __linha__,
+             __sentido__, __local__, __proximo__, __fiscal__, __veiculo_enviado__, __hora_partida__,
+             __protocolo__, __bairro__, __veiculo_resposta__
+  ============================ */
+const TEMPLATES = {
+  "PM_SEM_SOCORRO": `PROBLEMAS MECÂNICOS (SEM SOCORRO):
+Segundo informações da fiscalização, por volta das __hora__, o veículo programado apresentou problemas mecânicos na __local__, próximo ao __proximo__. Os passageiros foram transferidos para o __veiculo_resposta__ que passou pelo local no momento. Em virtude de problemas operacionais, não foi possível enviar outro ônibus para continuar a viagem.`,
+
+  "PM_COM_SOCORRO": `PROBLEMAS MECÂNICOS (COM SOCORRO):
+Segundo informações da fiscalização, por volta das __hora__, o veículo programado apresentou problemas mecânicos na __local__, próximo ao __proximo__. Foi enviado o __veiculo_enviado__ para continuar a viagem, que partiu do local aproximadamente às __hora_partida__.`,
+
+  "PM_VNR_OUTRO_SENTIDO": `PROBLEMAS MECÂNICOS (SEM SOCORRO), QUE OCASIONOU EM UMA VNR NO OUTRO SENTIDO:
+Segundo informações da fiscalização, por volta das __hora__, o veículo programado apresentou problemas mecânicos na __local__, próximo ao __proximo__. Os passageiros foram transferidos para o __veiculo_resposta__ que passou pelo local no momento. Em virtude de problemas operacionais, não foi possível enviar outro ônibus para continuar a viagem, gerando uma VNR no horário de __hora_partida__, sentido __sentido__.`,
+
+  "VAL_SEM_ENVOIO": `PROBLEMAS NO VALIDADOR EM CASOS QUE NÃO FOI ENVIADO OUTRO ÔNIBUS PARA CONTINUAR A VIAGEM:
+Segundo a fiscalização, por volta das __hora__, o veículo programado apresentou problemas no validador, na Rua __local__, próximo ao __proximo__. Os passageiros foram transferidos para outro coletivo que passou no local. Em virtude de problemas operacionais, não foi possível enviar outro ônibus para continuar a viagem.`,
+
+  "VAL_COM_ENVOIO": `PROBLEMAS NO VALIDADOR EM CASOS QUE FOI ENVIADO OUTRO ÔNIBUS PARA CONTINUAR A VIAGEM:
+Segundo a fiscalização, por volta das __hora__, o veículo programado apresentou problemas no validador, na Rua __local__ próximo ao __proximo__. Foi enviado o __veiculo_enviado__ para continuar a viagem, que partiu aproximadamente às __hora_partida__.`,
+
+  "VAL_REINICIOU": `PROBLEMAS NO VALIDADOR EM CASOS QUE A FISCALIZAÇÃO REINICIOU E O MESMO VEÍCULO CONTINUOU A VIAGEM:
+Segundo a fiscalização, por volta das __hora__, o veículo programado apresentou problemas no validador. O validador do ônibus foi reiniciado e continuou a viagem aproximadamente às __hora_partida__.`,
+
+  "VANDALISMO_GMF": `VANDALISMO COM ABORDAGEM DA GMF:
+Em virtude de um passageiro alterado no coletivo, foi acionado a GMF que prontamente deslocou uma viatura para abordar o veículo. Após a abordagem feita na Rua __local__, o ônibus seguiu viagem por volta das __hora__.`,
+
+  "VANDALISMO_GMF_ESCOLTA": `VANDALISMO COM ABORDAGEM DA GMF E ACOMPANHAMENTO DA VIAGEM:
+Em virtude de torcedores alterados no coletivo, foi acionado a GMF que prontamente deslocou uma viatura para abordar o coletivo. Após a abordagem feita na Rua __local__, a viatura escoltou o ônibus até o TIRIO e acompanhou a situação no terminal.`,
+
+  "AVARIA_VITIMA_CONTINUOU": `AVARIA/INCIDENTE COM VÍTIMA EM QUE O ÔNIBUS CONTINUOU A VIAGEM:
+Segundo informações da fiscalização, por volta das __hora__, o veículo programado se envolveu em uma colisão com __veiculo_terceiro__ na Rua __local__, próximo ao __proximo__. Foi acionado o SAMU para prestar atendimento ao condutor do veículo de terceiro, que após os primeiros socorros, foi levado ao hospital. O motorista do coletivo confeccionou o boletim de ocorrência, e em seguida continuou a viagem, aproximadamente às __hora_partida__.`,
+
+  "AVARIA_VITIMA_NAO_CONTINUOU": `AVARIA/INCIDENTE COM VÍTIMA EM QUE O ÔNIBUS NÃO CONTINUOU A VIAGEM:
+Segundo informações da fiscalização, por volta das __hora__, o veículo programado se envolveu em uma colisão com __veiculo_terceiro__ na Rua __local__, próximo ao __proximo__. Foi acionado o SAMU para prestar atendimento ao condutor do veículo de terceiro, que após os primeiros socorros, foi levado ao hospital. Os passageiros foram transferidos para o __veiculo_resposta__, que passou pelo local. O motorista do coletivo confeccionou o boletim de ocorrência e interrompeu a viagem.`,
+
+  "AVARIA_SEM_VITIMA_ENVIO": `AVARIA/INCIDENTE SEM VÍTIMA EM QUE FOI ENVIADO OUTRO ÔNIBUS PARA CONTINUAR A VIAGEM:
+Segundo a fiscalização, por volta das __hora__, o veículo programado se envolveu em uma colisão com veículo particular, sem vítimas, na Rua __local__, próximo ao __proximo__. Foi enviado o __veiculo_enviado__ para continuar a viagem, que partiu do local às __hora_partida__.`,
+
+  "AVARIA_SEM_VITIMA_NENVIO": `AVARIA/INCIDENTE SEM VÍTIMA EM QUE NÃO FOI ENVIADO OUTRO ÔNIBUS PARA CONTINUAR A VIAGEM:
+Segundo a fiscalização, por volta das __hora__, o veículo programado se envolveu em uma colisão com veículo particular, sem vítimas, na Rua __local__, próximo ao __proximo__. Em virtude de problemas operacionais, não foi possível enviar outro ônibus para continuar a viagem.`,
+
+  "ADIANTADO": `Partida adiantada: Tripulante partiu __minutos__ minutos antes do horário programado.`,
+
+  "ADIANTADO_FISCALIZACAO": `Partida adiantada (fiscalização): Tripulante partiu __minutos__ minutos antes do horário programado. Fiscalização ficou de orientar o motorista.`,
+
+  "ATRASADO_OPERACIONAL": `ATRASADO OPERACIONAL: Devido a problemas operacionais e outros, a viagem iniciou __minutos__ minutos após o horário programado.`,
+
+  "ATRASO_TRANSITO": `ATRASO TRÂNSITO: Devido ao trânsito intenso na viagem anterior e outros, o veículo programado partiu __minutos__ minutos após o horário programado.`,
+
+  "VIAGEM_INTERROMPIDA_MANOBRA": `VIAGEM INTERROMPIDA MANOBRA PONTO FINAL: Por volta de __hora__, o veículo programado teve dificuldades de fazer a volta no ponto final da linha por conta de um veículo que estava parado próximo da área de manobras dos coletivos, após alguns minutos a via foi liberada e a viagem retornou aproximadamente às __hora_partida__.`,
+
+  "DESVIO_MAIS_HORARIOS_FIM_OPERACAO": `DESVIO DE ITINERÁRIO PARA MAIS DE UM HORÁRIO E ATÉ O FINAL DA OPERAÇÃO:
+Em razão de um bloqueio na Rua __local__, os ônibus desta linha realizaram desvio de itinerário seguindo pela Rua __rua_desvio__, sentido __sentido__. O desvio foi autorizado pela fiscalização da PMF e foi necessário até o final da operação.`,
+
+  "DESVIO_MAIS_HORARIOS_ENCERROU": `DESVIO DE ITINERÁRIO PARA MAIS DE UM HORÁRIO QUE ENCERROU DURANTE A OPERAÇÃO:
+Em razão de um bloqueio na Rua __local__, os ônibus desta linha realizaram desvio de itinerário seguindo pela Rua __rua_desvio__, sentido __sentido__. O desvio foi autorizado pela fiscalização da PMF e foi necessário até às __hora_partida__.`,
+
+  "DESVIO_1_ONIBUS": `DESVIO DE ITINERÁRIO REALIZADO POR UM DETERMINADO ÔNIBUS:
+Segundo a fiscalização, em virtude de um bloqueio na Rua __local__, o veículo programado realizou desvio pela Rua __rua_desvio__ e continuou o itinerário na Rua __rua_retorno__. Os demais horários da linha realizaram itinerário normal.`,
+
+  "DESVIO_1_ONIBUS_OBSTRUCAO": `DESVIO DE ITINERÁRIO REALIZADO POR UM DETERMINADO ÔNIBUS POR CONTA DE UMA OBSTRUÇÃO NA VIA:
+Segundo a fiscalização, em virtude de uma obstrução na Rua __local__, o veículo programado realizou desvio pela Rua __rua_desvio__ e continuou o itinerário na Rua __rua_retorno__. Os demais horários da linha realizaram itinerário normal.`,
+
+  "DESVIO_TRIPULANTE_CONFUNDIU": `DESVIO DE ITINERÁRIO EM CASOS QUE A FISCALIZAÇÃO INFORMOU QUE O TRIPULANTE SE CONFUNDIU E FOI ORIENTADO:
+Segundo informações da fiscalização, o tripulante do veículo programado se confundiu e deixou de acessar a Rua __local__ , onde seguiu pela Rua __rua_desvio__ e continuou o itinerário na Rua __rua_retorno__. O mesmo foi orientado a seguir o itinerário correto da linha.`,
+
+  "VNR_TRANSITO_INTENSO": `VNR DEVIDO AO TRÂNSITO INTENSO:
+Em razão do trânsito intenso na __local__, sentido __sentido__, entre outros problemas operacionais, não foi possível realizar essa viagem.`,
+
+  "VNR_MECANICO_OUTRO_SENTIDO": `VNR DEVIDO A PROBLEMAS MECÂNICOS DURANTE A VIAGEM NO OUTRO SENTIDO:
+Em razão de problemas mecânicos no veículo programado durante o percurso no sentido __sentido__, entre outros problemas operacionais, não foi possível realizar a viagem.`,
+
+  "VNR_PROBLEMAS_OPERACIONAIS": `VNR DEVIDO A PROBLEMAS OPERACIONAIS E FALTA DE VEÍCULOS:
+Segundo a fiscalização, em virtude da falta de veículo para realizar esta viagem, não foi possível executá-la.`,
+
+  "VNR_MECANICO_ANTES_PARTIDA": `VNR DEVIDO A PROBLEMAS MECÂNICOS ANTES DE DAR PARTIDA:
+Segundo a fiscalização, o veículo programado apresentou problemas mecânicos momentos antes de partir do terminal. Em virtude de problemas operacionais e outros, esta viagem não foi realizada.`,
+
+  "VNR_SUSPENSAO_LINHAS_D": `SUSPENSÃO DAS LINHAS “D” TEMPORARIAMENTE, EM VIRTUDE DO TRÂNSITO INTENSO (ORDEM DA PMF)
+Em virtude de problemas operacionais causados pelo trânsito intenso, esta viagem foi suprimida com autorização da PMF.`,
+
+  "VNR_CONFUSOES_TRIPULANTE": `VNR — TRIPULANTE CONFUNDIU:
+Segundo relato da fiscalização, em virtude do tripulante do veículo ter se confundido e realizado uma partida não programada e por problemas operacionais, não foi possível realizar essa viagem.`,
+
+  "GMF_CARROS_IRREGULARES": `CARROS ESTACIONADOS DE FORMA IRREGULAR:
+Em virtude de carros estacionados de forma irregular na Rua __local__, foi realizado o acionamento da GMF e PM para o local. Os ônibus tiveram dificuldades de passar na via. Uma viatura da GM esteve in loco realizando os procedimentos cabíveis aos fatos.`,
+
+  "GMF_CARROS_DESVIO": `CARROS ESTACIONADOS COM A NECESSIDADE DE REALIZAR DESVIO:
+Em virtude de veículos estacionados de forma irregular, dificultando a passagem dos ônibus ao longo da Rua __local__, em __local_ref__, foi realizado o acionamento à GMF para as medidas cabíveis. Até a desobstrução da via, foi necessário realizar desvios para a linha __linha__.`,
+
+  "GMF_CONTATO_DONO": `CARRO ESTACIONADO EM QUE A GMF ENTROU EM CONTATO COM O DONO:
+Em virtude de um veículo particular estacionado na Rua __local__, foi realizado o acionamento da GMF, que entrou em contato com o dono para retirar o carro do local.`,
+
+  "GMF_CARROS_GMF_PM": `CARROS ESTACIONADOS — GMF E PM NO LOCAL:
+Em virtude de carros estacionados de forma irregular na Rua __local__, foi realizado o acionamento da GMF e PM para o local. Os ônibus tiveram dificuldades de passar na rua. Uma viatura da GMF esteve in loco realizando os procedimentos cabíveis aos fatos.`,
+
+  "QUEDA_MOBILIBUS": `QUEDA DE SISTEMA DA MOBILIBUS:
+Por volta das __hora__, houve uma queda no sistema de rastreamento dos veículos, não sendo possível realizar o monitoramento das viagens. O suporte da Bus2 foi acionado (protocolo: __protocolo__) e aproximadamente às __hora_partida__, retornou.`,
+
+  "QUEDA_EMPRESA1": `QUEDA DE SISTEMA DA EMPRESA 1:
+Por volta das __hora__, houve uma queda no sistema de rastreamento dos veículos, não sendo possível realizar o monitoramento das viagens. O suporte da Empresa1 foi acionado e aproximadamente às __hora_partida__, retornou.`,
+
+  "QUEDA_OPERADORA": `QUEDA POR CONTA DA OPERADORA DE INTERNET:
+Por volta das __hora__, a operadora de internet apresentou instabilidade. Sendo assim, não foi possível realizar o monitoramento das viagens via GPS e câmeras até às __hora_partida__, horário em que o sistema retornou à normalidade.`,
+
+  "QUEDA_ENERGIA": `QUEDA DE ENERGIA:
+Por volta das __hora__, o CCO identificou uma queda de energia no __local__. Em contato com a fiscalização, a informação foi confirmada. De imediato, realizamos o acionamento da CELESC, que registrou o atendimento sob o protocolo nº__protocolo__. A energia foi totalmente restabelecida por volta das __hora_partida__.`
+};
+
+/* ============================
+  Mapeamento de campos por categoria (ordem e rótulos)
+  - cada categoria lista chaves que existem no template acima
+  - rótulo exibido ao usuário (português)
+============================ */
+const FIELDS_BY_CATEGORY = {
+  "PM_SEM_SOCORRO": [
+     {k:'hora', label:'Hora (ex: 13:05)'},
+     {k:'local', label:'Local / Rua / Referência'},
+     {k:'proximo', label:'Próximo a (ponto)'},
+     {k:'veiculo_resposta', label:'Veículo que passou (matrícula / código)'}
+  ],
+  "PM_COM_SOCORRO":[
+     {k:'hora', label:'Hora (ex: 13:05)'},
+     {k:'local', label:'Local / Rua / Referência'},
+     {k:'proximo', label:'Próximo a'},
+     {k:'veiculo_enviado', label:'Veículo enviado (matrícula / código)'},
+     {k:'hora_partida', label:'Hora aproximada de partida (ex: 13:20)'}
+  ],
+  "PM_VNR_OUTRO_SENTIDO":[
+     {k:'hora', label:'Hora (ocorrência)'},
+     {k:'local', label:'Local / Rua / Referência'},
+     {k:'proximo', label:'Próximo a'},
+     {k:'veiculo_resposta', label:'Veículo que passou (matrícula/código)'},
+     {k:'hora_partida', label:'Horário da VNR (ex: 14:00)'},
+     {k:'sentido', label:'Sentido (IDA / VOLTA)'}
+  ],
+  "VAL_SEM_ENVOIO":[
+     {k:'hora', label:'Hora (ex: 13:05)'},
+     {k:'local', label:'Rua (local do validador)'},
+     {k:'proximo', label:'Próximo a'}
+  ],
+  "VAL_COM_ENVOIO":[
+     {k:'hora', label:'Hora (ex: 13:05)'},
+     {k:'local', label:'Rua (local do validador)'},
+     {k:'proximo', label:'Próximo a'},
+     {k:'veiculo_enviado', label:'Veículo enviado (matrícula/código)'},
+     {k:'hora_partida', label:'Hora aproximada de partida (ex: 13:20)'}
+  ],
+  "VAL_REINICIOU":[
+     {k:'hora', label:'Hora do problema (ex: 13:05)'},
+     {k:'hora_partida', label:'Hora de retomada (ex: 13:12)'}
+  ],
+  "VANDALISMO_GMF":[
+     {k:'local', label:'Rua / Local da abordagem'},
+     {k:'hora', label:'Hora (ex: 13:05)'}
+  ],
+  "VANDALISMO_GMF_ESCOLTA":[
+     {k:'local', label:'Rua / Local da abordagem'}
+  ],
+  "AVARIA_VITIMA_CONTINUOU":[
+     {k:'hora', label:'Hora (ocorrência)'},
+     {k:'veiculo_terceiro', label:'Tipo/veículo envolvido (ex: carro)'},
+     {k:'local', label:'Rua / Local'},
+     {k:'proximo', label:'Próximo a'},
+     {k:'hora_partida', label:'Hora aproximada que continuou (ex: 14:10)'}
+  ],
+  "AVARIA_VITIMA_NAO_CONTINUOU":[
+     {k:'hora', label:'Hora (ocorrência)'},
+     {k:'veiculo_terceiro', label:'Tipo/veículo envolvido'},
+     {k:'local', label:'Rua / Local'},
+     {k:'proximo', label:'Próximo a'},
+     {k:'veiculo_resposta', label:'Veículo que passou para transferência'}
+  ],
+  "AVARIA_SEM_VITIMA_ENVIO":[
+     {k:'hora', label:'Hora (ocorrência)'},
+     {k:'local', label:'Rua / Local'},
+     {k:'proximo', label:'Próximo a'},
+     {k:'veiculo_enviado', label:'Veículo enviado (matrícula)'},
+     {k:'hora_partida', label:'Hora de partida do veículo enviado'}
+  ],
+  "AVARIA_SEM_VITIMA_NENVIO":[
+     {k:'hora', label:'Hora (ocorrência)'},
+     {k:'local', label:'Rua / Local'},
+     {k:'proximo', label:'Próximo a'}
+  ],
+  "ADIANTADO":[ {k:'minutos', label:'Minutos adiantado (ex: 05)'} ],
+  "ADIANTADO_FISCALIZACAO":[ {k:'minutos', label:'Minutos adiantado (ex: 05)'} ],
+  "ATRASADO_OPERACIONAL":[ {k:'minutos', label:'Minutos de atraso (ex: 07)'} ],
+  "ATRASO_TRANSITO":[ {k:'minutos', label:'Minutos de atraso (ex: 10)'} ],
+  "VIAGEM_INTERROMPIDA_MANOBRA":[
+     {k:'hora', label:'Hora início do problema (ex: 17:32)'},
+     {k:'hora_partida', label:'Hora de retorno (ex: 17:38)'}
+  ],
+  "DESVIO_MAIS_HORARIOS_FIM_OPERACAO":[
+     {k:'local', label:'Local do bloqueio (Rua)'},
+     {k:'rua_desvio', label:'Rua do desvio'},
+     {k:'sentido', label:'Sentido (IDA / VOLTA)'}
+  ],
+  "DESVIO_MAIS_HORARIOS_ENCERROU":[
+     {k:'local', label:'Local do bloqueio (Rua)'},
+     {k:'rua_desvio', label:'Rua do desvio'},
+     {k:'sentido', label:'Sentido (IDA / VOLTA)'},
+     {k:'hora_partida', label:'Hora de encerramento do desvio'}
+  ],
+  "DESVIO_1_ONIBUS":[
+     {k:'local', label:'Local do bloqueio (Rua)'},
+     {k:'rua_desvio', label:'Rua do desvio'},
+     {k:'rua_retorno', label:'Rua de retorno/continuação'}
+  ],
+  "DESVIO_1_ONIBUS_OBSTRUCAO":[
+     {k:'local', label:'Local da obstrução (Rua)'},
+     {k:'rua_desvio', label:'Rua do desvio'},
+     {k:'rua_retorno', label:'Rua de retorno/continuação'}
+  ],
+  "DESVIO_TRIPULANTE_CONFUNDIU":[
+     {k:'local', label:'Rua que deveria acessar'},
+     {k:'rua_desvio', label:'Rua acessada por engano'},
+     {k:'rua_retorno', label:'Rua de retorno/continuação'}
+  ],
+  "VNR_TRANSITO_INTENSO":[
+     {k:'local', label:'Trecho/avenida'},
+     {k:'sentido', label:'Sentido (IDA / VOLTA)'}
+  ],
+  "VNR_MECANICO_OUTRO_SENTIDO":[ {k:'sentido', label:'Sentido onde houve problema'} ],
+  "VNR_PROBLEMAS_OPERACIONAIS": [],
+  "VNR_MECANICO_ANTES_PARTIDA": [],
+  "VNR_SUSPENSAO_LINHAS_D": [],
+  "VNR_CONFUSOES_TRIPULANTE": [],
+  "GMF_CARROS_IRREGULARES":[ {k:'local', label:'Rua / Local'} ],
+  "GMF_CARROS_DESVIO":[ {k:'local', label:'Rua / Local'}, {k:'local_ref', label:'Bairro / referência'}, {k:'linha', label:'Linha (ex: 210)'} ],
+  "GMF_CONTATO_DONO":[ {k:'local', label:'Rua / Local'} ],
+  "GMF_CARROS_GMF_PM":[ {k:'local', label:'Rua / Local'} ],
+  "QUEDA_MOBILIBUS":[ {k:'hora', label:'Hora da queda'}, {k:'protocolo', label:'Protocolo (SUP - )'}, {k:'hora_partida', label:'Hora de retorno'} ],
+  "QUEDA_EMPRESA1":[ {k:'hora', label:'Hora da queda'}, {k:'hora_partida', label:'Hora de retorno'} ],
+  "QUEDA_OPERADORA":[ {k:'hora', label:'Hora do início'}, {k:'hora_partida', label:'Hora de retorno'} ],
+  "QUEDA_ENERGIA":[ {k:'hora', label:'Hora da queda'}, {k:'local', label:'Local / posto'}, {k:'protocolo', label:'Protocolo CELESC'}, {k:'hora_partida', label:'Hora de restabelecimento'} ]
+};
+
+/* ============================
+  Render dynamic inputs when categoria changes
+============================ */
+function onCategoriaChange(){
+  const cat = document.getElementById('categoria').value;
+  const area = document.getElementById('camposArea');
+  const preview = document.getElementById('previewModelo');
+  area.innerHTML = ''; preview.innerText = ''; document.getElementById('resultado').value='';
+
+  if(!cat) return;
+  // preview template
+  preview.innerText = TEMPLATES[cat] || 'Modelo não encontrado';
+
+  // build inputs per mapping
+  const fields = FIELDS_BY_CATEGORY[cat] || [];
+  if(fields.length === 0){
+    area.innerHTML = `<div class="small">Este modelo não requer campos adicionais. Clique em "Gerar Texto".</div>`;
+    return;
+  }
+
+  // groups two columns grid
+  let html = `<div class="grid2">`;
+  for(let f of fields){
+    html += `<div class="field">
+      <label for="f_${f.k}">${f.label}</label>
+      <input id="f_${f.k}" data-key="${f.k}" type="text" placeholder="${f.label}">
+    </div>`;
+  }
+  html += `</div>`;
+  area.innerHTML = html;
+}
+
+/* ============================
+  Generate / replace function
+============================ */
+function gerarTexto(){
+  const cat = document.getElementById('categoria').value;
+  if(!cat){ alert('Selecione uma categoria.'); return; }
+  let texto = TEMPLATES[cat];
+  if(!texto){ alert('Template não encontrado.'); return; }
+
+  // get fields & replace tokens
+  const fields = FIELDS_BY_CATEGORY[cat] || [];
+  for(let f of fields){
+    const el = document.getElementById('f_'+f.k);
+    const val = el ? el.value.trim() : '';
+    // token names used in templates
+    const token = '__' + f.k + '__';
+    // replace all occurrences (global)
+    texto = texto.split(token).join(val || (f.k==='hora' ? '__hora__' : (f.k==='minutos' ? '__minutos__' : '____')));
+  }
+
+  // ensure small fixes: if any token left like __hora__ keep as-is, else collapse multiple underscores
+  texto = texto.replace(/_{4,}/g,'____');
+
+  document.getElementById('resultado').value = texto;
+}
+
+/* ============================
+  Utilities
+============================ */
+function limparTudo(){
+  document.getElementById('categoria').value = '';
+  document.getElementById('camposArea').innerHTML = '';
+  document.getElementById('previewModelo').innerText = '';
+  document.getElementById('resultado').value = '';
+}
+
+function copiar(){
+  const t = document.getElementById('resultado');
+  if(!t.value){ alert('Não há texto para copiar.'); return; }
+  navigator.clipboard.writeText(t.value).then(()=>alert('Texto copiado para a área de transferência.'), ()=>alert('Não foi possível copiar automáticamente. Selecione o texto e copie manualmente.'));
+}
+
+function toggleEditar(){
+  const t = document.getElementById('resultado');
+  t.readOnly = !t.readOnly;
+  if(!t.readOnly){ t.focus(); t.style.border='1px solid #888'; }
+  else t.style.border='1px solid #ddd';
+}
+</script>
+</body>
+</html>
