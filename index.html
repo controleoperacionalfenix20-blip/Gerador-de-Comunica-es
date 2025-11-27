@@ -183,8 +183,6 @@ Segundo a fiscalização, por volta das __hora__, o veículo programado se envol
 
   "ATRASO_TRANSITO": `ATRASO TRÂNSITO: Devido ao trânsito intenso na viagem anterior e outros, o veículo programado partiu __minutos__ minutos após o horário programado.`,
 
-  "VIAGEM_INTERROMPIDA_MANOBRA": `VIAGEM INTERROMPIDA MANOBRA PONTO FINAL: Por volta de __hora__, o veículo programado teve dificuldades de fazer a volta no ponto final da linha por conta de um veículo que estava parado próximo da área de manobras dos coletivos, após alguns minutos a via foi liberada e a viagem retornou aproximadamente às __hora_partida__.`,
-
   "DESVIO_MAIS_HORARIOS_FIM_OPERACAO": `DESVIO DE ITINERÁRIO PARA MAIS DE UM HORÁRIO E ATÉ O FINAL DA OPERAÇÃO:
 Em razão de um bloqueio na  __local__, os ônibus desta linha realizaram desvio de itinerário seguindo pela __rua_desvio__, sentido __sentido__. O desvio foi autorizado pela fiscalização da PMF e foi necessário até o final da operação.`,
 
@@ -299,27 +297,27 @@ const FIELDS_BY_CATEGORY = {
      {k:'hora', label:'Hora (ocorrência)'},
      {k:'veiculo_terceiro', label:'Tipo/veículo envolvido (ex: carro)'},
      {k:'local', label:'Rua / Local'},
-     {k:'proximo', label:'Próximo a'},
+     {k:'proximo', label:'Próximo a (Ponto de referência)'},
      {k:'hora_partida', label:'Hora aproximada da partida do local (ex: 14:10)'}
   ],
   "AVARIA_VITIMA_NAO_CONTINUOU":[
      {k:'hora', label:'Hora (ocorrência)'},
      {k:'veiculo_terceiro', label:'Tipo/veículo envolvido'},
      {k:'local', label:'Rua / Local'},
-     {k:'proximo', label:'Próximo a'},
+     {k:'proximo', label:'Próximo a (Ponto de referência)'},
      {k:'veiculo_resposta', label:'Veículo que passou após o ocorrido'}
   ],
   "AVARIA_SEM_VITIMA_ENVIO":[
      {k:'hora', label:'Hora (ocorrência)'},
      {k:'local', label:'Rua / Local'},
-     {k:'proximo', label:'Próximo a'},
+     {k:'proximo', label:'Próximo a (Ponto de referência'},
      {k:'veiculo_enviado', label:'Veículo enviado (Prefixo)'},
      {k:'hora_partida', label:'Hora de partida do veículo enviado'}
   ],
   "AVARIA_SEM_VITIMA_NENVIO":[
      {k:'hora', label:'Hora (ocorrência)'},
      {k:'local', label:'Rua / Local'},
-     {k:'proximo', label:'Próximo a'}
+     {k:'proximo', label:'Próximo a (Ponto de referência)'}
   ],
   "ADIANTADO":[ {k:'minutos', label:'Minutos adiantado (ex: 05)'} ],
   "ADIANTADO_FISCALIZACAO":[ {k:'minutos', label:'Minutos adiantado (ex: 05)'} ],
