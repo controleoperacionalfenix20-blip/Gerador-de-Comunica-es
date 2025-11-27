@@ -253,20 +253,20 @@ const FIELDS_BY_CATEGORY = {
      {k:'hora', label:'Hora (ex: 13:05)'},
      {k:'local', label:'Local / Rua'},
      {k:'proximo', label:'Próximo a (Ponto de referência)'},
-     {k:'veiculo_resposta', label:'Veículo que passou (Número do veículo)'}
+     {k:'veiculo_resposta', label:'Veículo que passou após o ocorrido (Número do veículo)'}
   ],
   "PM_COM_SOCORRO":[
      {k:'hora', label:'Hora (ex: 13:05)'},
-     {k:'local', label:'Local / Rua / Referência'},
+     {k:'local', label:'Local / Rua'},
      {k:'proximo', label:'Próximo a'},
-     {k:'veiculo_enviado', label:'Veículo enviado (matrícula / código)'},
-     {k:'hora_partida', label:'Hora aproximada de partida (ex: 13:20)'}
+     {k:'veiculo_enviado', label:'Veículo enviado (Prefixo)'},
+     {k:'hora_partida', label:'Hora aproximada da partida do local (ex: 13:20)'}
   ],
   "PM_VNR_OUTRO_SENTIDO":[
      {k:'hora', label:'Hora (ocorrência)'},
-     {k:'local', label:'Local / Rua / Referência'},
-     {k:'proximo', label:'Próximo a'},
-     {k:'veiculo_resposta', label:'Veículo que passou (matrícula/código)'},
+     {k:'local', label:'Local / Rua'},
+     {k:'proximo', label:'Próximo a (Ponto de referência)'},
+     {k:'veiculo_resposta', label:'Veículo que passou após o ocorrido (Prefixo)'},
      {k:'hora_partida', label:'Horário da VNR (ex: 14:00)'},
      {k:'sentido', label:'Sentido (IDA / VOLTA)'}
   ],
@@ -277,10 +277,10 @@ const FIELDS_BY_CATEGORY = {
   ],
   "VAL_COM_ENVOIO":[
      {k:'hora', label:'Hora (ex: 13:05)'},
-     {k:'local', label:'Rua (local do validador)'},
+     {k:'local', label:'Local / Rua'},
      {k:'proximo', label:'Próximo a'},
-     {k:'veiculo_enviado', label:'Veículo enviado (matrícula/código)'},
-     {k:'hora_partida', label:'Hora aproximada de partida (ex: 13:20)'}
+     {k:'veiculo_enviado', label:'Veículo enviado (Prefixo)'},
+     {k:'hora_partida', label:'Hora aproximada da partida do local (ex: 13:20)'}
   ],
   "VAL_REINICIOU":[
      {k:'hora', label:'Hora do problema (ex: 13:05)'},
@@ -300,20 +300,20 @@ const FIELDS_BY_CATEGORY = {
      {k:'veiculo_terceiro', label:'Tipo/veículo envolvido (ex: carro)'},
      {k:'local', label:'Rua / Local'},
      {k:'proximo', label:'Próximo a'},
-     {k:'hora_partida', label:'Hora aproximada que continuou (ex: 14:10)'}
+     {k:'hora_partida', label:'Hora aproximada da partida do local (ex: 14:10)'}
   ],
   "AVARIA_VITIMA_NAO_CONTINUOU":[
      {k:'hora', label:'Hora (ocorrência)'},
      {k:'veiculo_terceiro', label:'Tipo/veículo envolvido'},
      {k:'local', label:'Rua / Local'},
      {k:'proximo', label:'Próximo a'},
-     {k:'veiculo_resposta', label:'Veículo que passou para transferência'}
+     {k:'veiculo_resposta', label:'Veículo que passou após o ocorrido'}
   ],
   "AVARIA_SEM_VITIMA_ENVIO":[
      {k:'hora', label:'Hora (ocorrência)'},
      {k:'local', label:'Rua / Local'},
      {k:'proximo', label:'Próximo a'},
-     {k:'veiculo_enviado', label:'Veículo enviado (matrícula)'},
+     {k:'veiculo_enviado', label:'Veículo enviado (Prefixo)'},
      {k:'hora_partida', label:'Hora de partida do veículo enviado'}
   ],
   "AVARIA_SEM_VITIMA_NENVIO":[
@@ -325,10 +325,7 @@ const FIELDS_BY_CATEGORY = {
   "ADIANTADO_FISCALIZACAO":[ {k:'minutos', label:'Minutos adiantado (ex: 05)'} ],
   "ATRASADO_OPERACIONAL":[ {k:'minutos', label:'Minutos de atraso (ex: 07)'} ],
   "ATRASO_TRANSITO":[ {k:'minutos', label:'Minutos de atraso (ex: 10)'} ],
-  "VIAGEM_INTERROMPIDA_MANOBRA":[
-     {k:'hora', label:'Hora início do problema (ex: 17:32)'},
-     {k:'hora_partida', label:'Hora de retorno (ex: 17:38)'}
-  ],
+  
   "DESVIO_MAIS_HORARIOS_FIM_OPERACAO":[
      {k:'local', label:'Local do bloqueio (Rua)'},
      {k:'rua_desvio', label:'Rua do desvio'},
