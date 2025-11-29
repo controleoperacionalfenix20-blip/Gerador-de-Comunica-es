@@ -373,7 +373,33 @@ function onCategoriaChange(){
 /* ============================
   Generate / replace function
 ============================ */
-function gerarTexto(){
+function definirPreposicao(local){
+    if(!local) return local;
+
+    const l = local.trim();
+    const primeira = l[0].toLowerCase();   // ✔ CORRIGIDO
+
+    const femininos = ["praia", "avenida", "rua", "estrada", "rodovia"];
+    const masculinos = ["terminal", "bairro", "centro", "posto"];
+
+    const primeiraPalavra = l.split(" ")[0].toLowerCase();
+
+    // SC-xxx → sempre feminino
+    if(l.startsWith("SC-") || l.startsWith("sc-")) return "na " + l;
+
+    // Femininos → na
+    if(femininos.includes(primeiraPalavra)) return "na " + l;
+
+    // Masculinos → no
+    if(masculinos.includes(primeiraPalavra)) return "no " + l;
+
+    // Começa com A / Á → à
+    if(["a", "á"].includes(primeira)) return "à " + l;
+
+    // Caso padrão → ao
+    return "ao " + l;
+}
+  function gerarTexto(){
   const cat = document.getElementById('categoria').value;
   if(!cat){ alert('Selecione uma categoria.'); return; }
   let texto = TEMPLATES[cat];
