@@ -139,15 +139,15 @@ textarea{min-height:160px;resize:vertical}
              __protocolo__, __bairro__, __veiculo_resposta__
   ============================ */
 const TEMPLATES = {
-  "PM_SEM_SOCORRO": `Segundo informações da fiscalização, por volta das __hora__, o veículo programado apresentou problemas mecânicos na __local__, próximo ao __proximo__. Os passageiros foram transferidos para o __veiculo_resposta__ que passou pelo local no momento. Em virtude de problemas operacionais, não foi possível enviar outro ônibus para continuar a viagem.`,
+  "PM_SEM_SOCORRO": `Segundo informações da fiscalização, por volta das __hora__, o veículo programado apresentou problemas mecânicos na __local__, próximo __proximo__. Os passageiros foram transferidos para o __veiculo_resposta__ que passou pelo local no momento. Em virtude de problemas operacionais, não foi possível enviar outro ônibus para continuar a viagem.`,
 
-  "PM_COM_SOCORRO": `Segundo informações da fiscalização, por volta das __hora__, o veículo programado apresentou problemas mecânicos na __local__, próximo ao __proximo__. Foi enviado o __veiculo_enviado__ para continuar a viagem, que partiu do local aproximadamente às __hora_partida__.`,
+  "PM_COM_SOCORRO": `Segundo informações da fiscalização, por volta das __hora__, o veículo programado apresentou problemas mecânicos na __local__, próximo __proximo__. Foi enviado o __veiculo_enviado__ para continuar a viagem, que partiu do local aproximadamente às __hora_partida__.`,
 
-  "PM_VNR_OUTRO_SENTIDO": `Segundo informações da fiscalização, por volta das __hora__, o veículo programado apresentou problemas mecânicos na __local__, próximo ao __proximo__. Os passageiros foram transferidos para o __veiculo_resposta__ que passou pelo local no momento. Em virtude de problemas operacionais, não foi possível enviar outro ônibus para continuar a viagem, gerando uma VNR no horário de __hora_partida__, sentido __sentido__.`,
+  "PM_VNR_OUTRO_SENTIDO": `Segundo informações da fiscalização, por volta das __hora__, o veículo programado apresentou problemas mecânicos na __local__, próximo __proximo__. Os passageiros foram transferidos para o __veiculo_resposta__ que passou pelo local no momento. Em virtude de problemas operacionais, não foi possível enviar outro ônibus para continuar a viagem, gerando uma VNR no horário de __hora_partida__, sentido __sentido__.`,
 
-  "VAL_SEM_ENVOIO": `Segundo a fiscalização, por volta das __hora__, o veículo programado apresentou problemas no validador, na __local__, próximo ao __proximo__. Os passageiros foram transferidos para outro coletivo que passou no local. Em virtude de problemas operacionais, não foi possível enviar outro ônibus para continuar a viagem.`,
+  "VAL_SEM_ENVOIO": `Segundo a fiscalização, por volta das __hora__, o veículo programado apresentou problemas no validador, na __local__, próximo __proximo__. Os passageiros foram transferidos para outro coletivo que passou no local. Em virtude de problemas operacionais, não foi possível enviar outro ônibus para continuar a viagem.`,
 
-  "VAL_COM_ENVOIO": `Segundo a fiscalização, por volta das __hora__, o veículo programado apresentou problemas no validador, na __local__ próximo ao __proximo__. Foi enviado o __veiculo_enviado__ para continuar a viagem, que partiu aproximadamente às __hora_partida__.`,
+  "VAL_COM_ENVOIO": `Segundo a fiscalização, por volta das __hora__, o veículo programado apresentou problemas no validador, na __local__ próximo __proximo__. Foi enviado o __veiculo_enviado__ para continuar a viagem, que partiu aproximadamente às __hora_partida__.`,
 
   "VAL_REINICIOU": `Segundo a fiscalização, por volta das __hora__, o veículo programado apresentou problemas no validador. O validador do ônibus foi reiniciado e continuou a viagem aproximadamente às __hora_partida__.`,
 
@@ -155,13 +155,13 @@ const TEMPLATES = {
 
   "VANDALISMO_GMF_ESCOLTA": `Em virtude de torcedores alterados no coletivo, foi acionado a GMF que prontamente deslocou uma viatura para abordar o coletivo. Após a abordagem feita na __local__, a viatura escoltou o ônibus até o __terminal__ e acompanhou a situação.`,
 
-  "AVARIA_VITIMA_CONTINUOU": `Segundo informações da fiscalização, por volta das __hora__, o veículo programado se envolveu em uma colisão com __veiculo_terceiro__ na __local__, próximo ao __proximo__. Foi acionado o SAMU para prestar atendimento ao condutor do veículo de terceiro, que após os primeiros socorros, foi levado ao hospital. O motorista do coletivo confeccionou o boletim de ocorrência, e em seguida continuou a viagem, aproximadamente às __hora_partida__.`,
+  "AVARIA_VITIMA_CONTINUOU": `Segundo informações da fiscalização, por volta das __hora__, o veículo programado se envolveu em uma colisão com __veiculo_terceiro__ na __local__, próximo __proximo__. Foi acionado o SAMU para prestar atendimento ao condutor do veículo de terceiro, que após os primeiros socorros, foi levado ao hospital. O motorista do coletivo confeccionou o boletim de ocorrência, e em seguida continuou a viagem, aproximadamente às __hora_partida__.`,
 
-  "AVARIA_VITIMA_NAO_CONTINUOU": `Segundo informações da fiscalização, por volta das __hora__, o veículo programado se envolveu em uma colisão com __veiculo_terceiro__ na __local__, próximo ao __proximo__. Foi acionado o SAMU para prestar atendimento ao condutor do veículo de terceiro, que após os primeiros socorros, foi levado ao hospital. Os passageiros foram transferidos para o __veiculo_resposta__, que passou pelo local. O motorista do coletivo confeccionou o boletim de ocorrência e interrompeu a viagem.`,
+  "AVARIA_VITIMA_NAO_CONTINUOU": `Segundo informações da fiscalização, por volta das __hora__, o veículo programado se envolveu em uma colisão com __veiculo_terceiro__ na __local__, próximo __proximo__. Foi acionado o SAMU para prestar atendimento ao condutor do veículo de terceiro, que após os primeiros socorros, foi levado ao hospital. Os passageiros foram transferidos para o __veiculo_resposta__, que passou pelo local. O motorista do coletivo confeccionou o boletim de ocorrência e interrompeu a viagem.`,
 
-  "AVARIA_SEM_VITIMA_ENVIO": `Segundo a fiscalização, por volta das __hora__, o veículo programado se envolveu em uma colisão com veículo particular, sem vítimas, na __local__, próximo ao __proximo__. Foi enviado o __veiculo_enviado__ para continuar a viagem, que partiu do local às __hora_partida__.`,
+  "AVARIA_SEM_VITIMA_ENVIO": `Segundo a fiscalização, por volta das __hora__, o veículo programado se envolveu em uma colisão com veículo particular, sem vítimas, na __local__, próximo __proximo__. Foi enviado o __veiculo_enviado__ para continuar a viagem, que partiu do local às __hora_partida__.`,
 
-  "AVARIA_SEM_VITIMA_NENVIO": `Segundo a fiscalização, por volta das __hora__, o veículo programado se envolveu em uma colisão com veículo particular, sem vítimas, na __local__, próximo ao __proximo__. Em virtude de problemas operacionais, não foi possível enviar outro ônibus para continuar a viagem.`,
+  "AVARIA_SEM_VITIMA_NENVIO": `Segundo a fiscalização, por volta das __hora__, o veículo programado se envolveu em uma colisão com veículo particular, sem vítimas, na __local__, próximo __proximo__. Em virtude de problemas operacionais, não foi possível enviar outro ônibus para continuar a viagem.`,
 
   "ADIANTADO": `Tripulante partiu __minutos__ minutos antes do horário programado.`,
 
@@ -373,31 +373,27 @@ function onCategoriaChange(){
 /* ============================
   Generate / replace function
 ============================ */
-function definirPreposicao(local){
-    if(!local) return local;
+function definirArtigo(local){
+  if(!local) return '';
 
-    const l = local.trim();
-    const primeira = l[0].toLowerCase();   // ✔ CORRIGIDO
+  const l = local.trim();
+  const primeira = l[0].toLowerCase();
 
-    const femininos = ["praia", "avenida", "rua", "estrada", "rodovia"];
-    const masculinos = ["terminal", "bairro", "centro", "posto"];
+  const femininos = ["praia","avenida","rua","estrada","rodovia"];
+  const masculinos = ["terminal","bairro","centro","posto"];
 
-    const primeiraPalavra = l.split(" ")[0].toLowerCase();
+  const primeiraPalavra = l.split(" ")[0].toLowerCase();
 
-    // SC-xxx → sempre feminino
-    if(l.startsWith("SC-") || l.startsWith("sc-")) return "na " + l;
+  // SC-xxx -> sempre feminino (ajuste conforme necessidade)
+  if (l.startsWith("SC-") || l.startsWith("sc-")) return "na";
 
-    // Femininos → na
-    if(femininos.includes(primeiraPalavra)) return "na " + l;
+  if (femininos.includes(primeiraPalavra)) return "na";
+  if (masculinos.includes(primeiraPalavra)) return "no";
 
-    // Masculinos → no
-    if(masculinos.includes(primeiraPalavra)) return "no " + l;
+  if (["a","á"].includes(primeira)) return "à";
 
-    // Começa com A / Á → à
-    if(["a", "á"].includes(primeira)) return "à " + l;
-
-    // Caso padrão → ao
-    return "ao " + l;
+  // padrão
+  return "ao";
 }
   function gerarTexto(){
   const cat = document.getElementById('categoria').value;
@@ -406,15 +402,35 @@ function definirPreposicao(local){
   if(!texto){ alert('Template não encontrado.'); return; }
 
   // get fields & replace tokens
-  const fields = FIELDS_BY_CATEGORY[cat] || [];
-  for(let f of fields){
-    const el = document.getElementById('f_'+f.k);
+ const fields = FIELDS_BY_CATEGORY[cat] || [];
+for (let f of fields) {
+
+    const el = document.getElementById('f_' + f.k);
     const val = el ? el.value.trim() : '';
-    // token names used in templates
     const token = '__' + f.k + '__';
-    // replace all occurrences (global)
-    texto = texto.split(token).join(val || (f.k==='hora' ? '__hora__' : (f.k==='minutos' ? '__minutos__' : '____')));
-  }
+
+    // Caso especial: LOCAL → usa preposição automática
+    if (f.k === 'local') {
+        const artigo = val ? definirArtigo(val) + ' ' + val : '____';
+        texto = texto.split(token).join(artigo);
+        continue;
+    }
+
+    // Caso especial: PROXIMO → também usa preposição automática
+    if (f.k === 'proximo') {
+        const artigo = val ? definirArtigo(val) + ' ' + val : '____';
+        texto = texto.split(token).join(artigo);
+        continue;
+    }
+
+    // Substituição padrão dos demais tokens
+    texto = texto.split(token).join(
+        val ||
+        (f.k === 'hora' ? '__hora__'
+        : f.k === 'minutos' ? '__minutos__'
+        : '____')
+    );
+}
 
   // ensure small fixes: if any token left like __hora__ keep as-is, else collapse multiple underscores
   texto = texto.replace(/_{4,}/g,'____');
