@@ -453,32 +453,6 @@ function gerarTexto() {
   document.getElementById('resultado').value = texto;
 }
 
-    // PRÓXIMO → usa artigo com ênfase (tem chance de virar "à")
-    if (f.k === 'proximo') {
-        const artigo = val ? definirArtigo(val, true) + ' ' + val : '____';
-        texto = texto.split(token).join(artigo);
-        continue;
-    }
-
-    // Default
-    texto = texto.split(token).join(val || '____');
-}
-
-    // Substituição padrão dos demais tokens
-    texto = texto.split(token).join(
-        val ||
-        (f.k === 'hora' ? '__hora__'
-        : f.k === 'minutos' ? '__minutos__'
-        : '____')
-    );
-}
-
-  // ensure small fixes: if any token left like __hora__ keep as-is, else collapse multiple underscores
-  texto = texto.replace(/_{4,}/g,'____');
-
-  document.getElementById('resultado').value = texto;
-}
-
 /* ============================
   Utilities
 ============================ */
