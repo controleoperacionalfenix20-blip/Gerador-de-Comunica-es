@@ -416,27 +416,42 @@ function definirArtigo(local, isProximo = false) {
     // padrão → ao
     return "ao";
 }
-
-  function gerarTexto(){
+function gerarTexto() {
   const cat = document.getElementById('categoria').value;
-  if(!cat){ alert('Selecione uma categoria.'); return; }
+  if (!cat) { alert('Selecione uma categoria.'); return; }
   let texto = TEMPLATES[cat];
-  if(!texto){ alert('Template não encontrado.'); return; }
+  if (!texto) { alert('Template não encontrado.'); return; }
 
- // get fields & replace tokens
-const fields = FIELDS_BY_CATEGORY[cat] || [];
-for (let f of fields) {
-
+  // get fields & replace tokens
+  const fields = FIELDS_BY_CATEGORY[cat] || [];
+  for (let f of fields) {
     const el = document.getElementById('f_' + f.k);
     const val = el ? el.value.trim() : '';
     const token = '__' + f.k + '__';
 
     // LOCAL → usa artigo correto ("na", "no", "à", "ao")
     if (f.k === 'local') {
-        const artigo = val ? definirArtigo(val, false) + ' ' + val : '____';
-        texto = texto.split(token).join(artigo);
-        continue;
+      const artigo = val ? (definirArtigo(val, false) + ' ' + val) : '____';
+      texto = texto.split(token).join(artigo);
+      continue;
     }
+
+    // PRÓXIMO → usa artigo com ênfase (tem chance de virar "à")
+    if (f.k === 'proximo') {
+      const artigo = val ? (definirArtigo(val, true) + ' ' + val) : '____';
+      texto = texto.split(token).join(artigo);
+      continue;
+    }
+
+    // Default: substitui token pelo valor ou por underline placeholder
+    texto = texto.split(token).join(val || '____');
+  }
+
+  // ensure small fixes: se sobrar token (ex: __hora__) mantém, senão colapsa underscores muito longos
+  texto = texto.replace(/_{4,}/g, '____');
+
+  document.getElementById('resultado').value = texto;
+}
 
     // PRÓXIMO → usa artigo com ênfase (tem chance de virar "à")
     if (f.k === 'proximo') {
