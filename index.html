@@ -417,23 +417,6 @@ function definirArtigo(local, isProximo = false) {
     return "ao";
 }
 
-    // --- Regras normais para LOCAL (mantém "na" e "no") ---
-
-    // SC-xxx → feminino (NA)
-    if (l.startsWith("SC-") || l.startsWith("sc-")) return "na";
-
-    if (femininos.includes(primeiraPalavra)) return "na";
-
-    if (masculinos.includes(primeiraPalavra)) return "no";
-
-    if (["a", "á", "à"].includes(primeira)) return "à";
-
-    return "ao";
-}
-
-  // padrão
-  return "ao";
-}
   function gerarTexto(){
   const cat = document.getElementById('categoria').value;
   if(!cat){ alert('Selecione uma categoria.'); return; }
