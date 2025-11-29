@@ -373,24 +373,63 @@ function onCategoriaChange(){
 /* ============================
   Generate / replace function
 ============================ */
-function definirArtigo(local){
-  if(!local) return '';
+function definirArtigo(local, isProximo = false) {
+    if (!local) return local;
 
-  const l = local.trim();
-  const primeira = l[0].toLowerCase();
+    const l = local.trim();
+    const primeira = l[0].toLowerCase();
 
-  const femininos = ["praia","avenida","rua","estrada","rodovia"];
-  const masculinos = ["terminal","bairro","centro","posto"];
+    const femininos = ["praia", "avenida", "rua", "estrada", "rodovia"];
+    const masculinos = ["terminal", "bairro", "centro", "posto"];
 
-  const primeiraPalavra = l.split(" ")[0].toLowerCase();
+    const primeiraPalavra = l.split(" ")[0].toLowerCase();
 
-  // SC-xxx -> sempre feminino (ajuste conforme necessidade)
-  if (l.startsWith("SC-") || l.startsWith("sc-")) return "na";
+    // --- Regras ESPECIAIS para PRÓXIMO ---
+    if (isProximo) {
 
-  if (femininos.includes(primeiraPalavra)) return "na";
-  if (masculinos.includes(primeiraPalavra)) return "no";
+        // começa com A/Á/À → vira "à"
+        if (["a", "á", "à"].includes(primeira)) {
+            return "à";
+        }
 
-  if (["a","á"].includes(primeira)) return "à";
+        // feminino → "à"
+        if (femininos.includes(primeiraPalavra)) {
+            return "à";
+        }
+
+        // masculino → "ao"
+        return "ao";
+    }
+
+    // --- Regras normais para LOCAL (mantém "na" e "no") ---
+
+    // SC-xxx → feminino (NA)
+    if (l.startsWith("SC-") || l.startsWith("sc-")) return "na";
+
+    if (femininos.includes(primeiraPalavra)) return "na";
+
+    if (masculinos.includes(primeiraPalavra)) return "no";
+
+    // começa com A / Á → à  (ESSA AQUI ESTAVA FALTANDO)
+    if (["a", "á"].includes(primeira)) return "à";
+
+    // padrão → ao
+    return "ao";
+}
+
+    // --- Regras normais para LOCAL (mantém "na" e "no") ---
+
+    // SC-xxx → feminino (NA)
+    if (l.startsWith("SC-") || l.startsWith("sc-")) return "na";
+
+    if (femininos.includes(primeiraPalavra)) return "na";
+
+    if (masculinos.includes(primeiraPalavra)) return "no";
+
+    if (["a", "á", "à"].includes(primeira)) return "à";
+
+    return "ao";
+}
 
   // padrão
   return "ao";
@@ -401,27 +440,31 @@ function definirArtigo(local){
   let texto = TEMPLATES[cat];
   if(!texto){ alert('Template não encontrado.'); return; }
 
-  // get fields & replace tokens
- const fields = FIELDS_BY_CATEGORY[cat] || [];
+ // get fields & replace tokens
+const fields = FIELDS_BY_CATEGORY[cat] || [];
 for (let f of fields) {
 
     const el = document.getElementById('f_' + f.k);
     const val = el ? el.value.trim() : '';
     const token = '__' + f.k + '__';
 
-    // Caso especial: LOCAL → usa preposição automática
+    // LOCAL → usa artigo correto ("na", "no", "à", "ao")
     if (f.k === 'local') {
-        const artigo = val ? definirArtigo(val) + ' ' + val : '____';
+        const artigo = val ? definirArtigo(val, false) + ' ' + val : '____';
         texto = texto.split(token).join(artigo);
         continue;
     }
 
-    // Caso especial: PROXIMO → também usa preposição automática
+    // PRÓXIMO → usa artigo com ênfase (tem chance de virar "à")
     if (f.k === 'proximo') {
-        const artigo = val ? definirArtigo(val) + ' ' + val : '____';
+        const artigo = val ? definirArtigo(val, true) + ' ' + val : '____';
         texto = texto.split(token).join(artigo);
         continue;
     }
+
+    // Default
+    texto = texto.split(token).join(val || '____');
+}
 
     // Substituição padrão dos demais tokens
     texto = texto.split(token).join(
