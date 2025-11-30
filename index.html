@@ -377,26 +377,16 @@ function definirArtigo(local, isProximo = false) {
 
     const primeiraPalavra = l.split(" ")[0].toLowerCase();
 
-   // --- Regras ESPECIAIS para PRÓXIMO ---
+// --- Regras para PRÓXIMO (próximo à / ao) ---
 if (isProximo) {
 
-    // feminino → "à"
-    if (femininos.includes(primeiraPalavra)) {
-        return "à";
-    }
-
-    // masculino → "ao"
-    return "ao";
-}
-
-if (isProximo) {
-
-    // se o usuário escreveu exatamente "a" ou "á" ou "à" (caso de entrada estranha)
+    // se o usuário escreveu exatamente "a" ou "á" ou "à"
     if (["a","á","à"].includes(primeiraPalavra)) return "à";
 
-    if (femininos.includes(primeiraPalavra)) {
-        return "à";
-    }
+    // feminino → "à"
+    if (femininos.includes(primeiraPalavra)) return "à";
+
+    // masculino → "ao"
     return "ao";
 }
   
