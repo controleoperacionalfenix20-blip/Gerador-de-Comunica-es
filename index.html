@@ -339,21 +339,19 @@ const FIELDS_BY_CATEGORY = {
 function onCategoriaChange(){
   const cat = document.getElementById('categoria').value;
   const area = document.getElementById('camposArea');
-  const preview = document.getElementById('previewModelo');
-  area.innerHTML = ''; preview.innerText = ''; document.getElementById('resultado').value='';
+
+  area.innerHTML = '';
+  document.getElementById('resultado').value = '';
 
   if(!cat) return;
-  // preview template
-  preview.innerText = TEMPLATES[cat] || 'Modelo não encontrado';
 
-  // build inputs per mapping
   const fields = FIELDS_BY_CATEGORY[cat] || [];
+
   if(fields.length === 0){
     area.innerHTML = `<div class="small">Este modelo não requer campos adicionais. Clique em "Gerar Texto".</div>`;
     return;
   }
 
-  // groups two columns grid
   let html = `<div class="grid2">`;
   for(let f of fields){
     html += `<div class="field">
