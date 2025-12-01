@@ -367,39 +367,40 @@ function definirArtigo(local, isProximo = false) {
   if (!local) return "";
 
   const l = local.trim();
-  const words = l.split(" ");
-  const first = words[0].toLowerCase();
 
-  // 1) Já começa com artigo próprio → não adiciona outro
-  if (["do", "da", "dos", "das"].includes(first)) {
-    return isProximo ? " " : " "; // sem artigo extra
+  // se já contém artigo ou preposição explícita (em qualquer posição), não adiciona
+  if (/\b(do|da|dos|das|no|na|nos|nas)\b/i.test(l)) return "";
+
+  // pega a primeira palavra "limpa" (sem pontuação)
+  const words = l.split(/\s+/);
+  const rawFirst = words[0].replace(/[.,]/g, "");
+  const first = rawFirst.toLowerCase();
+
+  // mapeamento de abreviações/termos comuns
+  const femTerms = ["rua", "r", "r.", "av", "av.", "avenida", "travessa", "praia", "estrada"];
+  const mascTerms = ["rodovia", "rod", "rod.", "trevo", "trevo."]; // ajustar se necessário
+
+  // rodovias e BR/SC
+  if (/^(sc|br)-?\d+/i.test(l) || /^rodovia\b/i.test(first) || /^br-?\d+/i.test(first) || /^sc-?\d+/i.test(first)) {
+    return isProximo ? "à" : "na"; // rodovias tratadas como feminino aqui (ajuste se preferir "na" ou "no")
   }
 
-  // 2) Termos femininos fixos
-  const femininosFixos = ["rua", "avenida", "estrada", "rodovia", "travessa", "praia"];
-  if (femininosFixos.includes(first)) {
+  // siglas totalmente em maiúsculas (UFSC, UDESC, UPA) -> geralmente "na"
+  if (/^[A-Z]{2,8}$/.test(rawFirst)) {
     return isProximo ? "à" : "na";
   }
 
-  // 3) Rodovias (SC-xxx, BR-xxx)
-  if (/^(sc|br)-?\d+/i.test(l)) {
-    return isProximo ? "à" : "na";
-  }
+  // detecta termos femininos ou abreviações de rua/avenida
+  if (femTerms.includes(first)) return isProximo ? "à" : "na";
 
-  // 4) Siglas em maiúsculas (UFSC, UDESC, UPA, UBS)
-  if (/^[A-Z]{2,8}$/.test(words[0])) {
-    return isProximo ? "à" : "na";
-  }
+  // detecta termos masculinos
+  if (mascTerms.includes(first)) return isProximo ? "ao" : "no";
 
-  // 5) Universidade (uni...)
-  if (first.startsWith("uni")) {
-    return isProximo ? "à" : "na";
-  }
+  // universidades (uni...)
+  if (first.startsWith("uni")) return isProximo ? "à" : "na";
 
-  // 6) Heurística por terminação da palavra
-  if (first.endsWith("a")) {
-    return isProximo ? "à" : "na";
-  }
+  // heurística final por terminação 'a'
+  if (first.endsWith("a")) return isProximo ? "à" : "na";
 
   return isProximo ? "ao" : "no";
 }
@@ -424,7 +425,7 @@ function gerarTexto() {
     // LOCAL → "na/no + local"
     if (f.k === "local") {
       const artigo = definirArtigo(val, false);
-      const composto = val ? `${artigo} ${val}` : "____";
+      const composto = val ? (artigo ? `${artigo} ${val}` : val) : "____";
       texto = texto.split(token).join(composto);
       continue;
     }
@@ -432,12 +433,12 @@ function gerarTexto() {
     // PRÓXIMO → “à/ao + local"
     if (f.k === "proximo") {
       const artigo = definirArtigo(val, true);
-      const composto = val ? `${artigo} ${val}` : "____";
+      const composto = val ? (artigo ? `${artigo} ${val}` : val) : "____";
       texto = texto.split(token).join(composto);
       continue;
     }
 
-    // Default
+    // CAMPOS NORMAIS
     texto = texto.split(token).join(val || "____");
   }
 
