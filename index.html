@@ -389,22 +389,6 @@ if (isProximo) {
     // masculino → "ao"
     return "ao";
 }
-  
-    // --- Regras normais para LOCAL (mantém "na" e "no") ---
-
-    // SC-xxx → feminino (NA)
-    if (l.startsWith("SC-") || l.startsWith("sc-")) return "na";
-
-    if (femininos.includes(primeiraPalavra)) return "na";
-
-    if (masculinos.includes(primeiraPalavra)) return "no";
-
-    // começa com A / Á → à  (ESSA AQUI ESTAVA FALTANDO)
-    if (["a", "á"].includes(primeira)) return "à";
-
-    // padrão → ao
-    return "ao";
-}
 function gerarTexto() {
   const cat = document.getElementById('categoria').value;
   if (!cat) { alert('Selecione uma categoria.'); return; }
