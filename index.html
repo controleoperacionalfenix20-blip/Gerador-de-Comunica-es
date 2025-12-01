@@ -369,7 +369,7 @@ function definirArtigo(local, isProximo = false) {
   const l = local.trim();
 
   // só ignora se o LOCAL JÁ COMEÇA com artigo → ex: "na praia", "no shopping"
-  if (/^(do|da|dos|das|no|na|nos|nas)\b/i.test(l)) return "";
+  if (/^(do|da|dos|das|no|na|nos|nas)\b/i.test(l)) return ""; 
 
   const words = l.split(/\s+/);
   const rawFirst = words[0].replace(/[.,]/g, "");
