@@ -368,26 +368,44 @@ function onCategoriaChange(){
 ============================ */
 function definirArtigo(local, isProximo = false) {
     if (!local) return local;
-
     const l = local.trim();
-    const primeira = l[0].toLowerCase();
+    const palavra = l.split(" ")[0].toLowerCase();
 
-    const femininos = ["praia", "avenida", "rua", "estrada", "rodovia"];
-    const masculinos = ["terminal", "bairro", "centro", "posto"];
+    // Detecta SIGLAS (UDESC, UFSC, UPA, UBS...)
+    const isSigla = /^[A-Z]{2,6}$/.test(local);
 
-    const primeiraPalavra = l.split(" ")[0].toLowerCase();
+    // Universidades (começam com UNI...)
+    const isUniversidade = palavra.startsWith("uni");
 
-// --- Regras para PRÓXIMO (próximo à / ao) ---
-if (isProximo) {
+    // Feminino natural: termina com "a"
+    const terminaComA = palavra.endsWith("a");
 
-    // se o usuário escreveu exatamente "a" ou "á" ou "à"
-    if (["a","á","à"].includes(primeiraPalavra)) return "à";
+    // Masculino natural: termina com "o" ou "e"
+    const terminaComO = palavra.endsWith("o") || palavra.endsWith("e");
 
-    // feminino → "à"
-    if (femininos.includes(primeiraPalavra)) return "à";
+    let artigo;
 
-    // masculino → "ao"
-    return "ao";
+    // --- PRÓXIMO ---
+    if (isProximo) {
+
+        if (isSigla || isUniversidade || terminaComA) {
+            artigo = "à";
+        } else {
+            artigo = "ao";
+        }
+
+        return `${artigo} ${local}`;
+    }
+
+    // --- LOCAL (na / no) ---
+    if (isSigla || isUniversidade || terminaComA) {
+        artigo = "na";
+    } else {
+        artigo = "no";
+    }
+
+    return `${artigo} ${local}`;
+}
 }
 function gerarTexto() {
   const cat = document.getElementById('categoria').value;
