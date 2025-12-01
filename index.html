@@ -549,23 +549,28 @@ function formatarLocal(chave, valor, isProximo = false) {
     return v;
   }
 
+  const rawFirst = v.split(/\s+/)[0].replace(/[.,]/g, "");
+  const first = rawFirst.toLowerCase();
+
+  // EXCEÇÃO: nomes próprios que começam com letra maiúscula → usar masculino
+  if (/^[A-Z]/.test(v) && !/^(Rua|R\.|Av|Av\.|Avenida|Travessa|Estrada|Rodovia|SC|BR)/i.test(v)) {
+    return (isProximo ? "ao " : "no ") + v;
+  }
+
   // "Parte da..." → "em Parte da..."
   if (/^parte\b/i.test(v)) {
     return `em ${v}`;
   }
 
-  const rawFirst = v.split(/\s+/)[0].replace(/[.,]/g, "");
-  const first = rawFirst.toLowerCase();
-
   const fem = ["rua", "r", "r.", "av", "av.", "avenida", "travessa", "praia", "estrada"];
   const masc = ["rodovia", "rod", "rod.", "trevo"];
 
-  // Rodovias, BR, SC → femininas
+  // Rodovias e BR/SC → femininas
   if (/^(sc|br)-?\d+/i.test(v) || /^rodovia\b/i.test(first)) {
     return (isProximo ? "à " : "na ") + v;
   }
 
-  // Siglas → tratadas como feminino (UPA, UFSC)
+  // Siglas → feminino
   if (/^[A-Z]{2,8}$/.test(rawFirst)) {
     return (isProximo ? "à " : "na ") + v;
   }
@@ -579,12 +584,11 @@ function formatarLocal(chave, valor, isProximo = false) {
   // Universidade
   if (first.startsWith("uni")) return (isProximo ? "à " : "na ") + v;
 
-  // termina com "a" → feminino
+  // termina com "a" → feminino (REGRA MANTIDA)
   if (first.endsWith("a")) return (isProximo ? "à " : "na ") + v;
 
   // padrão masculino
   return (isProximo ? "ao " : "no ") + v;
-}
   
 /* ============================
   Generate / replace function
