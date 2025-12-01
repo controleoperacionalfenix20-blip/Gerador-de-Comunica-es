@@ -364,27 +364,44 @@ function onCategoriaChange(){
 }
 
 function definirArtigo(local, isProximo = false) {
-  if (!local) return '';
+  if (!local) return "";
 
   const l = local.trim();
-  const rawFirst = l.split(" ")[0]; // preserva maiúsculas (UDESC, UFSC...)
-  const palavra = rawFirst.toLowerCase();
+  const words = l.split(" ");
+  const first = words[0].toLowerCase();
 
-  // Detecta siglas tipo UDESC / UFSC / UPA / UBS
-  const isSigla = /^[A-Z]{2,6}$/.test(rawFirst);
-
-  // Universidades (UNI…)
-  const isUniversidade = palavra.startsWith("uni");
-
-  // Feminino (termina com A)
-  const terminaComA = palavra.endsWith("a");
-
-  // Regra final
-  if (isProximo) {
-    return (isSigla || isUniversidade || terminaComA) ? "à" : "ao";
-  } else {
-    return (isSigla || isUniversidade || terminaComA) ? "na" : "no";
+  // 1) Já começa com artigo próprio → não adiciona outro
+  if (["do", "da", "dos", "das"].includes(first)) {
+    return isProximo ? " " : " "; // sem artigo extra
   }
+
+  // 2) Termos femininos fixos
+  const femininosFixos = ["rua", "avenida", "estrada", "rodovia", "travessa", "praia"];
+  if (femininosFixos.includes(first)) {
+    return isProximo ? "à" : "na";
+  }
+
+  // 3) Rodovias (SC-xxx, BR-xxx)
+  if (/^(sc|br)-?\d+/i.test(l)) {
+    return isProximo ? "à" : "na";
+  }
+
+  // 4) Siglas em maiúsculas (UFSC, UDESC, UPA, UBS)
+  if (/^[A-Z]{2,8}$/.test(words[0])) {
+    return isProximo ? "à" : "na";
+  }
+
+  // 5) Universidade (uni...)
+  if (first.startsWith("uni")) {
+    return isProximo ? "à" : "na";
+  }
+
+  // 6) Heurística por terminação da palavra
+  if (first.endsWith("a")) {
+    return isProximo ? "à" : "na";
+  }
+
+  return isProximo ? "ao" : "no";
 }
   
 /* ============================
