@@ -142,7 +142,7 @@ const TEMPLATES = {
 
   "VAL_SEM_ENVIO": `Segundo a fiscalização, por volta das __hora__, o veículo programado apresentou problemas no validador, __local__, próximo __proximo__. Os passageiros foram transferidos para outro coletivo que passou no local. Em virtude de problemas operacionais, não foi possível enviar outro ônibus para continuar a viagem.`,
 
-  "VAL_COM_ENVIO": `Segundo a fiscalização, por volta das __hora__, o veículo programado apresentou problemas no validador, __local__ próximo __proximo__. Foi enviado o __veiculo_enviado__ para continuar a viagem, que partiu aproximadamente às __hora_partida__.`,
+  "VAL_COM_ENVIO": `Segundo a fiscalização, por volta das __hora__, o veículo programado apresentou problemas no validador, __local__, próximo __proximo__. Foi enviado o __veiculo_enviado__ para continuar a viagem, que partiu aproximadamente às __hora_partida__.`,
 
   "VAL_REINICIOU": `Segundo a fiscalização, por volta das __hora__, o veículo programado apresentou problemas no validador. O validador do ônibus foi reiniciado e continuou a viagem aproximadamente às __hora_partida__.`,
 
@@ -348,11 +348,13 @@ const FIELDS_BY_CATEGORY = {
   {k:'local', label:'Local / posto'},
   {k:'protocolo', label:'Protocolo CELESC'},
   {k:'hora_partida', label:'Hora de restabelecimento'}
-],
+]   
+};  
+
 /* ============================
   Render dynamic inputs when categoria changes
 ============================ */
-function onCategoriaChange(){
+function onCategoriaChange() {
   const cat = document.getElementById('categoria').value;
   const area = document.getElementById('camposArea');
 
@@ -379,34 +381,51 @@ function onCategoriaChange(){
   area.innerHTML = html;
 }
 
-function definirArtigo(local, isProximo = false) {
-  if (!local) return "";
+function formatarLocal(chave, valor, isProximo = false) {
+  if (!valor) return "____";
 
-  const l = local.trim();
+  const v = valor.trim();
 
-  // só ignora se o LOCAL JÁ COMEÇA com artigo → ex: "na praia", "no shopping"
-  if (/^(do|da|dos|das|no|na|nos|nas)\b/i.test(l)) return ""; 
+  // já tem preposição
+  if (/^(do|da|dos|das|no|na|nos|nas|em|à|ao|a)\b/i.test(v)) {
+    return v;
+  }
 
-  const words = l.split(/\s+/);
-  const rawFirst = words[0].replace(/[.,]/g, "");
+  // "Parte da..." → "em Parte da..."
+  if (/^parte\b/i.test(v)) {
+    return `em ${v}`;
+  }
+
+  const rawFirst = v.split(/\s+/)[0].replace(/[.,]/g, "");
   const first = rawFirst.toLowerCase();
 
-  const femTerms = ["rua", "r", "r.", "av", "av.", "avenida", "travessa", "praia", "estrada"];
-  const mascTerms = ["rodovia", "rod", "rod.", "trevo"];
+  const fem = ["rua", "r", "r.", "av", "av.", "avenida", "travessa", "praia", "estrada"];
+  const masc = ["rodovia", "rod", "rod.", "trevo"];
 
-  if (/^(sc|br)-?\d+/i.test(l)) return isProximo ? "à" : "na";
+  // Rodovias, BR, SC → femininas
+  if (/^(sc|br)-?\d+/i.test(v) || /^rodovia\b/i.test(first)) {
+    return (isProximo ? "à " : "na ") + v;
+  }
 
-  if (/^[A-Z]{2,8}$/.test(rawFirst)) return isProximo ? "à" : "na";
+  // Siglas → tratadas como feminino (UPA, UFSC)
+  if (/^[A-Z]{2,8}$/.test(rawFirst)) {
+    return (isProximo ? "à " : "na ") + v;
+  }
 
-  if (femTerms.includes(first)) return isProximo ? "à" : "na";
+  // Femininas
+  if (fem.includes(first)) return (isProximo ? "à " : "na ") + v;
 
-  if (mascTerms.includes(first)) return isProximo ? "ao" : "no";
+  // Masculinas
+  if (masc.includes(first)) return (isProximo ? "ao " : "no ") + v;
 
-  if (first.startsWith("uni")) return isProximo ? "à" : "na";
+  // Universidade
+  if (first.startsWith("uni")) return (isProximo ? "à " : "na ") + v;
 
-  if (first.endsWith("a")) return isProximo ? "à" : "na";
+  // termina com "a" → feminino
+  if (first.endsWith("a")) return (isProximo ? "à " : "na ") + v;
 
-  return isProximo ? "ao" : "no";
+  // padrão masculino
+  return (isProximo ? "ao " : "no ") + v;
 }
   
 /* ============================
@@ -426,21 +445,17 @@ function gerarTexto() {
     const val = el ? el.value.trim() : '';
     const token = `__${f.k}__`;
 
-    // LOCAL → "na/no + local"
-    if (f.k === "local") {
-      const artigo = definirArtigo(val, false);
-      const composto = val ? (artigo ? `${artigo} ${val}` : val) : "____";
-      texto = texto.split(token).join(composto);
-      continue;
-    }
+    // LOCAL
+if (f.k === "local") {
+  texto = texto.split(token).join(formatarLocal(f.k, val, false));
+  continue;
+}
 
-    // PRÓXIMO → “à/ao + local"
-    if (f.k === "proximo") {
-      const artigo = definirArtigo(val, true);
-      const composto = val ? (artigo ? `${artigo} ${val}` : val) : "____";
-      texto = texto.split(token).join(composto);
-      continue;
-    }
+// PRÓXIMO
+if (f.k === "proximo") {
+  texto = texto.split(token).join(formatarLocal(f.k, val, true));
+  continue;
+}
 
     // CAMPOS NORMAIS
     texto = texto.split(token).join(val || "____");
