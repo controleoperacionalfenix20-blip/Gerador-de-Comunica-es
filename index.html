@@ -7,14 +7,15 @@
 <title>Gerador de Comunicações — Consórcio Fênix</title>
 <style>
 :root{
-  --bg:#f6f9fc;
-  --primary:#0c3c59;
-  --secondary:#ffcc33;
-  --text:#1d2b36;
-  --muted:#6c7a86;
+  --primary:#002A42;      /* azul escuro institucional */
+  --secondary:#FFCC00;    /* amarelo Fênix */
+  --bg:#f5f7fa;
+  --text:#1b2a31;
+  --muted:#73828c;
   --card:#ffffff;
 }
 
+/* Reset básico */
 *{
   box-sizing:border-box;
 }
@@ -29,55 +30,57 @@ body{
 /* ===== CABEÇALHO ===== */
 .header{
   width:100%;
-  background:var(--primary);
-  color:#fff;
-  padding:22px 0;
-  box-shadow:0 4px 10px rgba(0,0,0,0.15);
+  background:var(--secondary);
+  color:var(--primary);
+  padding:26px 0 22px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.15);
 }
 .header .container{
   max-width:1120px;
   margin:auto;
   padding:0 22px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
 }
 .header-title{
-  font-size:26px;
-  font-weight:700;
-  letter-spacing:0.5px;
+  font-size:30px;
+  font-weight:800;
+  letter-spacing:0.6px;
+  color:var(--primary);
 }
 .header-sub{
-  font-size:14px;
-  opacity:0.8;
+  font-size:15px;
+  opacity:0.95;
+  margin-top:4px;
+  font-weight:500;
 }
 
 /* ===== CONTAINER ===== */
 .container{
   max-width:1120px;
-  margin:26px auto;
+  margin:32px auto;
   padding:0 22px;
 }
 
 h1{
-  font-size:28px;
-  margin:0 0 18px;
+  font-size:26px;
+  margin:0 0 20px;
   color:var(--primary);
+  font-weight:700;
 }
 
 /* ===== CARDS ===== */
 .card{
   background:var(--card);
   border-radius:14px;
-  padding:22px;
-  box-shadow:0 6px 18px rgba(0,0,0,0.06);
-  border-left:6px solid var(--secondary);
-  margin-bottom:22px;
+  padding:28px 24px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.10);
+  border-left:8px solid var(--secondary);
+  margin-bottom:26px;
 }
 
+/* ===== GRID ===== */
 .row{
   display:flex;
-  gap:14px;
+  gap:16px;
   flex-wrap:wrap;
 }
 
@@ -86,34 +89,56 @@ h1{
   min-width:280px;
 }
 
+.grid2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+
+@media(max-width:850px){
+  .grid2{
+    grid-template-columns:1fr;
+  }
+}
+
 /* ===== LABELS E INPUTS ===== */
 label{
   display:block;
-  font-weight:600;
+  font-weight:700;
   margin:8px 0 6px;
   color:var(--primary);
+  font-size:15px;
 }
 
 select,input,textarea{
   width:100%;
   padding:12px;
-  border-radius:8px;
-  border:1px solid #d8e0e7;
+  border-radius:10px;
+  border:2px solid #cdd6de;
   font-size:15px;
   background:#fff;
   color:var(--text);
-  transition:0.15s;
+  transition:0.2s;
 }
 
 select:focus,input:focus,textarea:focus{
   border-color:var(--primary);
-  box-shadow:0 0 0 3px rgba(12,60,89,0.15);
+  box-shadow:0 0 0 3px rgba(0,42,66,0.25);
   outline:none;
 }
 
+/* ===== TEXTAREA ===== */
 textarea{
-  min-height:170px;
+  min-height:180px;
   resize:vertical;
+  border:2px solid var(--primary);
+}
+
+/* ===== Texto auxiliar ===== */
+.small{
+  font-size:13px;
+  color:var(--muted);
+  margin-top:6px;
 }
 
 /* ===== BOTÕES ===== */
@@ -121,15 +146,16 @@ textarea{
   background:var(--primary);
   color:#fff;
   border:none;
-  padding:12px 18px;
-  border-radius:8px;
-  font-weight:600;
+  padding:12px 20px;
+  border-radius:10px;
+  font-weight:700;
   cursor:pointer;
-  transition:.2s;
+  transition:0.2s;
+  font-size:15px;
 }
 
 .btn:hover{
-  background:#0a314b;
+  background:#001c2d;
 }
 
 .btn.ghost{
@@ -143,38 +169,12 @@ textarea{
   color:#fff;
 }
 
-/* ===== PREVIEW ===== */
-.small{
-  font-size:13px;
-  color:var(--muted);
-}
-
+/* ===== AÇÕES ===== */
 .actions{
   display:flex;
-  gap:10px;
-  margin-top:10px;
-}
-
-.preview{
-  background:#fdfdfd;
-  border:1px dashed #d8d8d8;
-  padding:12px;
-  border-radius:8px;
-  margin-top:10px;
-  white-space:pre-wrap;
-}
-
-/* ===== GRID ===== */
-.grid2{
-  display:grid;
-  grid-template-columns:1fr 1fr;
   gap:12px;
+  margin-top:10px;
 }
-
-@media(max-width:850px){
-  .grid2{
-    grid-template-columns:1fr;
-  }
 }
 
 </style>
