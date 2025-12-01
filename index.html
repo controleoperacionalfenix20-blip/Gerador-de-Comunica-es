@@ -212,111 +212,110 @@ const TEMPLATES = {
 ============================ */
 const FIELDS_BY_CATEGORY = {
   "PM_SEM_SOCORRO": [
-     {k:'hora', label:'Hora do ocorrido (ex: 13:05)'},
-     {k:'local', label:'Local / Rua'},
-     {k:'proximo', label:'Próximo a (Ponto de referência)'},
-     {k:'veiculo_resposta', label:'Veículo que passou após o ocorrido (Número do veículo)'}
+    {k:'hora', label:'Hora do ocorrido (ex: 13:05)'},
+    {k:'local', label:'Local / Rua'},
+    {k:'proximo', label:'Próximo a (Ponto de referência)'},
+    {k:'veiculo_resposta', label:'Veículo que passou após o ocorrido (Número do veículo)'}
   ],
   "PM_COM_SOCORRO":[
-     {k:'hora', label:'Hora do ocorrido (ex: 13:05)'},
-     {k:'local', label:'Local / Rua'},
-     {k:'proximo', label:'Próximo a (Ponto de referência)'},
-     {k:'veiculo_enviado', label:'Veículo enviado (Prefixo)'},
-     {k:'hora_partida', label:'Hora aproximada da partida do local (ex: 13:20)'}
+    {k:'hora', label:'Hora do ocorrido (ex: 13:05)'},
+    {k:'local', label:'Local / Rua'},
+    {k:'proximo', label:'Próximo a (Ponto de referência)'},
+    {k:'veiculo_enviado', label:'Veículo enviado (Prefixo)'},
+    {k:'hora_partida', label:'Hora aproximada da partida do local (ex: 13:20)'}
   ],
   "PM_VNR_OUTRO_SENTIDO":[
-     {k:'hora', label:'Hora (ocorrência)'},
-     {k:'local', label:'Local / Rua'},
-     {k:'proximo', label:'Próximo a (Ponto de referência)'},
-     {k:'veiculo_resposta', label:'Veículo que passou após o ocorrido (Prefixo)'},
-     {k:'hora_partida', label:'Horário da VNR (ex: 14:00)'},
-     {k:'sentido', label:'Sentido (IDA / VOLTA)'}
+    {k:'hora', label:'Hora (ocorrência)'},
+    {k:'local', label:'Local / Rua'},
+    {k:'proximo', label:'Próximo a (Ponto de referência)'},
+    {k:'veiculo_resposta', label:'Veículo que passou após o ocorrido (Prefixo)'},
+    {k:'hora_partida', label:'Horário da VNR (ex: 14:00)'},
+    {k:'sentido', label:'Sentido (IDA / VOLTA)'}
   ],
   "VAL_SEM_ENVIO":[
-     {k:'hora', label:'Hora do ocorrido (ex: 13:05)'},
-     {k:'local', label:'Local / Rua'},
-     {k:'proximo', label:'Próximo a'}
+    {k:'hora', label:'Hora do ocorrido (ex: 13:05)'},
+    {k:'local', label:'Local / Rua'},
+    {k:'proximo', label:'Próximo a'}
   ],
   "VAL_COM_ENVIO":[
-     {k:'hora', label:'Hora do ocorrido (ex: 13:05)'},
-     {k:'local', label:'Local / Rua'},
-     {k:'proximo', label:'Próximo a'},
-     {k:'veiculo_enviado', label:'Veículo enviado (Prefixo)'},
-     {k:'hora_partida', label:'Hora aproximada da partida do local (ex: 13:20)'}
+    {k:'hora', label:'Hora do ocorrido (ex: 13:05)'},
+    {k:'local', label:'Local / Rua'},
+    {k:'proximo', label:'Próximo a'},
+    {k:'veiculo_enviado', label:'Veículo enviado (Prefixo)'},
+    {k:'hora_partida', label:'Hora aproximada da partida do local (ex: 13:20)'}
   ],
   "VAL_REINICIOU":[
-     {k:'hora', label:'Hora do problema (ex: 13:05)'},
-     {k:'hora_partida', label:'Hora de retomada (ex: 13:12)'}
+    {k:'hora', label:'Hora do problema (ex: 13:05)'},
+    {k:'hora_partida', label:'Hora de retomada (ex: 13:12)'}
   ],
   "VANDALISMO_GMF":[
-     {k:'local', label:'Rua / Local da abordagem'},
-     {k:'hora', label:'Hora (ex: 13:05)'}
+    {k:'local', label:'Rua / Local da abordagem'},
+    {k:'hora', label:'Hora (ex: 13:05)'}
   ],
-"VANDALISMO_GMF_ESCOLTA": [
+  "VANDALISMO_GMF_ESCOLTA": [
     {k:'local', label:'Rua / Local da abordagem'},
     {k:'terminal', label:'Terminal (nome do terminal)'},
     {k:'hora', label:'Hora da ocorrência'}
-],
-"AVARIA_VITIMA_CONTINUOU": [
-     {k:'hora', label:'Hora do ocorrido (ex: 13:05)'},
-     {k:'veiculo_terceiro', label:'Tipo/veículo envolvido (ex: carro)'},
-     {k:'local', label:'Rua / Local'},
-     {k:'proximo', label:'Próximo a (Ponto de referência)'},
-     {k:'hora_partida', label:'Hora aproximada da partida do local (ex: 14:10)'}
+  ],
+  "AVARIA_VITIMA_CONTINUOU": [
+    {k:'hora', label:'Hora do ocorrido (ex: 13:05)'},
+    {k:'veiculo_terceiro', label:'Tipo/veículo envolvido (ex: carro)'},
+    {k:'local', label:'Rua / Local'},
+    {k:'proximo', label:'Próximo a (Ponto de referência)'},
+    {k:'hora_partida', label:'Hora aproximada da partida do local (ex: 14:10)'}
   ],
   "AVARIA_VITIMA_NAO_CONTINUOU":[
-     {k:'hora', label:'Hora (ocorrência)'},
-     {k:'veiculo_terceiro', label:'Tipo/veículo envolvido'},
-     {k:'local', label:'Rua / Local'},
-     {k:'proximo', label:'Próximo a (Ponto de referência)'},
-     {k:'veiculo_resposta', label:'Veículo que passou após o ocorrido'}
+    {k:'hora', label:'Hora (ocorrência)'},
+    {k:'veiculo_terceiro', label:'Tipo/veículo envolvido'},
+    {k:'local', label:'Rua / Local'},
+    {k:'proximo', label:'Próximo a (Ponto de referência)'},
+    {k:'veiculo_resposta', label:'Veículo que passou após o ocorrido'}
   ],
-"AVARIA_SEM_VITIMA_ENVIO":[
+  "AVARIA_SEM_VITIMA_ENVIO":[
     {k:'hora', label:'Hora do ocorrido (ex: 13:05)'},
     {k:'local', label:'Rua / Local'},
     {k:'proximo', label:'Próximo a (Ponto de referência)'},
     {k:'veiculo_enviado', label:'Veículo enviado (Prefixo)'},
     {k:'hora_partida', label:'Hora de partida do veículo enviado'}
-],
+  ],
   "AVARIA_SEM_VITIMA_NENVIO":[
-     {k:'hora', label:'Hora do ocorrido (ex: 13:05)'},
-     {k:'local', label:'Rua / Local'},
-     {k:'proximo', label:'Próximo a (Ponto de referência)'}
+    {k:'hora', label:'Hora do ocorrido (ex: 13:05)'},
+    {k:'local', label:'Rua / Local'},
+    {k:'proximo', label:'Próximo a (Ponto de referência)'}
   ],
   "ADIANTADO":[ {k:'minutos', label:'Minutos adiantado (ex: 05)'} ],
   "ADIANTADO_FISCALIZACAO":[ {k:'minutos', label:'Minutos adiantado (ex: 05)'} ],
   "ATRASADO_OPERACIONAL":[ {k:'minutos', label:'Minutos de atraso (ex: 07)'} ],
   "ATRASO_TRANSITO":[ {k:'minutos', label:'Minutos de atraso (ex: 10)'} ],
-  
   "DESVIO_MAIS_HORARIOS_FIM_OPERACAO":[
-     {k:'local', label:'Local do bloqueio (Rua)'},
-     {k:'rua_desvio', label:'Rua do desvio'},
-     {k:'sentido', label:'Sentido (IDA / VOLTA)'}
+    {k:'local', label:'Local do bloqueio (Rua)'},
+    {k:'rua_desvio', label:'Rua do desvio'},
+    {k:'sentido', label:'Sentido (IDA / VOLTA)'}
   ],
   "DESVIO_MAIS_HORARIOS_ENCERROU":[
-     {k:'local', label:'Local do bloqueio (Rua)'},
-     {k:'rua_desvio', label:'Rua do desvio'},
-     {k:'sentido', label:'Sentido (IDA / VOLTA)'},
-     {k:'hora_partida', label:'Hora de encerramento do desvio'}
+    {k:'local', label:'Local do bloqueio (Rua)'},
+    {k:'rua_desvio', label:'Rua do desvio'},
+    {k:'sentido', label:'Sentido (IDA / VOLTA)'},
+    {k:'hora_partida', label:'Hora de encerramento do desvio'}
   ],
   "DESVIO_1_ONIBUS":[
-     {k:'local', label:'Local do bloqueio (Rua)'},
-     {k:'rua_desvio', label:'Rua do desvio'},
-     {k:'rua_retorno', label:'Rua de retorno/continuação'}
+    {k:'local', label:'Local do bloqueio (Rua)'},
+    {k:'rua_desvio', label:'Rua do desvio'},
+    {k:'rua_retorno', label:'Rua de retorno/continuação'}
   ],
   "DESVIO_1_ONIBUS_OBSTRUCAO":[
-     {k:'local', label:'Local da obstrução (Rua)'},
-     {k:'rua_desvio', label:'Rua do desvio'},
-     {k:'rua_retorno', label:'Rua de retorno/continuação'}
+    {k:'local', label:'Local da obstrução (Rua)'},
+    {k:'rua_desvio', label:'Rua do desvio'},
+    {k:'rua_retorno', label:'Rua de retorno/continuação'}
   ],
   "DESVIO_TRIPULANTE_CONFUNDIU":[
-     {k:'local', label:'Rua que deveria acessar'},
-     {k:'rua_desvio', label:'Rua acessada por engano'},
-     {k:'rua_retorno', label:'Rua de retorno/continuação'}
+    {k:'local', label:'Rua que deveria acessar'},
+    {k:'rua_desvio', label:'Rua acessada por engano'},
+    {k:'rua_retorno', label:'Rua de retorno/continuação'}
   ],
   "VNR_TRANSITO_INTENSO":[
-     {k:'local', label:'Trecho/avenida'},
-     {k:'sentido', label:'Sentido (IDA / VOLTA)'}
+    {k:'local', label:'Trecho/avenida'},
+    {k:'sentido', label:'Sentido (IDA / VOLTA)'}
   ],
   "VNR_MECANICO_OUTRO_SENTIDO":[ {k:'sentido', label:'Sentido onde houve problema'} ],
   "VNR_PROBLEMAS_OPERACIONAIS": [],
@@ -324,15 +323,34 @@ const FIELDS_BY_CATEGORY = {
   "VNR_SUSPENSAO_LINHAS_D": [],
   "VNR_CONFUSOES_TRIPULANTE": [],
   "GMF_CARROS_IRREGULARES":[ {k:'local', label:'Rua / Local'} ],
-  "GMF_CARROS_DESVIO":[ {k:'local', label:'Rua / Local'}, {k:'local_ref', label:'Bairro / referência'}, {k:'linha', label:'Linha (ex: 210)'} ],
+  "GMF_CARROS_DESVIO":[
+    {k:'local', label:'Rua / Local'},
+    {k:'local_ref', label:'Bairro / referência'},
+    {k:'linha', label:'Linha (ex: 210)'}
+  ],
   "GMF_CONTATO_DONO":[ {k:'local', label:'Rua / Local'} ],
   "GMF_CARROS_GMF_PM":[ {k:'local', label:'Rua / Local'} ],
-  "QUEDA_MOBILIBUS":[ {k:'hora', label:'Hora da queda'}, {k:'protocolo', label:'Protocolo (SUP - )'}, {k:'hora_partida', label:'Hora de retorno'} ],
-  "QUEDA_EMPRESA1":[ {k:'hora', label:'Hora da queda'}, {k:'hora_partida', label:'Hora de retorno'} ],
-  "QUEDA_OPERADORA":[ {k:'hora', label:'Hora do início'}, {k:'hora_partida', label:'Hora de retorno'} ],
-  "QUEDA_ENERGIA":[ {k:'hora', label:'Hora da queda'}, {k:'local', label:'Local / posto'}, {k:'protocolo', label:'Protocolo CELESC'}, {k:'hora_partida', label:'Hora de restabelecimento'} ]
-};
-
+  "QUEDA_MOBILIBUS":[
+    {k:'hora', label:'Hora da queda'},
+    {k:'protocolo', label:'Protocolo (SUP - )'},
+    {k:'hora_partida', label:'Hora de retorno'}
+  ],
+  "QUEDA_EMPRESA1":[
+    {k:'hora', label:'Hora da queda'},
+    {k:'hora_partida', label:'Hora de retorno'}
+  ],
+  "QUEDA_OPERADORA":[
+    {k:'hora', label:'Hora do início'},
+    {k:'hora_partida', label:'Hora de retorno'}
+  ],
+ "QUEDA_ENERGIA":[
+  {k:'hora', label:'Hora da queda'},
+  {k:'local', label:'Local / posto'},
+  {k:'protocolo', label:'Protocolo CELESC'},
+  {k:'hora_partida', label:'Hora de restabelecimento'}
+]
+de restabelecimento'}
+]
 /* ============================
   Render dynamic inputs when categoria changes
 ============================ */
