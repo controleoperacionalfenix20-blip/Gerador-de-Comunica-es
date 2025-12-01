@@ -7,31 +7,189 @@
 <title>Gerador de Comunicações — Consórcio Fênix</title>
 <style>
 :root{
-  --bg:#fff7cc; --accent:#e0b500; --card:#fff; --muted:#666;
+  --bg:#f6f9fc;
+  --primary:#0c3c59;
+  --secondary:#ffcc33;
+  --text:#1d2b36;
+  --muted:#6c7a86;
+  --card:#ffffff;
 }
-*{box-sizing:border-box}
-body{margin:0;font-family:Inter, "Helvetica Neue", Arial, sans-serif;background:var(--bg);color:#222}
-.container{max-width:1100px;margin:18px auto;padding:18px}
-h1{font-size:32px;margin:6px 0 18px}
-.card{background:var(--card);border-radius:12px;padding:18px;border-left:10px solid var(--accent);box-shadow:0 8px 22px rgba(0,0,0,0.06);margin-bottom:18px}
-.row{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
-.col{flex:1;min-width:250px}
-label{display:block;font-weight:700;margin:8px 0 6px}
-select,input,textarea,button{font-family:inherit}
-select,input,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;font-size:15px}
-textarea{min-height:160px;resize:vertical}
-.btn{background:var(--accent);border:none;color:#fff;padding:10px 14px;border-radius:8px;font-weight:700;cursor:pointer}
-.btn.ghost{background:#fff;border:1px solid #ddd;color:#222}
-.helper{font-size:13px;color:var(--muted);margin-top:6px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:900px){.grid2{grid-template-columns:1fr}}
-.field{margin-bottom:8px}
-.preview{background:#fafafa;padding:12px;border-radius:8px;border:1px dashed #e6e6e6;white-space:pre-wrap;color:#333}
-.small{font-size:13px;color:var(--muted)}
-.actions{display:flex;gap:8px;align-items:center;margin-top:10px}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family: "Inter", Arial, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+/* ===== CABEÇALHO ===== */
+.header{
+  width:100%;
+  background:var(--primary);
+  color:#fff;
+  padding:22px 0;
+  box-shadow:0 4px 10px rgba(0,0,0,0.15);
+}
+.header .container{
+  max-width:1120px;
+  margin:auto;
+  padding:0 22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.header-title{
+  font-size:26px;
+  font-weight:700;
+  letter-spacing:0.5px;
+}
+.header-sub{
+  font-size:14px;
+  opacity:0.8;
+}
+
+/* ===== CONTAINER ===== */
+.container{
+  max-width:1120px;
+  margin:26px auto;
+  padding:0 22px;
+}
+
+h1{
+  font-size:28px;
+  margin:0 0 18px;
+  color:var(--primary);
+}
+
+/* ===== CARDS ===== */
+.card{
+  background:var(--card);
+  border-radius:14px;
+  padding:22px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.06);
+  border-left:6px solid var(--secondary);
+  margin-bottom:22px;
+}
+
+.row{
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+}
+
+.col{
+  flex:1;
+  min-width:280px;
+}
+
+/* ===== LABELS E INPUTS ===== */
+label{
+  display:block;
+  font-weight:600;
+  margin:8px 0 6px;
+  color:var(--primary);
+}
+
+select,input,textarea{
+  width:100%;
+  padding:12px;
+  border-radius:8px;
+  border:1px solid #d8e0e7;
+  font-size:15px;
+  background:#fff;
+  color:var(--text);
+  transition:0.15s;
+}
+
+select:focus,input:focus,textarea:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(12,60,89,0.15);
+  outline:none;
+}
+
+textarea{
+  min-height:170px;
+  resize:vertical;
+}
+
+/* ===== BOTÕES ===== */
+.btn{
+  background:var(--primary);
+  color:#fff;
+  border:none;
+  padding:12px 18px;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.btn:hover{
+  background:#0a314b;
+}
+
+.btn.ghost{
+  background:#fff;
+  border:2px solid var(--primary);
+  color:var(--primary);
+}
+
+.btn.ghost:hover{
+  background:var(--primary);
+  color:#fff;
+}
+
+/* ===== PREVIEW ===== */
+.small{
+  font-size:13px;
+  color:var(--muted);
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
+
+.preview{
+  background:#fdfdfd;
+  border:1px dashed #d8d8d8;
+  padding:12px;
+  border-radius:8px;
+  margin-top:10px;
+  white-space:pre-wrap;
+}
+
+/* ===== GRID ===== */
+.grid2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+@media(max-width:850px){
+  .grid2{
+    grid-template-columns:1fr;
+  }
+}
+
 </style>
 </head>
 <body>
+
+<div class="header">
+  <div class="container">
+    <div>
+      <div class="header-title">Gerador de Comunicações</div>
+      <div class="header-sub">Consórcio Fênix — Uso interno da fiscalização</div>
+    </div>
+  </div>
+</div>
+  
   <div class="container">
     <h1>Gerador de Comunicações</h1>
 
