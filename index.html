@@ -368,27 +368,30 @@ function definirArtigo(local, isProximo = false) {
 
   const l = local.trim();
 
-  // se já contém artigo ou preposição explícita (em qualquer posição), não adiciona
-  if (/\b(do|da|dos|das|no|na|nos|nas)\b/i.test(l)) return "";
+  // só ignora se o LOCAL JÁ COMEÇA com artigo → ex: "na praia", "no shopping"
+  if (/^(do|da|dos|das|no|na|nos|nas)\b/i.test(l)) return "";
 
-  // pega a primeira palavra "limpa" (sem pontuação)
   const words = l.split(/\s+/);
   const rawFirst = words[0].replace(/[.,]/g, "");
   const first = rawFirst.toLowerCase();
 
-  // mapeamento de abreviações/termos comuns
   const femTerms = ["rua", "r", "r.", "av", "av.", "avenida", "travessa", "praia", "estrada"];
-  const mascTerms = ["rodovia", "rod", "rod.", "trevo", "trevo."]; // ajustar se necessário
+  const mascTerms = ["rodovia", "rod", "rod.", "trevo"];
 
-  // rodovias e BR/SC
-  if (/^(sc|br)-?\d+/i.test(l) || /^rodovia\b/i.test(first) || /^br-?\d+/i.test(first) || /^sc-?\d+/i.test(first)) {
-    return isProximo ? "à" : "na"; // rodovias tratadas como feminino aqui (ajuste se preferir "na" ou "no")
-  }
+  if (/^(sc|br)-?\d+/i.test(l)) return isProximo ? "à" : "na";
 
-  // siglas totalmente em maiúsculas (UFSC, UDESC, UPA) -> geralmente "na"
-  if (/^[A-Z]{2,8}$/.test(rawFirst)) {
-    return isProximo ? "à" : "na";
-  }
+  if (/^[A-Z]{2,8}$/.test(rawFirst)) return isProximo ? "à" : "na";
+
+  if (femTerms.includes(first)) return isProximo ? "à" : "na";
+
+  if (mascTerms.includes(first)) return isProximo ? "ao" : "no";
+
+  if (first.startsWith("uni")) return isProximo ? "à" : "na";
+
+  if (first.endsWith("a")) return isProximo ? "à" : "na";
+
+  return isProximo ? "ao" : "no";
+}
 
   // detecta termos femininos ou abreviações de rua/avenida
   if (femTerms.includes(first)) return isProximo ? "à" : "na";
