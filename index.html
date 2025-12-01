@@ -170,11 +170,11 @@ const TEMPLATES = {
 
   "DESVIO_MAIS_HORARIOS_ENCERROU": `Em razão de um bloqueio __local__, os ônibus desta linha realizaram desvio de itinerário seguindo pela __rua_desvio__, sentido __sentido__. O desvio foi autorizado pela fiscalização da PMF e foi necessário até às __hora_partida__.`,
 
-  "DESVIO_1_ONIBUS": `Segundo a fiscalização, em virtude de um bloqueio __local__, o veículo programado realizou desvio pela __rua_desvio__ e continuou o itinerário na __rua_retorno__. Os demais horários da linha realizaram itinerário normal.`,
+  "DESVIO_1_ONIBUS": `Segundo a fiscalização, em virtude de um bloqueio __local__, o veículo programado realizou desvio pela __rua_desvio__ e continuou o itinerário __rua_retorno__. Os demais horários da linha realizaram itinerário normal.`,
 
-  "DESVIO_1_ONIBUS_OBSTRUCAO": `Segundo a fiscalização, em virtude de uma obstrução __local__, o veículo programado realizou desvio pela __rua_desvio__ e continuou o itinerário na __rua_retorno__. Os demais horários da linha realizaram itinerário normal.`,
+  "DESVIO_1_ONIBUS_OBSTRUCAO": `Segundo a fiscalização, em virtude de uma obstrução __local__, o veículo programado realizou desvio pela __rua_desvio__ e continuou o itinerário __rua_retorno__. Os demais horários da linha realizaram itinerário normal.`,
 
-  "DESVIO_TRIPULANTE_CONFUNDIU": `Segundo informações da fiscalização, o tripulante do veículo programado se confundiu e deixou de acessar __local__ , onde seguiu pela __rua_desvio__ e continuou o itinerário na __rua_retorno__. O mesmo foi orientado a seguir o itinerário correto da linha.`,
+  "DESVIO_TRIPULANTE_CONFUNDIU": `Segundo informações da fiscalização, o tripulante do veículo programado se confundiu e deixou de acessar __local__ , onde seguiu pela __rua_desvio__ e continuou o itinerário __rua_retorno__. O mesmo foi orientado a seguir o itinerário correto da linha.`,
 
   "VNR_TRANSITO_INTENSO": `Em razão do trânsito intenso __local__, sentido __sentido__, entre outros problemas operacionais, não foi possível realizar essa viagem.`,
 
@@ -451,6 +451,12 @@ if (f.k === "local") {
   continue;
 }
 
+// RUA DE RETORNO / CONTINUAÇÃO (APLICA PREPOSIÇÃO AUTOMÁTICA)
+if (f.k === "rua_retorno") {
+  texto = texto.split(token).join(formatarLocal(f.k, val, false));
+  continue;
+}
+    
 // PRÓXIMO
 if (f.k === "proximo") {
   texto = texto.split(token).join(formatarLocal(f.k, val, true));
