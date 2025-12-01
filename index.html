@@ -392,21 +392,6 @@ function definirArtigo(local, isProximo = false) {
 
   return isProximo ? "ao" : "no";
 }
-
-  // detecta termos femininos ou abreviações de rua/avenida
-  if (femTerms.includes(first)) return isProximo ? "à" : "na";
-
-  // detecta termos masculinos
-  if (mascTerms.includes(first)) return isProximo ? "ao" : "no";
-
-  // universidades (uni...)
-  if (first.startsWith("uni")) return isProximo ? "à" : "na";
-
-  // heurística final por terminação 'a'
-  if (first.endsWith("a")) return isProximo ? "à" : "na";
-
-  return isProximo ? "ao" : "no";
-}
   
 /* ============================
   Generate / replace function
@@ -479,7 +464,7 @@ document.addEventListener('input', function(e) {
   if (!el.id.startsWith("f_hora")) return;
 
   let v = el.value.replace(/\D/g, ""); // remove tudo que não é número
-
+  
   if (v.length > 4) v = v.substring(0, 4);
 
   // coloca automaticamente os dois pontos
