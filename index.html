@@ -175,7 +175,7 @@ textarea{
   gap:12px;
   margin-top:10px;
 }
-}
+
 
 </style>
 </head>
@@ -539,9 +539,6 @@ function onCategoriaChange() {
   html += `</div>`;
   area.innerHTML = html;
 }
-
-function formatarLocal(valor, isProximo = false) {
-    if (!valor) return "___";
 
     const v = valor.trim();
 
