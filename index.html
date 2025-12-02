@@ -564,7 +564,7 @@ function formatarLocal(chave, valor, isProximo = false) {
   // "Parte da..." → "em Parte da..."
   if (/^parte\b/i.test(v)) return `em ${v}`;
 
-  const fem = ["rua", "r", "r.", "av", "av.", "avenida", "travessa", "praia", "estrada"];
+  const fem = ["rua", "r", "r.", "av", "av.", "avenida", "travessa", "praia", "estrada", "beira-mar", "beira", "beiramar"];
   const masc = ["rodovia", "rod", "rod.", "trevo"];
 
   // Rodovias e BR/SC → femininas
