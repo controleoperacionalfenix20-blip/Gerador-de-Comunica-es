@@ -540,12 +540,15 @@ function onCategoriaChange() {
   area.innerHTML = html;
 }
 
+/**********************
+ *  PREPOSIÇÃO AUTOMÁTICA
+ **********************/
 function formatarLocal(chave, valor, isProximo = false) {
   if (!valor) return "____";
 
   const v = valor.trim();
 
-  // já tem preposição
+  // Já tem preposição → usa como está
   if (/^(do|da|dos|das|no|na|nos|nas|em|à|ao|a)\b/i.test(v)) {
     return v;
   }
@@ -553,15 +556,13 @@ function formatarLocal(chave, valor, isProximo = false) {
   const rawFirst = v.split(/\s+/)[0].replace(/[.,]/g, "");
   const first = rawFirst.toLowerCase();
 
-  // EXCEÇÃO: nomes próprios que começam com letra maiúscula → usar masculino
+  // Nomes próprios → masculino padrão
   if (/^[A-Z]/.test(v) && !/^(Rua|R\.|Av|Av\.|Avenida|Travessa|Estrada|Rodovia|SC|BR)/i.test(v)) {
     return (isProximo ? "ao " : "no ") + v;
   }
 
   // "Parte da..." → "em Parte da..."
-  if (/^parte\b/i.test(v)) {
-    return `em ${v}`;
-  }
+  if (/^parte\b/i.test(v)) return `em ${v}`;
 
   const fem = ["rua", "r", "r.", "av", "av.", "avenida", "travessa", "praia", "estrada"];
   const masc = ["rodovia", "rod", "rod.", "trevo"];
@@ -585,13 +586,87 @@ function formatarLocal(chave, valor, isProximo = false) {
   // Universidade
   if (first.startsWith("uni")) return (isProximo ? "à " : "na ") + v;
 
-  // termina com "a" → feminino (REGRA MANTIDA)
+  // Terminou com "a" → feminino
   if (first.endsWith("a")) return (isProximo ? "à " : "na ") + v;
 
-  // padrão masculino
+  // Masculino padrão
   return (isProximo ? "ao " : "no ") + v;
-}   //  <-- FECHAMENTO QUE ESTÁ FALTANDO AQUI !!
+}
 
+
+/**********************
+ *  CAMPOS DINÂMICOS
+ **********************/
+function onCategoriaChange() {
+  const cat = document.getElementById('categoria').value;
+  const area = document.getElementById('camposArea');
+
+  area.innerHTML = '';
+  document.getElementById('resultado').value = '';
+
+  if (!cat) return;
+
+  const fields = FIELDS_BY_CATEGORY[cat] || [];
+
+  if (fields.length === 0) {
+    area.innerHTML = `<div class="small">Este modelo não requer campos adicionais. Clique em "Gerar Texto".</div>`;
+    return;
+  }
+
+  let html = `<div class="grid2">`;
+  for (let f of fields) {
+    html += `<div class="field">
+      <label for="f_${f.k}">${f.label}</label>
+      <input id="f_${f.k}" data-key="${f.k}" type="text" placeholder="${f.label}">
+    </div>`;
+  }
+  html += `</div>`;
+  area.innerHTML = html;
+}
+
+
+/**********************
+ *  GERAR TEXTO
+ **********************/
+function gerarTexto() {
+  const cat = document.getElementById('categoria').value;
+  if (!cat) { alert('Selecione uma categoria.'); return; }
+
+  let texto = TEMPLATES[cat];
+  if (!texto) { alert('Template não encontrado.'); return; }
+
+  const fields = FIELDS_BY_CATEGORY[cat] || [];
+
+  for (let f of fields) {
+    const el = document.getElementById('f_' + f.k);
+    const val = el ? el.value.trim() : '';
+    const token = `__${f.k}__`;
+
+    // LOCAL PRINCIPAL
+    if (f.k === "local") {
+      texto = texto.split(token).join(formatarLocal(f.k, val));
+      continue;
+    }
+
+    // RUA DE RETORNO
+    if (f.k === "rua_retorno") {
+      texto = texto.split(token).join(formatarLocal(f.k, val));
+      continue;
+    }
+
+    // PRÓXIMO A
+    if (f.k === "proximo") {
+      texto = texto.split(token).join(formatarLocal(f.k, val, true));
+      continue;
+    }
+
+    // CAMPOS NORMAIS
+    texto = texto.split(token).join(val || "____");
+  }
+
+  texto = texto.replace(/_{4,}/g, "____");
+  document.getElementById('resultado').value = texto;
+}
 /* ============================
   Generate / replace function
 ============================ */
