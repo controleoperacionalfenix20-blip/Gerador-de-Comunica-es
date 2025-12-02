@@ -679,42 +679,23 @@ document.addEventListener('input', function(e) {
 /* ============================
   Envio automático para o Google Forms
 ============================ */
-async function enviarGoogleForms() {
+function enviarGoogleForms() {
+    const texto = document.getElementById("resultado").value;
 
-  const texto = document.getElementById("resultado").value.trim();
+    if (!texto.trim()) {
+        alert("Gere o texto antes de enviar.");
+        return;
+    }
 
-  if (!texto) {
-    alert("Gere o texto antes de enviar.");
-    return;
-  }
+    navigator.clipboard.writeText(texto).then(() => {
+        alert("Texto copiado! A Comunicação Diária será aberta agora.");
 
-  const formURL =
-    "https://docs.google.com/forms/d/e/1FAIpQLSdoxVZf_34YV5syh0uZZdhkmfBjl34pV8mrh7FgEN6aF4lK5g/formResponse";
-
-  const data = new FormData();
-
-  // CAMPO PRINCIPAL (texto)
-  data.append("entry.1850846712", texto);
-
-  // CAMPOS FIXOS DO FORM (você enviou em captura)
-  data.append("dlut", Date.now());
-  data.append("hud", "true");
-  data.append("fvv", "1");
-  data.append("fbzx", Date.now());
-
-  try {
-    await fetch(formURL, {
-      method: "POST",
-      mode: "no-cors",
-      body: data
+        // Abre o formulário oficial
+        window.open(
+            "https://docs.google.com/forms/d/e/1FAIpQLSfczq5iGxKb_8uEEqLkK3VdT2isSShGO-yz3m7MRqO7yhEGGw/viewform",
+            "_blank"
+        );
     });
-
-    alert("Enviado com sucesso para a Comunicação Diária!");
-  } 
-  catch (e) {
-    alert("Falha ao enviar. Tente novamente.");
-    console.error(e);
-  }
 }
   
 </script>
