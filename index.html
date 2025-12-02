@@ -540,75 +540,57 @@ function onCategoriaChange() {
   area.innerHTML = html;
 }
 
-function formatarLocal(valor, isProximo = false) {
-    if (!valor) return "___";
+function formatarLocal(chave, valor, isProximo = false) {
+  if (!valor) return "____";
 
-    const v = valor.trim();
+  const v = valor.trim();
 
-    // 1. Se já tem preposição, devolve como está
-    if (/^(do|da|dos|das|no|na|nos|nas|em|à|ao|a|às|aos)\b/i.test(v)) {
-        return v;
-    }
+  // já tem preposição
+  if (/^(do|da|dos|das|no|na|nos|nas|em|à|ao|a)\b/i.test(v)) {
+    return v;
+  }
 
-    const palavras = v.split(/\s+/);
-    const primeira = palavras[0].toLowerCase();
-    const ultima = palavras[palavras.length - 1].toLowerCase();
-    const rawFirst = palavras[0].replace(/[.,]/g, "");
+  const rawFirst = v.split(/\s+/)[0].replace(/[.,]/g, "");
+  const first = rawFirst.toLowerCase();
 
-    // ---------------------------------------------
-    // 2. CASOS ESPECIAIS (que realmente valem manter)
-    // ---------------------------------------------
-
-    // "Parte da..." → "em Parte da..."
-    if (/^parte\b/i.test(v)) {
-        return `em ${v}`;
-    }
-
-    // Rodovias (BR/SC) → femininas
-    if (/^(sc|br)-?\d+/i.test(v) || /^rodovia\b/i.test(primeira)) {
-        return (isProximo ? "à " : "na ") + v;
-    }
-
-    // Siglas (UF, SETUF, UFSC, IFSC etc.) → femininas
-    if (/^[A-Z]{2,8}$/.test(rawFirst)) {
-        return (isProximo ? "à " : "na ") + v;
-    }
-
-    // Universidade → feminino
-    if (primeira.startsWith("uni")) {
-        return (isProximo ? "à " : "na ") + v;
-    }
-
-    // ---------------------------------------------
-    // 3. REGRAS INTELIGENTES AUTOMÁTICAS
-    // ---------------------------------------------
-
-    // Plural
-    if (ultima.endsWith("as"))
-        return (isProximo ? "às " : "nas ") + v;
-    if (ultima.endsWith("os"))
-        return (isProximo ? "aos " : "nos ") + v;
-
-    // Locuções femininas: primeira palavra terminada em "a" → feminino
-    if (primeira.endsWith("a") || primeira.endsWith("ã") ||
-        primeira.endsWith("ção") || primeira.endsWith("dade")) {
-        return (isProximo ? "à " : "na ") + v;
-    }
-
-    // Nomes compostos tipo "Beira-Mar"
-    // Regra: se a primeira palavra é feminina → feminino.
-    // → “Beira” termina com A → automaticamente “na Beira-Mar”
-    if (/^[A-Za-zÀ-ÿ]+-[A-Za-zÀ-ÿ]+$/.test(rawFirst)) {
-        if (primeira.endsWith("a")) {
-            return (isProximo ? "à " : "na ") + v;
-        }
-    }
-
-    // ---------------------------------------------
-    // 4. Padrão → masculino
-    // ---------------------------------------------
+  // EXCEÇÃO: nomes próprios que começam com letra maiúscula → usar masculino
+  if (/^[A-Z]/.test(v) && !/^(Rua|R\.|Av|Av\.|Avenida|Travessa|Estrada|Rodovia|SC|BR)/i.test(v)) {
     return (isProximo ? "ao " : "no ") + v;
-} 
+  }
+
+  // "Parte da..." → "em Parte da..."
+  if (/^parte\b/i.test(v)) {
+    return `em ${v}`;
+  }
+
+  const fem = ["rua", "r", "r.", "av", "av.", "avenida", "travessa", "praia", "estrada"];
+  const masc = ["rodovia", "rod", "rod.", "trevo"];
+
+  // Rodovias e BR/SC → femininas
+  if (/^(sc|br)-?\d+/i.test(v) || /^rodovia\b/i.test(first)) {
+    return (isProximo ? "à " : "na ") + v;
+  }
+
+  // Siglas → feminino
+  if (/^[A-Z]{2,8}$/.test(rawFirst)) {
+    return (isProximo ? "à " : "na ") + v;
+  }
+
+  // Femininas
+  if (fem.includes(first)) return (isProximo ? "à " : "na ") + v;
+
+  // Masculinas
+  if (masc.includes(first)) return (isProximo ? "ao " : "no ") + v;
+
+  // Universidade
+  if (first.startsWith("uni")) return (isProximo ? "à " : "na ") + v;
+
+  // termina com "a" → feminino (REGRA MANTIDA)
+  if (first.endsWith("a")) return (isProximo ? "à " : "na ") + v;
+
+  // padrão masculino
+  return (isProximo ? "ao " : "no ") + v;
+}   //  <-- FECHAMENTO QUE ESTÁ FALTANDO AQUI !!
 
 /* ============================
   Generate / replace function
@@ -714,6 +696,7 @@ function enviarGoogleForms() {
             "_blank"
         );
     });
+}
   
 </script>
 </body>
