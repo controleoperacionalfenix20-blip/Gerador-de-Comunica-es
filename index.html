@@ -278,6 +278,7 @@ textarea{
       <div class="actions" style="margin-top:10px">
         <button class="btn" onclick="copiar()">Copiar</button>
         <button class="btn ghost" onclick="toggleEditar()">Editar manual</button>
+        <button class="btn" onclick="enviarGoogleForms()">Enviar para Comunicação Diária</button>
       </div>
     </div>
 
@@ -675,6 +676,47 @@ document.addEventListener('input', function(e) {
   }
 });
 
+/* ============================
+  Envio automático para o Google Forms
+============================ */
+async function enviarGoogleForms() {
+
+  const texto = document.getElementById("resultado").value.trim();
+
+  if (!texto) {
+    alert("Gere o texto antes de enviar.");
+    return;
+  }
+
+  const formURL =
+    "https://docs.google.com/forms/d/e/1FAIpQLSdoxVZf_34YV5syh0uZZdhkmfBjl34pV8mrh7FgEN6aF4lK5g/formResponse";
+
+  const data = new FormData();
+
+  // CAMPO PRINCIPAL (texto)
+  data.append("entry.1850846712", texto);
+
+  // CAMPOS FIXOS DO FORM (você enviou em captura)
+  data.append("dlut", Date.now());
+  data.append("hud", "true");
+  data.append("fvv", "1");
+  data.append("fbzx", Date.now());
+
+  try {
+    await fetch(formURL, {
+      method: "POST",
+      mode: "no-cors",
+      body: data
+    });
+
+    alert("Enviado com sucesso para a Comunicação Diária!");
+  } 
+  catch (e) {
+    alert("Falha ao enviar. Tente novamente.");
+    console.error(e);
+  }
+}
+  
 </script>
 </body>
 </html>
