@@ -546,50 +546,84 @@ function onCategoriaChange() {
 function formatarLocal(chave, valor, isProximo = false) {
   if (!valor) return "____";
 
+  // Limpa espaços e caracteres invisíveis
   const v = valor.trim();
+  if (!v) return "____";
 
-  // Já tem preposição → usa como está
+  // Preposição já existente → mantém
   if (/^(do|da|dos|das|no|na|nos|nas|em|à|ao|a)\b/i.test(v)) {
     return v;
   }
 
+  // Palavra inicial limpa
   const rawFirst = v.split(/\s+/)[0].replace(/[^A-Za-zÀ-ÿ0-9-]/g, "");
   const first = rawFirst.toLowerCase();
 
-  // Nomes próprios → masculino padrão
+  // ---------------------------------------------------
+  // ⚠️ 1 — SIGLAS (CELESC, IFSC, UFSC, DEINFRA...)
+  // ---------------------------------------------------
+  if (/^[A-Z]{2,10}$/.test(rawFirst)) {
+    return (isProximo ? "à " : "na ") + v;
+  }
+
+  // ---------------------------------------------------
+  // ⚠️ 2 — Rodovias / BR / SC → feminino
+  // ---------------------------------------------------
+  if (/^(sc|br)-?\d+/i.test(v) || /^rod(ovia)?\b/i.test(first)) {
+    return (isProximo ? "à " : "na ") + v;
+  }
+
+  // ---------------------------------------------------
+  // ⚠️ 3 — "Parte da..." → especial
+  // ---------------------------------------------------
+  if (/^parte\b/i.test(v)) {
+    return `em ${v}`;
+  }
+
+  // ---------------------------------------------------
+  // ⚠️ 4 — Universidades → feminino
+  // ---------------------------------------------------
+  if (first.startsWith("uni")) {
+    return (isProximo ? "à " : "na ") + v;
+  }
+
+  // ---------------------------------------------------
+  // ⚠️ 5 — Locais femininos
+  // ---------------------------------------------------
+  const fem = [
+    "rua", "r", "r.", "avenida", "av", "av.",
+    "travessa", "praia", "estrada", "beira-mar",
+    "beira", "beiramar"
+  ];
+  if (fem.includes(first)) {
+    return (isProximo ? "à " : "na ") + v;
+  }
+
+  // ---------------------------------------------------
+  // ⚠️ 6 — Locais masculinos
+  // ---------------------------------------------------
+  const masc = ["trevo"];
+  if (masc.includes(first)) {
+    return (isProximo ? "ao " : "no ") + v;
+  }
+
+  // ---------------------------------------------------
+  // ⚠️ 7 — Nomes próprios (masculino por padrão)
+  // ---------------------------------------------------
   if (/^[A-Z]/.test(v) && !/^(Rua|R\.|Av|Av\.|Avenida|Travessa|Estrada|Rodovia|SC|BR)/i.test(v)) {
     return (isProximo ? "ao " : "no ") + v;
   }
 
-  // "Parte da..." → "em Parte da..."
-  if (/^parte\b/i.test(v)) return `em ${v}`;
-
-  const fem = ["rua", "r", "r.", "av", "av.", "avenida", "travessa", "praia", "estrada", "beira-mar", "beira", "beiramar"];
-  const masc = ["rodovia", "rod", "rod.", "trevo"];
-
-  // Rodovias e BR/SC → femininas
-  if (/^(sc|br)-?\d+/i.test(v) || /^rodovia\b/i.test(first)) {
+  // ---------------------------------------------------
+  // ⚠️ 8 — Termina com "a" → feminino
+  // ---------------------------------------------------
+  if (first.endsWith("a")) {
     return (isProximo ? "à " : "na ") + v;
   }
 
-  // Siglas → feminino
-  if (/^[A-Z]{2,8}$/.test(rawFirst)) {
-    return (isProximo ? "à " : "na ") + v;
-  }
-
-  // Femininas
-  if (fem.includes(first)) return (isProximo ? "à " : "na ") + v;
-
-  // Masculinas
-  if (masc.includes(first)) return (isProximo ? "ao " : "no ") + v;
-
-  // Universidade
-  if (first.startsWith("uni")) return (isProximo ? "à " : "na ") + v;
-
-  // Terminou com "a" → feminino
-  if (first.endsWith("a")) return (isProximo ? "à " : "na ") + v;
-
-  // Masculino padrão
+  // ---------------------------------------------------
+  // ⚠️ 9 — Masculino padrão
+  // ---------------------------------------------------
   return (isProximo ? "ao " : "no ") + v;
 }
 
