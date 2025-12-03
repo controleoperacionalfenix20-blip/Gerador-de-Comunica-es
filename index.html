@@ -553,7 +553,7 @@ function formatarLocal(chave, valor, isProximo = false) {
     return v;
   }
 
-  const rawFirst = v.split(/\s+/)[0].replace(/[.,]/g, "");
+  const rawFirst = v.split(/\s+/)[0].replace(/[^A-Za-zÀ-ÿ0-9-]/g, "");
   const first = rawFirst.toLowerCase();
 
   // Nomes próprios → masculino padrão
