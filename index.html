@@ -513,30 +513,34 @@ const FIELDS_BY_CATEGORY = {
 /* ============================
   Render dynamic inputs when categoria changes
 ============================ */
-function onCategoriaChange() {
+  function onCategoriaChange() {
   const cat = document.getElementById('categoria').value;
   const area = document.getElementById('camposArea');
 
   area.innerHTML = '';
   document.getElementById('resultado').value = '';
 
-  if(!cat) return;
+  if (!cat) return;
 
   const fields = FIELDS_BY_CATEGORY[cat] || [];
 
-  if(fields.length === 0){
-    area.innerHTML = `<div class="small">Este modelo não requer campos adicionais. Clique em "Gerar Texto".</div>`;
+  if (fields.length === 0) {
+    area.innerHTML = '<div class="small">Este modelo não requer campos adicionais. Clique em "Gerar Texto".</div>';
     return;
   }
 
-  let html = `<div class="grid2">`;
-  for(let f of fields){
-    html += `<div class="field">
-      <label for="f_${f.k}">${f.label}</label>
-      <input id="f_${f.k}" data-key="${f.k}" type="text" placeholder="${f.label}">
-    </div>`;
+  let html = '<div class="grid2">';
+
+  for (let f of fields) {
+    html += `
+      <div class="field">
+        <label for="f_${f.k}">${f.label}</label>
+        <input id="f_${f.k}" data-key="${f.k}" type="text" placeholder="${f.label}">
+      </div>
+    `;
   }
-  html += `</div>`;
+
+  html += '</div>';
   area.innerHTML = html;
 }
 
