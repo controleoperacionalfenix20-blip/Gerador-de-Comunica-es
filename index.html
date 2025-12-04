@@ -550,44 +550,6 @@ const FIELDS_BY_CATEGORY = {
 function formatarLocal(chave, valor, isProximo = false) {
   if (!valor) return "____";
 
-  // Limpa espaços e caracteres invisíveis
-  const v = valor.trim();
-  if (!v) return "____";
-
-  // Preposição já existente → mantém
-  if (/^(do|da|dos|das|no|na|nos|nas|em|à|ao|a)\b/i.test(v)) {
-    return v;
-  }
-
-  // Palavra inicial limpa
-  const rawFirst = v.split(/\s+/)[0].replace(/[^A-Za-zÀ-ÿ0-9-]/g, "");
-  const first = rawFirst.toLowerCase();
-
-  // ---------------------------------------------------
-  // ⚠️ 1 — SIGLAS (CELESC, IFSC, UFSC, DEINFRA...)
-  // ---------------------------------------------------
-  if (/^[A-Z]{2,10}$/.test(rawFirst)) {
-    return (isProximo ? "à " : "na ") + v;
-  }
-
-  // ---------------------------------------------------
-  // ⚠️ 2 — Rodovias / BR / SC → feminino
-  // ---------------------------------------------------
-  if (/^(sc|br)-?\d+/i.test(v) || /^rod(ovia)?\b/i.test(first)) {
-    return (isProximo ? "à " : "na ") + v;
-  }
-
-  // ---------------------------------------------------
-  // ⚠️ 3 — "Parte da..." → especial
-  // ---------------------------------------------------
-  if (/^parte\b/i.test(v)) {
-    return `em ${v}`;
-  }
-
-  // ---------------------------------------------------
-  // ⚠️ 4 — Universidades → unction formatarLocal(chave, valor, isProximo = false) {
-  if (!valor) return "____";
-
   const v = valor.trim();
   if (!v) return "____";
 
@@ -599,118 +561,68 @@ function formatarLocal(chave, valor, isProximo = false) {
   const rawFirst = v.split(/\s+/)[0].replace(/[^A-Za-zÀ-ÿ0-9-]/g, "");
   const first = rawFirst.toLowerCase();
 
-  // ---------------------------------------------------
   // 1 — SIGLAS
-  // ---------------------------------------------------
   if (/^[A-Z]{2,10}$/.test(rawFirst)) {
 
-    // CELESC → feminino (uso comum)
+    // CELESC → feminino
     if (/^CELESC$/i.test(rawFirst)) {
       return (isProximo ? "à " : "na ") + v;
     }
 
-    // Siglas começando com I → masculino (IFSC, IGP, IEMA, IEE...)
-    if (/^I/.test(rawFirst)) {
+    // Iniciadas com I → masculino (IFSC, IGP, IEMA…)
+    if (rawFirst.startsWith("I")) {
       return (isProximo ? "ao " : "no ") + v;
     }
 
-    // Outras siglas → feminino padrão
+    // Demais siglas → feminino
     return (isProximo ? "à " : "na ") + v;
   }
 
-  // ---------------------------------------------------
-  // 2 — Rodovias / BR / SC → feminino
-  // ---------------------------------------------------
+  // 2 — Rodovias / BR / SC
   if (/^(sc|br)-?\d+/i.test(v) || /^rod(ovia)?\b/i.test(first)) {
     return (isProximo ? "à " : "na ") + v;
   }
 
-  // ---------------------------------------------------
-  // 3 — "Parte da..." → especial
-  // ---------------------------------------------------
+  // 3 — “Parte da…”
   if (/^parte\b/i.test(v)) {
-    return `em ${v}`;
+    return "em " + v;
   }
 
-  // ---------------------------------------------------
-  // 4 — Universidades → feminino
-  // ---------------------------------------------------
+  // 4 — Universidades
   if (first.startsWith("uni")) {
     return (isProximo ? "à " : "na ") + v;
   }
 
-  // ---------------------------------------------------
   // 5 — Femininas
-  // ---------------------------------------------------
   const fem = [
     "rua", "r", "r.", "avenida", "av", "av.",
-    "travessa", "praia", "estrada", "beira-mar",
-    "beira", "beiramar"
+    "travessa", "praia", "estrada",
+    "beira-mar", "beira", "beiramar"
   ];
   if (fem.includes(first)) {
     return (isProximo ? "à " : "na ") + v;
   }
 
-  // ---------------------------------------------------
   // 6 — Masculinas
-  // ---------------------------------------------------
   const masc = ["trevo"];
   if (masc.includes(first)) {
     return (isProximo ? "ao " : "no ") + v;
   }
 
-  // ---------------------------------------------------
-  // 7 — Nomes próprios (masculino por padrão)
-  // ---------------------------------------------------
-  if (/^[A-Z]/.test(v) && !/^(Rua|R\.|Av|Av\.|Avenida|Travessa|Estrada|Rodovia|SC|BR)/i.test(v)) {
+  // 7 — Nome próprio → masculino padrão
+  if (/^[A-Z]/.test(v) &&
+     !/^(Rua|R\.|Av|Av\.|Avenida|Travessa|Estrada|Rodovia|SC|BR)/i.test(v)) {
     return (isProximo ? "ao " : "no ") + v;
   }
 
-  // ---------------------------------------------------
-  // 8 — Termina com "a" → feminino
-  // ---------------------------------------------------
+  // 8 — Termina em “a” → feminino
   if (first.endsWith("a")) {
     return (isProximo ? "à " : "na ") + v;
   }
 
-  // ---------------------------------------------------
   // 9 — Masculino padrão
-  // ---------------------------------------------------
   return (isProximo ? "ao " : "no ") + v;
 }
-
-
-/**********************
- *  CAMPOS DINÂMICOS
- **********************/
-function onCategoriaChange() {
-  const cat = document.getElementById('categoria').value;
-  const area = document.getElementById('camposArea');
-
-  area.innerHTML = '';
-  document.getElementById('resultado').value = '';
-
-  if (!cat) return;
-
-  const fields = FIELDS_BY_CATEGORY[cat] || [];
-
-  if (fields.length === 0) {
-    area.innerHTML = `<div class="small">Este modelo não requer campos adicionais. Clique em "Gerar Texto".</div>`;
-    return;
-  }
-
-  let html = `<div class="grid2">`;
-  for (let f of fields) {
-    html += `<div class="field">
-      <label for="f_${f.k}">${f.label}</label>
-      <input id="f_${f.k}" data-key="${f.k}" type="text" placeholder="${f.label}">
-    </div>`;
-  }
-  html += `</div>`;
-  area.innerHTML = html;
-}
-
-
 /**********************
  *  GERAR TEXTO
  **********************/
@@ -745,48 +657,6 @@ function gerarTexto() {
       texto = texto.split(token).join(formatarLocal(f.k, val, true));
       continue;
     }
-
-    // CAMPOS NORMAIS
-    texto = texto.split(token).join(val || "____");
-  }
-
-  texto = texto.replace(/_{4,}/g, "____");
-  document.getElementById('resultado').value = texto;
-}
-/* ============================
-  Generate / replace function
-============================ */
-function gerarTexto() {
-  const cat = document.getElementById('categoria').value;
-  if (!cat) { alert('Selecione uma categoria.'); return; }
-
-  let texto = TEMPLATES[cat];
-  if (!texto) { alert('Template não encontrado.'); return; }
-
-  const fields = FIELDS_BY_CATEGORY[cat] || [];
-
-  for (let f of fields) {
-    const el = document.getElementById('f_' + f.k);
-    const val = el ? el.value.trim() : '';
-    const token = `__${f.k}__`;
-
-    // LOCAL
-if (f.k === "local") {
-  texto = texto.split(token).join(formatarLocal(f.k, val, false));
-  continue;
-}
-
-// RUA DE RETORNO / CONTINUAÇÃO (APLICA PREPOSIÇÃO AUTOMÁTICA)
-if (f.k === "rua_retorno") {
-  texto = texto.split(token).join(formatarLocal(f.k, val, false));
-  continue;
-}
-    
-// PRÓXIMO
-if (f.k === "proximo") {
-  texto = texto.split(token).join(formatarLocal(f.k, val, true));
-  continue;
-}
 
     // CAMPOS NORMAIS
     texto = texto.split(token).join(val || "____");
