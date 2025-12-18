@@ -227,6 +227,7 @@ textarea{
               <option value="ADIANTADO_FISCALIZACAO">ADIANTADO (FISCALIZAÇÃO)</option>
               <option value="ATRASADO_OPERACIONAL">ATRASADO OPERACIONAL</option>
               <option value="ATRASO_TRANSITO">ATRASO — TRÂNSITO</option>
+              <option value="AVARIA_SEM_VITIMA_CONTINUOU">AVARIA/INCIDENTE (SEM VÍTIMA) — TRIPULANTE SEGUIU A VIAGEM</option>
             </optgroup>
 
             <optgroup label="Desvio de itinerário">
@@ -319,6 +320,8 @@ const TEMPLATES = {
   "AVARIA_SEM_VITIMA_NENVIO": `Segundo a fiscalização, por volta das __hora__, o veículo programado se envolveu em uma colisão com veículo particular, sem vítimas, __local__, próximo __proximo__. Em virtude de problemas operacionais, não foi possível enviar outro ônibus para continuar a viagem.`,
 
   "AVARIA_VITIMA_VNR_OUTRO_SENTIDO": `Segundo informações da fiscalização, por volta das __hora__, o veículo programado se envolveu em uma colisão com __veiculo_terceiro__ __local__, próximo __proximo__. Foi acionado o socorro para prestar atendimento ao condutor do veículo de terceiro, que após os primeiros socorros, foi levado ao hospital. Em virtude de problemas operacionais, não foi possível enviar outro ônibus para continuar a viagem, gerando uma VNR no horário de __hora_partida__, sentido __sentido__.`,
+
+  "AVARIA_SEM_VITIMA_CONTINUOU": `Segundo informações da fiscalização, por volta das __hora__, o veículo programado se envolveu em uma colisão com __veiculo_terceiro__, sem vítimas no __local__, próximo __proximo__. Após realizar os procedimentos, a viagem seguiu por volta de __hora_partida__.` 
   
   "ADIANTADO": `Tripulante partiu __minutos__ minutos antes do horário programado.`,
 
@@ -452,6 +455,13 @@ const FIELDS_BY_CATEGORY = {
   { k: 'proximo', label: 'Próximo a (Ponto de referência)' },
   { k: 'hora_partida', label: 'Horário da VNR (ex: 14:20)' },
   { k: 'sentido', label: 'Sentido (IDA / VOLTA)' }
+],
+"AVARIA_SEM_VITIMA_CONTINUOU": [
+  {k:'hora', label:'Hora do ocorrido (ex: 13:05)'},
+  {k:'veiculo_terceiro', label:'Veículo de terceiro (ex: carro)'},
+  {k:'local', label:'Local / Rua'},
+  {k:'proximo', label:'Próximo a (ponto de referência)'},
+  {k:'hora_partida', label:'Hora em que a viagem continuou'}
 ],
   "ADIANTADO":[ {k:'minutos', label:'Minutos adiantado (ex: 05)'} ],
   "ADIANTADO_FISCALIZACAO":[ {k:'minutos', label:'Minutos adiantado (ex: 05)'} ],
