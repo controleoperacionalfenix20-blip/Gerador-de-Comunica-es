@@ -572,42 +572,69 @@ function formatarLocal(chave, valor, isProximo = false) {
   if (!valor) return "____";
 
   let v = valor.trim();
+  if (!v) return "____";
+
+  // 1 — Se já tiver preposição, mantém (Regra original sua)
+  if (/^(do|da|dos|das|no|na|nos|nas|em|à|ao|a)\b/i.test(v)) {
+    return v;
+  }
+
   const words = v.split(/\s+/);
   const rawFirst = words[0].replace(/[^A-Za-zÀ-ÿ0-9-]/g, "");
-  const firstLower = rawFirst.toLowerCase();
+  const first = rawFirst.toLowerCase();
 
-  // 1. Evita duplicidade se o usuário já digitou a preposição (no, na, ao, à)
-  if (/^(do|da|dos|das|no|na|nos|nas|em|à|ao|a)\b/i.test(v)) return v;
-
-  // 2. CASO ESPECIAL: COC (Sigla Masculina)
+  // 2 — SIGLAS (Sua regra original + ajuste para COC)
   if (/^COC$/i.test(rawFirst)) {
     return (isProximo ? "ao " : "no ") + v;
   }
-
-  // 3. Verifica se já existe um prefixo (Rua, Av, etc.)
-  const prefixosFem = ["rua", "r", "r.", "avenida", "av", "av.", "travessa", "servidao", "servidão", "estrada"];
-  const prefixosMasc = ["terminal", "ticen", "titri", "tican", "tisac", "tifor", "tirei", "trevo", "hospital", "ponto"];
-  
-  const temPrefixFem = prefixosFem.includes(firstLower);
-  const temPrefixMasc = prefixosMasc.includes(firstLower);
-
-  // 4. LÓGICA DE GERAÇÃO AUTOMÁTICA
-  
-  // Se for Feminino (Ex: Delminda) ou já tiver prefixo de Rua
-  if (temPrefixFem || (firstLower.endsWith("a") && firstLower.length > 3)) {
-    // Se o usuário NÃO digitou "R." ou "Rua", nós adicionamos "na R."
-    if (!temPrefixFem) {
-      return (isProximo ? "à R. " : "na R. ") + v;
-    }
+  if (/^[A-Z]{2,10}$/.test(rawFirst)) {
+    if (/^CELESC$/i.test(rawFirst)) return (isProximo ? "à " : "na ") + v;
+    if (rawFirst.startsWith("I")) return (isProximo ? "ao " : "no ") + v;
     return (isProximo ? "à " : "na ") + v;
   }
 
-  // Se for Masculino (Ex: Terminal)
-  if (temPrefixMasc) {
+  // 3 — Rodovias / BR / SC (Sua regra original que corrige a SC-401)
+  if (/^(sc|br)-?\d+/i.test(v) || /^rod(ovia)?\b/i.test(first)) {
+    return (isProximo ? "à " : "na ") + v;
+  }
+
+  // 4 — “Parte da…” (Sua regra original)
+  if (/^parte\b/i.test(first)) {
+    return "em " + v;
+  }
+
+  // 5 — Universidades (Sua regra original)
+  if (first.startsWith("uni")) {
+    return (isProximo ? "à " : "na ") + v;
+  }
+
+  // 6 — Femininas Explícitas
+  const fem = ["rua", "r", "r.", "avenida", "av", "av.", "travessa", "praia", "estrada", "beira-mar", "servidao", "servidão"];
+  const isFemPrefix = fem.includes(first);
+
+  // 7 — Lógica para Nomes Próprios (Ex: Delminda)
+  // Se termina em "a" e não é um prefixo conhecido, adicionamos o "R." automaticamente
+  if (!isFemPrefix && first.endsWith("a") && first.length > 3) {
+    return (isProximo ? "à R. " : "na R. ") + v;
+  }
+
+  // Se já começou com "Rua", "R.", etc.
+  if (isFemPrefix) {
+    return (isProximo ? "à " : "na ") + v;
+  }
+
+  // 8 — Masculinas Explícitas (Sua regra original + Terminais)
+  const masc = ["trevo", "terminal", "ticen", "titri", "tican", "tisac", "tifor", "tirei", "hospital", "ponto"];
+  if (masc.includes(first)) {
     return (isProximo ? "ao " : "no ") + v;
   }
 
-  // Padrão para nomes próprios masculinos ou bairros
+  // 9 — Nome próprio iniciado com Maiúscula (Sua regra original)
+  if (/^[A-Z]/.test(v)) {
+    return (isProximo ? "ao " : "no ") + v;
+  }
+
+  // 10 — Masculino padrão
   return (isProximo ? "ao " : "no ") + v;
 }
 /**********************
