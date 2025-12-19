@@ -321,7 +321,7 @@ const TEMPLATES = {
 
   "AVARIA_VITIMA_VNR_OUTRO_SENTIDO": `Segundo informações da fiscalização, por volta das __hora__, o veículo programado se envolveu em uma colisão com __veiculo_terceiro__ __local__, próximo __proximo__. Foi acionado o socorro para prestar atendimento ao condutor do veículo de terceiro, que após os primeiros socorros, foi levado ao hospital. Em virtude de problemas operacionais, não foi possível enviar outro ônibus para continuar a viagem, gerando uma VNR no horário de __hora_partida__, sentido __sentido__.`,
 
-  "AVARIA_SEM_VITIMA_CONTINUOU": `Segundo informações da fiscalização, por volta das __hora__, o veículo programado se envolveu em uma colisão com __veiculo_terceiro__, sem vítimas no __local__, próximo __proximo__. Após realizar os procedimentos, a viagem seguiu por volta de __hora_partida__.`, 
+  "AVARIA_SEM_VITIMA_CONTINUOU": `Segundo informações da fiscalização, por volta das __hora__, o veículo programado se envolveu em uma colisão com __veiculo_terceiro__, sem vítimas  __local__, próximo __proximo__. Após realizar os procedimentos, a viagem seguiu por volta de __hora_partida__.`, 
   
   "ADIANTADO": `Tripulante partiu __minutos__ minutos antes do horário programado.`,
 
@@ -574,7 +574,7 @@ function formatarLocal(chave, valor, isProximo = false) {
   const v = valor.trim();
   if (!v) return "____";
 
-  // Preposição já existente → mantém
+  // 1. Preposição já existente → mantém o que o usuário digitou
   if (/^(do|da|dos|das|no|na|nos|nas|em|à|ao|a)\b/i.test(v)) {
     return v;
   }
@@ -582,66 +582,45 @@ function formatarLocal(chave, valor, isProximo = false) {
   const rawFirst = v.split(/\s+/)[0].replace(/[^A-Za-zÀ-ÿ0-9-]/g, "");
   const first = rawFirst.toLowerCase();
 
-  // 1 — SIGLAS
+  // 2. SIGLAS (Ex: CELESC, IFSC)
   if (/^[A-Z]{2,10}$/.test(rawFirst)) {
-
-    // CELESC → feminino
-    if (/^CELESC$/i.test(rawFirst)) {
-      return (isProximo ? "à " : "na ") + v;
-    }
-
-    // Iniciadas com I → masculino (IFSC, IGP, IEMA…)
-    if (rawFirst.startsWith("I")) {
-      return (isProximo ? "ao " : "no ") + v;
-    }
-
-    // Demais siglas → feminino
+    if (/^CELESC$/i.test(rawFirst)) return (isProximo ? "à " : "na ") + v;
+    if (rawFirst.startsWith("I")) return (isProximo ? "ao " : "no ") + v;
     return (isProximo ? "à " : "na ") + v;
   }
 
-  // 2 — Rodovias / BR / SC
+  // 3. Rodovias / BR / SC
   if (/^(sc|br)-?\d+/i.test(v) || /^rod(ovia)?\b/i.test(first)) {
     return (isProximo ? "à " : "na ") + v;
   }
 
-  // 3 — “Parte da…”
-  if (/^parte\b/i.test(v)) {
-    return "em " + v;
-  }
+  // 4. Exceções de texto ("Parte da...", "Universidades")
+  if (/^parte\b/i.test(first)) return "em " + v;
+  if (first.startsWith("uni")) return (isProximo ? "à " : "na ") + v;
 
-  // 4 — Universidades
-  if (first.startsWith("uni")) {
-    return (isProximo ? "à " : "na ") + v;
-  }
-
-  // 5 — Femininas
+  // 5. Palavras Femininas Explícitas
   const fem = [
     "rua", "r", "r.", "avenida", "av", "av.",
-    "travessa", "praia", "estrada",
-    "beira-mar", "beira", "beiramar"
+    "travessa", "praia", "estrada", "beira-mar", "beira", "beiramar", "servidao", "servidão"
   ];
   if (fem.includes(first)) {
     return (isProximo ? "à " : "na ") + v;
   }
 
-  // 6 — Masculinas
-  const masc = ["trevo"];
+  // 6. Palavras Masculinas Explícitas (Terminais e Pontos)
+  const masc = ["trevo", "terminal", "ponto", "hospital", "aeroporto", "posto", "shopping"];
   if (masc.includes(first)) {
     return (isProximo ? "ao " : "no ") + v;
   }
 
-  // 7 — Nome próprio → masculino padrão
-  if (/^[A-Z]/.test(v) &&
-     !/^(Rua|R\.|Av|Av\.|Avenida|Travessa|Estrada|Rodovia|SC|BR)/i.test(v)) {
-    return (isProximo ? "ao " : "no ") + v;
-  }
-
-  // 8 — Termina em “a” → feminino
-  if (first.endsWith("a")) {
+  // 7. LÓGICA INTELIGENTE: Nomes Próprios sem "Rua/Av" (Ex: Delminda Silveira)
+  // Se o nome terminar com "a" (comum em nomes femininos de ruas), tratamos como feminino
+  // Exceção: Se for uma palavra curta de 3 letras que não soe como nome (ex: "Bau"), cai no padrão masculino
+  if (first.endsWith("a") && first.length > 3) {
     return (isProximo ? "à " : "na ") + v;
   }
 
-  // 9 — Masculino padrão
+  // 8. PADRÃO: Se nada acima for detectado, assume Masculino (é o caso de bairros ou nomes masculinos)
   return (isProximo ? "ao " : "no ") + v;
 }
 /**********************
