@@ -571,54 +571,48 @@ const FIELDS_BY_CATEGORY = {
 function formatarLocal(chave, valor, isProximo = false) {
   if (!valor) return "____";
 
-  const v = valor.trim();
-  if (!v) return "____";
+  let v = valor.trim();
+  
+  // 1. Se o usuário já digitou a preposição (no, na, ao, à), apenas retorna o texto
+  if (/^(do|da|dos|das|no|na|nos|nas|em|à|ao|a)\b/i.test(v)) return v;
 
-  // 1. Mantém se o usuário já digitou a preposição corretamente
-  if (/^(do|da|dos|das|no|na|nos|nas|em|à|ao|a)\b/i.test(v)) {
-    return v;
+  // 2. Trata o prefixo "R." ou "Rua" para evitar "na R. Delminda" virar "na na R."
+  // Se começar com R. ou Rua, removemos temporariamente para analisar o gênero do nome
+  let temPrefixoRua = false;
+  if (/^(r\.|r\s|rua)\b/i.test(v)) {
+    temPrefixoRua = true;
   }
 
   const words = v.split(/\s+/);
   const rawFirst = words[0].replace(/[^A-Za-zÀ-ÿ0-9-]/g, "");
-  const first = rawFirst.toLowerCase();
+  const firstLower = rawFirst.toLowerCase();
 
-  // 2. SIGLAS E CASOS ESPECIAIS (Ex: COC, CELESC, IFSC)
-  // Adicionamos "COC" como exceção masculina para gerar "ao COC"
-  const siglasMasculinas = ["COC", "IFSC", "IGP", "IMETRO", "IPREVF"];
-  if (siglasMasculinas.includes(rawFirst.toUpperCase())) {
+  // 3. SIGLAS ESPECÍFICAS (Ex: COC)
+  // Se for COC, retorna sempre "ao COC" ou "no COC"
+  if (/^COC$/i.test(rawFirst)) {
     return (isProximo ? "ao " : "no ") + v;
   }
+
+  // 4. Lógica de Gênero (Feminino vs Masculino)
+  // Se começar com Rua/R./Avenida ou se o nome terminar em "a" (ex: Delminda)
+  const prefixosFem = ["rua", "r", "r.", "avenida", "av", "av.", "travessa", "servidao", "servidão", "estrada"];
   
-  if (/^[A-Z]{2,10}$/.test(rawFirst)) {
-    if (/^CELESC$/i.test(rawFirst)) return (isProximo ? "à " : "na ") + v;
+  // Identifica se o nome em si é feminino (termina em 'a') 
+  // ou se o usuário usou um prefixo feminino
+  const nomeEfeminino = firstLower.endsWith("a") && firstLower.length > 3;
+  const usuarioUsouPrefixoFem = prefixosFem.includes(firstLower);
+
+  if (nomeEfeminino || usuarioUsouPrefixoFem) {
     return (isProximo ? "à " : "na ") + v;
   }
 
-  // 3. Rodovias / BR / SC
-  if (/^(sc|br)-?\d+/i.test(v) || /^rod(ovia)?\b/i.test(first)) {
-    return (isProximo ? "à " : "na ") + v;
-  }
-
-  // 4. Femininos Explícitos (Rua, Avenida, Servidão)
-  const fem = ["rua", "r", "r.", "avenida", "av", "av.", "travessa", "praia", "estrada", "servidao", "servidão", "beira-mar"];
-  if (fem.includes(first)) {
-    return (isProximo ? "à " : "na ") + v;
-  }
-
-  // 5. Masculinos Explícitos (Terminal, Hospital, Trevo)
-  const masc = ["trevo", "terminal", "ponto", "hospital", "aeroporto", "posto", "shopping", "ticen", "titri", "tican", "tisac", "tifor", "tirei"];
-  if (masc.includes(first)) {
+  // 5. Casos Masculinos (Terminais, Bairros masculinos, etc)
+  const prefixosMasc = ["terminal", "ticen", "titri", "tican", "tisac", "tifor", "tirei", "trevo", "hospital"];
+  if (prefixosMasc.includes(firstLower)) {
     return (isProximo ? "ao " : "no ") + v;
   }
 
-  // 6. Lógica para nomes próprios sem "Rua" (Ex: Delminda Silveira)
-  // Se o primeiro nome termina em "A", assume feminino (na Delminda)
-  if (first.endsWith("a") && first.length > 3) {
-    return (isProximo ? "à " : "na ") + v;
-  }
-
-  // 7. Padrão para o restante
+  // 6. Padrão: Masculino
   return (isProximo ? "ao " : "no ") + v;
 }
 /**********************
