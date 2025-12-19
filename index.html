@@ -574,18 +574,24 @@ function formatarLocal(chave, valor, isProximo = false) {
   const v = valor.trim();
   if (!v) return "____";
 
-  // 1. Preposição já existente → mantém o que o usuário digitou
+  // 1. Mantém se o usuário já digitou a preposição corretamente
   if (/^(do|da|dos|das|no|na|nos|nas|em|à|ao|a)\b/i.test(v)) {
     return v;
   }
 
-  const rawFirst = v.split(/\s+/)[0].replace(/[^A-Za-zÀ-ÿ0-9-]/g, "");
+  const words = v.split(/\s+/);
+  const rawFirst = words[0].replace(/[^A-Za-zÀ-ÿ0-9-]/g, "");
   const first = rawFirst.toLowerCase();
 
-  // 2. SIGLAS (Ex: CELESC, IFSC)
+  // 2. SIGLAS E CASOS ESPECIAIS (Ex: COC, CELESC, IFSC)
+  // Adicionamos "COC" como exceção masculina para gerar "ao COC"
+  const siglasMasculinas = ["COC", "IFSC", "IGP", "IMETRO", "IPREVF"];
+  if (siglasMasculinas.includes(rawFirst.toUpperCase())) {
+    return (isProximo ? "ao " : "no ") + v;
+  }
+  
   if (/^[A-Z]{2,10}$/.test(rawFirst)) {
     if (/^CELESC$/i.test(rawFirst)) return (isProximo ? "à " : "na ") + v;
-    if (rawFirst.startsWith("I")) return (isProximo ? "ao " : "no ") + v;
     return (isProximo ? "à " : "na ") + v;
   }
 
@@ -594,33 +600,25 @@ function formatarLocal(chave, valor, isProximo = false) {
     return (isProximo ? "à " : "na ") + v;
   }
 
-  // 4. Exceções de texto ("Parte da...", "Universidades")
-  if (/^parte\b/i.test(first)) return "em " + v;
-  if (first.startsWith("uni")) return (isProximo ? "à " : "na ") + v;
-
-  // 5. Palavras Femininas Explícitas
-  const fem = [
-    "rua", "r", "r.", "avenida", "av", "av.",
-    "travessa", "praia", "estrada", "beira-mar", "beira", "beiramar", "servidao", "servidão"
-  ];
+  // 4. Femininos Explícitos (Rua, Avenida, Servidão)
+  const fem = ["rua", "r", "r.", "avenida", "av", "av.", "travessa", "praia", "estrada", "servidao", "servidão", "beira-mar"];
   if (fem.includes(first)) {
     return (isProximo ? "à " : "na ") + v;
   }
 
-  // 6. Palavras Masculinas Explícitas (Terminais e Pontos)
-  const masc = ["trevo", "terminal", "ponto", "hospital", "aeroporto", "posto", "shopping"];
+  // 5. Masculinos Explícitos (Terminal, Hospital, Trevo)
+  const masc = ["trevo", "terminal", "ponto", "hospital", "aeroporto", "posto", "shopping", "ticen", "titri", "tican", "tisac", "tifor", "tirei"];
   if (masc.includes(first)) {
     return (isProximo ? "ao " : "no ") + v;
   }
 
-  // 7. LÓGICA INTELIGENTE: Nomes Próprios sem "Rua/Av" (Ex: Delminda Silveira)
-  // Se o nome terminar com "a" (comum em nomes femininos de ruas), tratamos como feminino
-  // Exceção: Se for uma palavra curta de 3 letras que não soe como nome (ex: "Bau"), cai no padrão masculino
+  // 6. Lógica para nomes próprios sem "Rua" (Ex: Delminda Silveira)
+  // Se o primeiro nome termina em "A", assume feminino (na Delminda)
   if (first.endsWith("a") && first.length > 3) {
     return (isProximo ? "à " : "na ") + v;
   }
 
-  // 8. PADRÃO: Se nada acima for detectado, assume Masculino (é o caso de bairros ou nomes masculinos)
+  // 7. Padrão para o restante
   return (isProximo ? "ao " : "no ") + v;
 }
 /**********************
