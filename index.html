@@ -574,7 +574,7 @@ function formatarLocal(chave, valor, isProximo = false) {
   let v = valor.trim();
   if (!v) return "____";
 
-  // 1 — Mantém preposição manual do usuário (Sua regra original)
+  // 1 — Mantém se o usuário já digitou a preposição (Sua regra original)
   if (/^(do|da|dos|das|no|na|nos|nas|em|à|ao|a)\b/i.test(v)) return v;
 
   const words = v.split(/\s+/);
@@ -588,29 +588,31 @@ function formatarLocal(chave, valor, isProximo = false) {
     return (isProximo ? "ao " : "no ") + v;
   }
 
-  // 3 — RODOVIAS (SC-401, BR-101) - (Sua regra original)
+  // 3 — RODOVIAS (Sua regra original - Mantém "na SC-401")
   if (/^(sc|br)-?\d+/i.test(v) || /^rod(ovia)?\b/i.test(first)) {
     return (isProximo ? "à " : "na ") + v;
   }
 
-  // 4 — PREFIXOS FEMININOS (Rua, Av, Servidão)
+  // 4 — PREFIXOS E REGRAS ORIGINAIS (Parte de, Universidades)
   const fem = ["rua", "r", "r.", "avenida", "av", "av.", "travessa", "praia", "estrada", "servidao", "beira-mar"];
   const isFemPrefix = fem.includes(first);
 
-  // 5 — NOMES DE RUA SEM PREFIXO (Ex: Delminda, Fluvio)
-  // Se termina em 'a' ou 'i' (comum em ruas), e não é sigla, adiciona "na R."
-  if (!isFemPrefix && !isAllUpper && (first.endsWith("a") || first.endsWith("i")) && first.length > 3) {
-    return (isProximo ? "à R. " : "na R. ") + v;
-  }
-
-  // 6 — DEMAIS REGRAS (Sua lógica original: Parte de, Universidades)
   if (/^parte\b/i.test(first)) return "em " + v;
   if (first.startsWith("uni")) return (isProximo ? "à " : "na ") + v;
 
-  // 7 — RETORNO BASEADO EM GÊNERO
-  if (isFemPrefix) return (isProximo ? "à " : "na ") + v;
+  // 5 — LÓGICA DE GÊNERO PARA RUAS (Fluvio Aducci, Delminda)
+  // Se termina em 'a' ou 'i' (comum em nomes de ruas de Floripa) e não é sigla, força o "na"
+  const endsInFem = (first.endsWith("a") || first.endsWith("i")) && first.length > 3;
 
-  // 8 — PADRÃO MASCULINO (Nomes próprios ou Terminais)
+  if (isFemPrefix || (!isAllUpper && endsInFem)) {
+    // Adiciona o "R." se o usuário não tiver colocado
+    if (!isFemPrefix) {
+      return (isProximo ? "à R. " : "na R. ") + v;
+    }
+    return (isProximo ? "à " : "na ") + v;
+  }
+
+  // 6 — PADRÃO MASCULINO (Para terminais e outros locais)
   return (isProximo ? "ao " : "no ") + v;
 }
 /**********************
