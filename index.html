@@ -574,56 +574,43 @@ function formatarLocal(chave, valor, isProximo = false) {
   let v = valor.trim();
   if (!v) return "____";
 
-  // 1 — Se já tiver preposição, mantém (Sua regra original)
-  if (/^(do|da|dos|das|no|na|nos|nas|em|à|ao|a)\b/i.test(v)) {
-    return v;
-  }
+  // 1 — Mantém preposição manual do usuário (Sua regra original)
+  if (/^(do|da|dos|das|no|na|nos|nas|em|à|ao|a)\b/i.test(v)) return v;
 
   const words = v.split(/\s+/);
   const rawFirst = words[0].replace(/[^A-Za-zÀ-ÿ0-9-]/g, "");
   const first = rawFirst.toLowerCase();
   const isAllUpper = /^[A-Z0-9]{2,10}$/.test(rawFirst);
 
-  // 2 — SIGLAS E TERMINAIS (Ajuste para TICEN e COC)
+  // 2 — TERMINAIS E SIGLAS MASCULINAS (Ajuste para TICEN e COC)
   const siglasMasc = ["TICEN", "TITRI", "TICAN", "TISAC", "TIFOR", "TIREI", "COC", "IFSC", "IGP"];
   if (siglasMasc.includes(rawFirst.toUpperCase())) {
     return (isProximo ? "ao " : "no ") + v;
   }
 
-  // Demais siglas (CELESC, UFSC, etc.) - Sua regra original
-  if (isAllUpper) {
-    if (/^CELESC$/i.test(rawFirst)) return (isProximo ? "à " : "na ") + v;
-    if (rawFirst.startsWith("I")) return (isProximo ? "ao " : "no ") + v;
-    return (isProximo ? "à " : "na ") + v;
-  }
-
-  // 3 — Rodovias / BR / SC (Sua regra original - Corrige SC-401)
+  // 3 — RODOVIAS (SC-401, BR-101) - (Sua regra original)
   if (/^(sc|br)-?\d+/i.test(v) || /^rod(ovia)?\b/i.test(first)) {
     return (isProximo ? "à " : "na ") + v;
   }
 
-  // 4 — “Parte da…” e Universidades (Sua regra original)
-  if (/^parte\b/i.test(first)) return "em " + v;
-  if (first.startsWith("uni")) return (isProximo ? "à " : "na ") + v;
-
-  // 5 — Prefixos Femininos e Masculinos
+  // 4 — PREFIXOS FEMININOS (Rua, Av, Servidão)
   const fem = ["rua", "r", "r.", "avenida", "av", "av.", "travessa", "praia", "estrada", "servidao", "beira-mar"];
-  const masc = ["trevo", "terminal", "ponto", "hospital", "aeroporto", "posto", "shopping"];
-  
   const isFemPrefix = fem.includes(first);
-  const isMascPrefix = masc.includes(first);
 
-  // 6 — Lógica Inteligente para Nomes de Rua (Ex: Delminda)
-  // Adiciona "R." apenas se não for sigla, não tiver prefixo e terminar em "a"
-  if (!isFemPrefix && !isMascPrefix && !isAllUpper && first.endsWith("a") && first.length > 3) {
+  // 5 — NOMES DE RUA SEM PREFIXO (Ex: Delminda, Fluvio)
+  // Se termina em 'a' ou 'i' (comum em ruas), e não é sigla, adiciona "na R."
+  if (!isFemPrefix && !isAllUpper && (first.endsWith("a") || first.endsWith("i")) && first.length > 3) {
     return (isProximo ? "à R. " : "na R. ") + v;
   }
 
-  // 7 — Retornos de Gênero Baseados nos Prefixos
-  if (isFemPrefix) return (isProximo ? "à " : "na ") + v;
-  if (isMascPrefix) return (isProximo ? "ao " : "no ") + v;
+  // 6 — DEMAIS REGRAS (Sua lógica original: Parte de, Universidades)
+  if (/^parte\b/i.test(first)) return "em " + v;
+  if (first.startsWith("uni")) return (isProximo ? "à " : "na ") + v;
 
-  // 8 — Padrão Final: Nomes Próprios ou Masculinos (Sua regra original)
+  // 7 — RETORNO BASEADO EM GÊNERO
+  if (isFemPrefix) return (isProximo ? "à " : "na ") + v;
+
+  // 8 — PADRÃO MASCULINO (Nomes próprios ou Terminais)
   return (isProximo ? "ao " : "no ") + v;
 }
 /**********************
