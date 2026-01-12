@@ -574,49 +574,48 @@ function formatarLocal(chave, valor, isProximo = false) {
   let v = valor.trim();
   if (!v) return "____";
 
-  // 1 — Se já tiver preposição, não mexe (Sua regra original)
+  // 1 — Se já tiver preposição, mantém (Sua regra original)
   if (/^(do|da|dos|das|no|na|nos|nas|em|à|ao|a)\b/i.test(v)) return v;
 
-  const words = v.split(/\s+/);
-  const rawFirst = words[0].replace(/[^A-Za-zÀ-ÿ0-9-]/g, "");
+  const rawFirst = v.split(/\s+/)[0].replace(/[^A-Za-zÀ-ÿ0-9-]/g, "");
   const firstLower = rawFirst.toLowerCase();
   const isAllUpper = /^[A-Z0-9]{2,10}$/.test(rawFirst);
 
-  // 2 — LISTA DE EXCEÇÕES MASCULINAS (Terminais e Siglas)
-  const siglasMasc = ["TICEN", "TITRI", "TICAN", "TISAC", "TIFOR", "TIREI", "COC", "IFSC", "IGP"];
-  if (siglasMasc.includes(rawFirst.toUpperCase())) {
+  // 2 — LISTA MASCULINA (Apenas para o que NÃO é rua)
+  const masc = ["TICEN", "TITRI", "TICAN", "TISAC", "TIFOR", "TIREI", "COC", "IFSC", "IGP", "TREVO", "TERMINAL", "HOSPITAL", "POSTO"];
+  if (masc.includes(rawFirst.toUpperCase())) {
     return (isProximo ? "ao " : "no ") + v;
   }
 
-  // 3 — RODOVIAS (Sua regra original - SC-401)
+  // 3 — RODOVIAS (Sua regra original - Mantém "na SC-401")
   if (/^(sc|br)-?\d+/i.test(v) || /^rod(ovia)?\b/i.test(firstLower)) {
     return (isProximo ? "à " : "na ") + v;
   }
 
-  // 4 — PREFIXOS FEMININOS
-  const femPrefixes = ["rua", "r", "r.", "avenida", "av", "av.", "travessa", "estrada", "servidao", "beira-mar"];
-  const isFemPrefix = femPrefixes.includes(firstLower);
+  // 4 — PREFIXOS DE RUA JÁ EXISTENTES
+  const prefixosRua = ["rua", "r", "r.", "avenida", "av", "av.", "travessa", "servidao", "estrada"];
+  const jaTemPrefixo = prefixosRua.includes(firstLower);
 
-  // 5 — NOMES DE RUA QUE PARECEM MASCULINOS MAS SÃO "NA R."
-  const ruasFemininasEspecíficas = ["fluvio", "claudio", "gustavo", "jorge", "joao"];
-  const isRuaFeminina = ruasFemininasEspecíficas.includes(firstLower) || (firstLower.endsWith("a") && firstLower.length > 3);
+  // 5 — A LÓGICA MESTRE:
+  // Se não é uma sigla masculina e não tem prefixo, tratamos como Rua Feminina (NA R.)
+  // Isso resolve Delminda, Fluvio Aducci, José Mendes, etc., de uma vez só.
+  if (!isAllUpper && !jaTemPrefixo) {
+    // Se for José Mendes (que é um bairro), "na José Mendes" funciona. 
+    // Se for Fluvio Aducci, "na R. Fluvio Aducci" também funciona.
+    return (isProximo ? "à R. " : "na R. ") + v;
+  }
 
-  // 6 — LÓGICA DE GERAÇÃO (Arua, Av, etc)
-  if (isFemPrefix || (!isAllUpper && isRuaFeminina)) {
-    // Se o usuário não digitou "R.", nós inserimos para garantir a gramática
-    if (!isFemPrefix) {
-      return (isProximo ? "à R. " : "na R. ") + v;
-    }
+  // 6 — Se já tiver prefixo (ex: o usuário digitou "R. Fluvio")
+  if (jaTemPrefixo) {
     return (isProximo ? "à " : "na ") + v;
   }
 
-  // 7 — REGRAS ORIGINAIS RESTANTES (Parte de, Universidades)
-  if (/^parte\b/i.test(firstLower)) return "em " + v;
+  // 7 — PADRÃO (Universidades e outros)
   if (firstLower.startsWith("uni")) return (isProximo ? "à " : "na ") + v;
-
-  // 8 — PADRÃO MASCULINO (Para todo o resto)
+  
   return (isProximo ? "ao " : "no ") + v;
 }
+  
 /**********************
  *  GERAR TEXTO
  **********************/
