@@ -574,46 +574,47 @@ function formatarLocal(chave, valor, isProximo = false) {
   let v = valor.trim();
   if (!v) return "____";
 
-  // 1 — Se já tiver preposição, mantém (Sua regra original)
+  // 1 — Se já tiver preposição manual, mantém (Sua regra original)
   if (/^(do|da|dos|das|no|na|nos|nas|em|à|ao|a)\b/i.test(v)) return v;
 
   const rawFirst = v.split(/\s+/)[0].replace(/[^A-Za-zÀ-ÿ0-9-]/g, "");
   const firstLower = rawFirst.toLowerCase();
   const isAllUpper = /^[A-Z0-9]{2,10}$/.test(rawFirst);
 
-  // 2 — LISTA MASCULINA (Apenas para o que NÃO é rua)
-  const masc = ["TICEN", "TITRI", "TICAN", "TISAC", "TIFOR", "TIREI", "COC", "IFSC", "IGP", "TREVO", "TERMINAL", "HOSPITAL", "POSTO"];
-  if (masc.includes(rawFirst.toUpperCase())) {
+  // 2 — SIGLAS E TERMINAIS (Sempre masculino: "no/ao")
+  const siglasMasc = ["TICEN", "TITRI", "TICAN", "TISAC", "TIFOR", "TIREI", "COC", "IFSC", "IGP", "TREVO", "TERMINAL", "HOSPITAL"];
+  if (siglasMasc.includes(rawFirst.toUpperCase())) {
     return (isProximo ? "ao " : "no ") + v;
   }
 
-  // 3 — RODOVIAS (Sua regra original - Mantém "na SC-401")
+  // 3 — RODOVIAS (Sempre feminino: "na/à")
   if (/^(sc|br)-?\d+/i.test(v) || /^rod(ovia)?\b/i.test(firstLower)) {
     return (isProximo ? "à " : "na ") + v;
   }
 
-  // 4 — PREFIXOS DE RUA JÁ EXISTENTES
+  // 4 — PREFIXOS JÁ DIGITADOS (Rua, Av, etc)
   const prefixosRua = ["rua", "r", "r.", "avenida", "av", "av.", "travessa", "servidao", "estrada"];
   const jaTemPrefixo = prefixosRua.includes(firstLower);
 
-  // 5 — A LÓGICA MESTRE:
-  // Se não é uma sigla masculina e não tem prefixo, tratamos como Rua Feminina (NA R.)
-  // Isso resolve Delminda, Fluvio Aducci, José Mendes, etc., de uma vez só.
-  if (!isAllUpper && !jaTemPrefixo) {
-    // Se for José Mendes (que é um bairro), "na José Mendes" funciona. 
-    // Se for Fluvio Aducci, "na R. Fluvio Aducci" também funciona.
-    return (isProximo ? "à R. " : "na R. ") + v;
+  // 5 — LÓGICA POR CAMPO (O segredo do erro)
+  // Se for o campo "Local/Rua" e não tiver prefixo, coloca "R."
+  if (!isProximo && !jaTemPrefixo && !isAllUpper) {
+    return "na R. " + v;
   }
 
-  // 6 — Se já tiver prefixo (ex: o usuário digitou "R. Fluvio")
-  if (jaTemPrefixo) {
-    return (isProximo ? "à " : "na ") + v;
+  // Se for o campo "Próximo a" (Referência), NÃO coloca "R." 
+  // Apenas decide entre "ao" ou "à" baseado na última letra do nome
+  if (isProximo && !jaTemPrefixo) {
+    // Se termina em 'a', 'ia' ou 'da' (Feminino: à José Mendes)
+    if (firstLower.endsWith("a") || firstLower.endsWith("as")) {
+       return "à " + v;
+    }
+    // Padrão para referências masculinas (ao José Mendes - se preferir masculino)
+    return "ao " + v;
   }
 
-  // 7 — PADRÃO (Universidades e outros)
-  if (firstLower.startsWith("uni")) return (isProximo ? "à " : "na ") + v;
-  
-  return (isProximo ? "ao " : "no ") + v;
+  // 6 — Se já tiver prefixo (ex: "R. Delminda")
+  return (isProximo ? "à " : "na ") + v;
 }
   
 /**********************
