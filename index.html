@@ -596,10 +596,14 @@ function formatarLocal(chave, valor, isProximo = false) {
   const prefixosRua = ["rua", "r", "r.", "avenida", "av", "av.", "travessa", "servidao", "estrada"];
   const jaTemPrefixo = prefixosRua.includes(firstLower);
 
+  // 4.5 — CASOS ESPECIAIS (ANTES DA REGRA DA RUA)
+  if (!isProximo && /^beira[-\s]?mar$/i.test(v)) {
+  return "na Av. Beira-Mar";
+  }
+  
   // 5 — LÓGICA POR CAMPO (O segredo do erro)
-  // Se for o campo "Local/Rua" e não tiver prefixo, coloca "R."
   if (!isProximo && !jaTemPrefixo && !isAllUpper) {
-    return "na R. " + v;
+  return "na R. " + v;
   }
 
   // Se for o campo "Próximo a" (Referência), NÃO coloca "R." 
