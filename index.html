@@ -228,6 +228,7 @@ textarea{
               <option value="ADIANTADO_FISCALIZACAO">ADIANTADO (FISCALIZAÇÃO)</option>
               <option value="ATRASADO_OPERACIONAL">ATRASADO OPERACIONAL</option>
               <option value="ATRASO_TRANSITO">ATRASO — TRÂNSITO</option>
+              <option value="PARTIDA_DUPLICADA">PARTIDA DUPLICADA</option>
             </optgroup>
 
             <optgroup label="Desvio de itinerário">
@@ -327,6 +328,7 @@ const TEMPLATES = {
 
   "ADIANTADO_FISCALIZACAO": `Tripulante partiu __minutos__ minutos antes do horário programado. Fiscalização ficou de orientar o motorista.`,
 
+  "PARTIDA_DUPLICADA": `Segundo informações da fiscalização, o veículo programado não chegou a tempo de realizar a viagem e foi alocado o __veiculo__ para executá-la. O tripulante do veículo programado, ao chegar no terminal, encostou o coletivo no box e também partiu na linha, realizando a viagem mencionada, o que ocasionou uma partida duplicada.`,
   "ATRASADO_OPERACIONAL": `Devido a problemas operacionais e outros, a viagem iniciou __minutos__ minutos após o horário programado.`,
 
   "ATRASO_TRANSITO": `Devido ao trânsito intenso na viagem anterior e outros, o veículo programado partiu __minutos__ minutos após o horário programado.`,
@@ -472,6 +474,11 @@ const FIELDS_BY_CATEGORY = {
     {k:'rua_desvio', label:'Rua do desvio'},
     {k:'sentido', label:'Sentido (IDA / VOLTA)'}
   ],
+
+  "PARTIDA_DUPLICADA": [
+   {k:'veiculo', label:'Veículo alocado (Prefixo)'}
+    ],
+  
   "DESVIO_MAIS_HORARIOS_ENCERROU":[
     {k:'local', label:'Local do bloqueio (Rua)'},
     {k:'rua_desvio', label:'Rua do desvio'},
