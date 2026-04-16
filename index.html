@@ -744,11 +744,32 @@ function formatarLocal(chave, valor, isProximo = false) {
   // 6 — PRÓXIMO A (REFERÊNCIA)
   // =========================
 
-  const vLower = v.toLowerCase();
+ if (isProximo) {
 
-  const feminino = /^(rua|r\.?|avenida|av\.?|travessa|servidao|estrada|rodovia|praça|ponte|beira-mar|alameda|via|marginal|orla|serra|ladeira|escadaria)/i;
+  let texto = v.trim().replace(/\s+/g, " ");
 
-  const masculino = /^(terminal|shopping|hospital|trevo|viaduto|posto|mercado|bairro|centro|parque|ponto|acesso|retorno|elevado|túnel|tunel|viaduto|cruzamento|entroncamento)/i;
+  // 🔒 Se já tem preposição → não mexe
+  if (/^(ao|à|a|no|na|em|do|da|dos|das)\b/i.test(texto)) return texto;
+
+  const lower = texto.toLowerCase();
+
+  // =========================
+  // 📚 DICIONÁRIO (BASE FORTE)
+  // =========================
+
+  const mapaGenero = {
+    // feminino
+    "rua":"f","r":"f","avenida":"f","av":"f","travessa":"f","servidao":"f",
+    "estrada":"f","rodovia":"f","praça":"f","ponte":"f","alameda":"f",
+    "via":"f","marginal":"f","orla":"f","serra":"f","ladeira":"f",
+    "escadaria":"f","esquina":"f","rotatória":"f","beira-mar":"f",
+
+    // masculino
+    "terminal":"m","shopping":"m","hospital":"m","trevo":"m","viaduto":"m",
+    "posto":"m","mercado":"m","bairro":"m","centro":"m","parque":"m",
+    "ponto":"m","acesso":"m","retorno":"m","elevado":"m","túnel":"m",
+    "tunel":"m","cruzamento":"m","entroncamento":"m"
+  };
 
   const siglas = /^(TICEN|TITRI|TICAN|TISAC|TIFOR|TIREI|UFSC|IFSC|UPA|SAMU|GMF|PM|PRF|DNIT)$/i;
 
@@ -756,52 +777,54 @@ function formatarLocal(chave, valor, isProximo = false) {
   // 🚧 REGRAS ESPECIAIS
   // =========================
 
-  // Rodovias (SC-401, BR-101...)
-  if (/^(sc|br|sp|rs|mg|pr)-?\d+/i.test(v)) return "à " + v;
+  // rodovias (SC-401 etc)
+  if (/^(sc|br|sp|rs|mg|pr)-?\d+/i.test(texto)) return "à " + texto;
 
-  // Apenas número (ex: 401)
-  if (/^\d+/.test(v)) return "ao " + v;
+  // apenas número
+  if (/^\d+/.test(texto)) return "ao " + texto;
 
-  // Siglas (padrão masculino)
-  if (siglas.test(v)) return "ao " + v;
-
-  // =========================
-  // 📍 INÍCIO DA FRASE
-  // =========================
-
-  if (feminino.test(v)) return "à " + v;
-  if (masculino.test(v)) return "ao " + v;
+  // siglas
+  if (siglas.test(texto)) return "ao " + texto;
 
   // =========================
-  // 🧠 CONTEXTO INTERNO
+  // 🔍 PALAVRA PRINCIPAL
   // =========================
 
-  if (/(rua|avenida|travessa|servidao)/i.test(vLower)) return "à " + v;
-  if (/(terminal|hospital|posto)/i.test(vLower)) return "ao " + v;
-  if (/(praça|ponte|beira-mar)/i.test(vLower)) return "à " + v;
-  if (/(bairro|centro|parque)/i.test(vLower)) return "ao " + v;
-  if (/(rodovia|estrada)/i.test(vLower)) return "à " + v;
+  const primeira = lower.split(" ")[0];
 
-  // =========================
-  // 🔤 HEURÍSTICA FINAL
-  // =========================
-
-  // termina com "a" → feminino (maior chance)
-  if (vLower.endsWith("a")) return "à " + v;
-
-  // termina com "o" → masculino
-  if (vLower.endsWith("o")) return "ao " + v;
-
-  // nomes próprios de lugar (ex: Trindade, Ingleses)
-  if (/^[A-ZÀ-Ú]/.test(v)) {
-    return "na " + v; // mais natural em cidades/bairros
+  if (mapaGenero[primeira]) {
+    return mapaGenero[primeira] === "f" ? "à " + texto : "ao " + texto;
   }
+
+  // =========================
+  // 🧠 BUSCA INTERNA
+  // =========================
+
+  for (let chave in mapaGenero) {
+    if (lower.includes(chave)) {
+      return mapaGenero[chave] === "f" ? "à " + texto : "ao " + texto;
+    }
+  }
+
+  // =========================
+  // 🔤 HEURÍSTICA INTELIGENTE
+  // =========================
+
+  // terminações
+  if (/[aã]$/.test(lower)) return "à " + texto;
+  if (/[o]$/.test(lower)) return "ao " + texto;
+
+  // nomes próprios (bairro/cidade)
+  if (/^[A-ZÀ-Ú]/.test(texto)) return "no " + texto;
+
+  // palavras curtas (ex: “árvore”, “praça”)
+  if (lower.length <= 6) return "à " + texto;
 
   // =========================
   // 🔄 FALLBACK FINAL
   // =========================
 
-  return "ao " + v;
+  return "ao " + texto;
 }
   
 /**********************
