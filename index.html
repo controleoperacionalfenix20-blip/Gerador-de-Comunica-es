@@ -296,7 +296,7 @@ textarea{
              __protocolo__, __bairro__, __veiculo_resposta__
   ============================ */
 const TEMPLATES = {
-  "PM_SEM_SOCORRO": `Segundo informações da fiscalização, por volta das __hora__, o veículo programado apresentou problemas mecânicos __local__, próximo a __proximo__. Os passageiros foram transferidos para o __veiculo_resposta__ que passou pelo local no momento. Em virtude de problemas operacionais, não foi possível enviar outro ônibus para continuar a viagem.`,
+  "PM_SEM_SOCORRO": `Segundo informações da fiscalização, por volta das __hora__, o veículo programado apresentou problemas mecânicos __local__, próximo __proximo__. Os passageiros foram transferidos para o __veiculo_resposta__ que passou pelo local no momento. Em virtude de problemas operacionais, não foi possível enviar outro ônibus para continuar a viagem.`,
 
   "PM_COM_SOCORRO": `Segundo informações da fiscalização, por volta das __hora__, o veículo programado apresentou problemas mecânicos __local__, próximo __proximo__. Foi enviado o __veiculo_enviado__ para continuar a viagem, que partiu do local aproximadamente às __hora_partida__.`,
 
@@ -653,15 +653,65 @@ function formatarLocal(chave, valor, isProximo = false) {
   // =========================
   // 6 — PRÓXIMO A (REFERÊNCIA)
   // =========================
-  if (isProximo) {
-    if (v.toLowerCase().endsWith("a") || v.toLowerCase().endsWith("as")) {
-      return "à " + v;
-    }
-    return "ao " + v;
+
+  const vLower = v.toLowerCase();
+
+  const feminino = /^(rua|r\.?|avenida|av\.?|travessa|servidao|estrada|rodovia|praça|ponte|beira-mar|alameda|via|marginal|orla|serra|ladeira|escadaria)/i;
+
+  const masculino = /^(terminal|shopping|hospital|trevo|viaduto|posto|mercado|bairro|centro|parque|ponto|acesso|retorno|elevado|túnel|tunel|viaduto|cruzamento|entroncamento)/i;
+
+  const siglas = /^(TICEN|TITRI|TICAN|TISAC|TIFOR|TIREI|UFSC|IFSC|UPA|SAMU|GMF|PM|PRF|DNIT)$/i;
+
+  // =========================
+  // 🚧 REGRAS ESPECIAIS
+  // =========================
+
+  // Rodovias (SC-401, BR-101...)
+  if (/^(sc|br|sp|rs|mg|pr)-?\d+/i.test(v)) return "à " + v;
+
+  // Apenas número (ex: 401)
+  if (/^\d+/.test(v)) return "ao " + v;
+
+  // Siglas (padrão masculino)
+  if (siglas.test(v)) return "ao " + v;
+
+  // =========================
+  // 📍 INÍCIO DA FRASE
+  // =========================
+
+  if (feminino.test(v)) return "à " + v;
+  if (masculino.test(v)) return "ao " + v;
+
+  // =========================
+  // 🧠 CONTEXTO INTERNO
+  // =========================
+
+  if (/(rua|avenida|travessa|servidao)/i.test(vLower)) return "à " + v;
+  if (/(terminal|hospital|posto)/i.test(vLower)) return "ao " + v;
+  if (/(praça|ponte|beira-mar)/i.test(vLower)) return "à " + v;
+  if (/(bairro|centro|parque)/i.test(vLower)) return "ao " + v;
+  if (/(rodovia|estrada)/i.test(vLower)) return "à " + v;
+
+  // =========================
+  // 🔤 HEURÍSTICA FINAL
+  // =========================
+
+  // termina com "a" → feminino (maior chance)
+  if (vLower.endsWith("a")) return "à " + v;
+
+  // termina com "o" → masculino
+  if (vLower.endsWith("o")) return "ao " + v;
+
+  // nomes próprios de lugar (ex: Trindade, Ingleses)
+  if (/^[A-ZÀ-Ú]/.test(v)) {
+    return "na " + v; // mais natural em cidades/bairros
   }
 
-  // fallback
-  return v;
+  // =========================
+  // 🔄 FALLBACK FINAL
+  // =========================
+
+  return "ao " + v;
 }
   
 /**********************
