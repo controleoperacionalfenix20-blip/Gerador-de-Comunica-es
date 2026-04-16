@@ -7,8 +7,8 @@
 <title>Gerador de Comunicações — Consórcio Fênix</title>
 <style>
 :root{
-  --primary:#002A42;      /* azul escuro institucional */
-  --secondary:#FFCC00;    /* amarelo Fênix */
+  --primary:#002A42;      
+  --secondary:#FFCC00;    
   --bg:#f5f7fa;
   --text:#1b2a31;
   --muted:#73828c;
@@ -175,12 +175,69 @@ textarea{
   gap:12px;
   margin-top:10px;
 }
+
+  /* ===== MODAL ===== */
+.modal{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.5);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
+
+.modal.show{
+  display:flex;
+}
+
+.modal-box{
+  background:#fff;
+  padding:24px;
+  border-radius:14px;
+  width:100%;
+  max-width:400px;
+  text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  border-top:6px solid var(--secondary);
+}
+
+.modal-box h3{
+  margin:0 0 10px;
+  color:var(--primary);
+}
+
+.modal-box p{
+  font-size:14px;
+  color:#555;
+}
+
+.modal-actions{
+  margin-top:18px;
+  display:flex;
+  gap:10px;
+  justify-content:center;
 }
 
 </style>
 </head>
+  
 <body>
 
+<div id="modalManter" class="modal">
+  <div class="modal-box">
+    <h3>Manter dados preenchidos?</h3>
+    <p>Deseja manter as informações já digitadas ao trocar a categoria?</p>
+
+    <div class="modal-actions">
+      <button id="btnManterSim" class="btn">Sim, manter</button>
+      <button id="btnManterNao" class="btn ghost">Não, limpar</button>
+    </div>
+  </div>
+</div>  
 <div class="header">
   <div class="container">
     <div>
@@ -556,7 +613,7 @@ function salvarCampos() {
 /* ============================
   Render dynamic inputs when categoria changes
 ============================ */
-function onCategoriaChange() {
+async function onCategoriaChange() {
   const cat = document.getElementById('categoria').value;
   const area = document.getElementById('camposArea');
 
@@ -564,10 +621,11 @@ function onCategoriaChange() {
   salvarCampos();
 
   // 🔹 pergunta se quer manter (só se tiver algo preenchido)
-  let manter = false;
-  if (Object.values(dadosAnteriores).some(v => v.trim() !== "")) {
-    manter = confirm("Deseja manter os dados já preenchidos?");
-  }
+let manter = false;
+
+if (Object.values(dadosAnteriores).some(v => v.trim() !== "")) {
+  manter = await perguntarManterDados();
+}
 
   area.innerHTML = '';
   document.getElementById('resultado').value = '';
@@ -850,6 +908,23 @@ function enviarGoogleForms() {
             "_blank"
         );
     });
+}
+
+function perguntarManterDados() {
+  return new Promise((resolve) => {
+    const modal = document.getElementById("modalManter");
+    modal.classList.add("show");
+
+    document.getElementById("btnManterSim").onclick = () => {
+      modal.classList.remove("show");
+      resolve(true);
+    };
+
+    document.getElementById("btnManterNao").onclick = () => {
+      modal.classList.remove("show");
+      resolve(false);
+    };
+  });
 }
   
 </script>
