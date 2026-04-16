@@ -539,11 +539,35 @@ const FIELDS_BY_CATEGORY = {
 };  
 
 /* ============================
+  SALVAR DADOS DOS CAMPOS
+============================ */
+let dadosAnteriores = {};
+
+function salvarCampos() {
+  const inputs = document.querySelectorAll('#camposArea input');
+
+  dadosAnteriores = {};
+
+  inputs.forEach(input => {
+    dadosAnteriores[input.dataset.key] = input.value;
+  });
+}
+
+/* ============================
   Render dynamic inputs when categoria changes
 ============================ */
-  function onCategoriaChange() {
+function onCategoriaChange() {
   const cat = document.getElementById('categoria').value;
   const area = document.getElementById('camposArea');
+
+  // 🔹 salva antes de trocar
+  salvarCampos();
+
+  // 🔹 pergunta se quer manter (só se tiver algo preenchido)
+  let manter = false;
+  if (Object.values(dadosAnteriores).some(v => v.trim() !== "")) {
+    manter = confirm("Deseja manter os dados já preenchidos?");
+  }
 
   area.innerHTML = '';
   document.getElementById('resultado').value = '';
@@ -560,10 +584,18 @@ const FIELDS_BY_CATEGORY = {
   let html = '<div class="grid2">';
 
   for (let f of fields) {
+    const valor = manter && dadosAnteriores[f.k] ? dadosAnteriores[f.k] : '';
+
     html += `
       <div class="field">
         <label for="f_${f.k}">${f.label}</label>
-        <input id="f_${f.k}" data-key="${f.k}" type="text" placeholder="${f.label}">
+        <input 
+          id="f_${f.k}" 
+          data-key="${f.k}" 
+          type="text" 
+          placeholder="${f.label}"
+          value="${valor}"
+        >
       </div>
     `;
   }
