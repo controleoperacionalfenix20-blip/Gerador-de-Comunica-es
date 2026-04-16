@@ -345,13 +345,24 @@ textarea{
   </div>
 
 <script>
-/* ============================
-  Templates (textos originais que você mandou)
-   - uso tokens nomeados para facilitar substituição
-   - tokens: __hora__, __minutos__, __veiculo_programado__, __outro_veiculo__, __linha__,
-             __sentido__, __local__, __proximo__, __fiscal__, __veiculo_enviado__, __hora_partida__,
-             __protocolo__, __bairro__, __veiculo_resposta__
-  ============================ */
+
+document.addEventListener("keydown", function(e) {
+
+  // tecla Enter
+  if (e.key === "Enter") {
+
+    // evita quebrar textarea (enter normal dentro dele)
+    if (e.target.tagName.toLowerCase() === "textarea") return;
+
+    // evita submit padrão
+    e.preventDefault();
+
+    // chama sua função de gerar texto
+    gerarTexto();
+  }
+
+});
+  
 const TEMPLATES = {
   "PM_SEM_SOCORRO": `Segundo informações da fiscalização, por volta das __hora__, o veículo programado apresentou problemas mecânicos __local__, próximo __proximo__. Os passageiros foram transferidos para o __veiculo_resposta__ que passou pelo local no momento. Em virtude de problemas operacionais, não foi possível enviar outro ônibus para continuar a viagem.`,
 
