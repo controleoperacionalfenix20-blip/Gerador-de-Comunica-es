@@ -878,14 +878,19 @@ function gerarTexto() {
       continue;
     }
 
-    // CAMPOS NORMAIS
-    texto = texto.split(token).join(val || "____");
-  }
-
-  texto = texto.replace(/_{4,}/g, "____");
-  document.getElementById('resultado').value = texto;
+  // VEÍCULO DE TERCEIRO (INTELIGENTE)
+if (f.k === "veiculo_terceiro") {
+  texto = texto.split(token).join(formatarVeiculo(val));
+  continue;
 }
 
+// CAMPOS NORMAIS
+texto = texto.split(token).join(val || "____");
+}
+
+  texto = texto.replace(/_{4,}/g, "____");
+document.getElementById('resultado').value = texto;
+  
 /* ============================
   Utilities
 ============================ */
@@ -964,6 +969,51 @@ function perguntarManterDados() {
       resolve(false);
     };
   });
+}
+
+  function formatarVeiculo(texto) {
+  if (!texto) return "____";
+
+  let v = texto.trim().toLowerCase();
+
+  // já tem artigo → mantém
+  if (/^(um|uma|uns|umas)\b/i.test(v)) return texto;
+
+  const mapa = {
+    // masculino
+    carro: "um",
+    caminhão: "um",
+    caminhao: "um",
+    ônibus: "um",
+    onibus: "um",
+    veículo: "um",
+    veiculo: "um",
+    utilitário: "um",
+    utilitario: "um",
+    van: "uma", // exceção
+    microônibus: "um",
+    microonibus: "um",
+
+    // feminino
+    moto: "uma",
+    motocicleta: "uma",
+    bicicleta: "uma",
+    carreta: "uma",
+    ambulância: "uma",
+    ambulancia: "uma",
+    viatura: "uma"
+  };
+
+  // pega primeira palavra
+  const palavra = v.split(" ")[0];
+
+  if (mapa[palavra]) {
+    return mapa[palavra] + " " + texto;
+  }
+
+  // heurística (fallback)
+  if (v.endsWith("a")) return "uma " + texto;
+  return "um " + texto;
 }
 
 window.addEventListener("DOMContentLoaded", () => {
