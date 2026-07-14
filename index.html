@@ -1097,14 +1097,14 @@ function perguntarManterDados() {
 window.addEventListener("DOMContentLoaded", () => {
   onCategoriaChange();
 });
-
+  
 // ==========================================================
-// CONFIGURAÇÃO DA PLANILHA (https://script.google.com/macros/s/AKfycbwLqX0Layu-cT8pVRyM6IojajtDF3gLH895gJ4XTk7yeS3FB3nH2wS0HcWuJtA-Enno/exec)
+// CONFIGURAÇÃO DA PLANILHA 
 // ==========================================================
 const URL_MINHA_PLANILHA_PMF = "https://script.google.com/macros/s/AKfycbwLqX0Layu-cT8pVRyM6IojajtDF3gLH895gJ4XTk7yeS3FB3nH2wS0HcWuJtA-Enno/exec";
 
-// Lógica para alternar entre a aba Comum e a aba PMF
-function alternarAba(aba) {
+// Lógica para alternar entre a aba Comum e a aba PMF (Global para o navegador encontrar)
+window.alternarAba = function(aba) {
   const comum = document.getElementById('containerComum');
   const pmf = document.getElementById('containerPMF');
   const btnComum = document.getElementById('btnAbaComum');
@@ -1112,52 +1112,71 @@ function alternarAba(aba) {
   const btnEnviarGForms = document.getElementById('btnEnviarGForms');
 
   if (aba === 'pmf') {
-    comum.style.display = 'none';
-    pmf.style.display = 'block';
-    btnComum.classList.add('ghost');
-    btnPMF.classList.remove('ghost');
-    if(btnEnviarGForms) btnEnviarGForms.style.display = 'none';
+    if (comum) comum.style.display = 'none';
+    if (pmf) pmf.style.display = 'block';
+    if (btnComum) {
+      btnComum.classList.add('ghost');
+      btnComum.style.background = '#fff';
+      btnComum.style.color = 'var(--primary)';
+    }
+    if (btnPMF) {
+      btnPMF.classList.remove('ghost');
+      btnPMF.style.background = 'var(--primary)';
+      btnPMF.style.color = '#fff';
+    }
+    if (btnEnviarGForms) btnEnviarGForms.style.display = 'none';
   } else {
-    comum.style.display = 'block';
-    pmf.style.display = 'none';
-    btnComum.classList.remove('ghost');
-    btnPMF.classList.add('ghost');
-    if(btnEnviarGForms) btnEnviarGForms.style.display = 'inline-block';
+    if (comum) comum.style.display = 'block';
+    if (pmf) pmf.style.display = 'none';
+    if (btnComum) {
+      btnComum.classList.remove('ghost');
+      btnComum.style.background = 'var(--primary)';
+      btnComum.style.color = '#fff';
+    }
+    if (btnPMF) {
+      btnPMF.classList.add('ghost');
+      btnPMF.style.background = '#fff';
+      btnPMF.style.color = 'var(--primary)';
+    }
+    if (btnEnviarGForms) btnEnviarGForms.style.display = 'inline-block';
   }
-  document.getElementById('resultado').value = '';
-}
+  const campoResultado = document.getElementById('resultado');
+  if (campoResultado) campoResultado.value = '';
+};
 
 // Controla quais campos aparecem dependendo do tipo (Quebra ou VNR)
-function alternarCamposPMF() {
+window.alternarCamposPMF = function() {
   const tipo = document.getElementById('pmf_tipo').value;
   const quebraDet = document.getElementById('secao_quebra_detalhes');
   const vnrDet = document.getElementById('secao_vnr_detalhes');
   const lblPrefixo = document.getElementById('lbl_prefixo');
 
   if (tipo === 'QUEBRA') {
-    quebraDet.style.display = 'block';
-    vnrDet.style.display = 'none';
-    lblPrefixo.innerText = "Veículo (Prefixo):";
+    if (quebraDet) quebraDet.style.display = 'block';
+    if (vnrDet) vnrDet.style.display = 'none';
+    if (lblPrefixo) lblPrefixo.innerText = "Veículo (Prefixo):";
   } else {
-    quebraDet.style.display = 'none';
-    vnrDet.style.display = 'block';
-    lblPrefixo.innerText = "Carro Programado (Prefixo):";
+    if (quebraDet) quebraDet.style.display = 'none';
+    if (vnrDet) vnrDet.style.display = 'block';
+    if (lblPrefixo) lblPrefixo.innerText = "Carro Programado (Prefixo):";
   }
-}
+};
 
 // Controla se mostra o campo do ônibus reserva
-function alternarContinuidadePMF() {
+window.alternarContinuidadePMF = function() {
   const continuidade = document.getElementById('pmf_continuidade').value;
   const blocoReserva = document.getElementById('bloco_veiculo_continuidade');
-  if (continuidade === 'SIM') {
-    blocoReserva.style.display = 'block';
-  } else {
-    blocoReserva.style.display = 'none';
+  if (blocoReserva) {
+    if (continuidade === 'SIM') {
+      blocoReserva.style.display = 'block';
+    } else {
+      blocoReserva.style.display = 'none';
+    }
   }
-}
+};
 
 // Gera o texto formatado no padrão PMF e envia para a sua planilha do Google
-function gerarEEnviarPMF() {
+window.gerarEEnviarPMF = function() {
   const tipo = document.getElementById('pmf_tipo').value;
   const prefixo = document.getElementById('pmf_prefixo').value.trim();
   const linha = document.getElementById('pmf_linha').value.trim();
@@ -1191,7 +1210,8 @@ function gerarEEnviarPMF() {
     textoGerado = `Linha ${linha} de ${horario} ${sentido}. O carro programado, ${prefixo} ${motivoVnr}`;
   }
 
-  document.getElementById('resultado').value = textoGerado;
+  const campoResultado = document.getElementById('resultado');
+  if (campoResultado) campoResultado.value = textoGerado;
 
   const payload = {
     ocorrencia: tipo,
@@ -1217,9 +1237,9 @@ function gerarEEnviarPMF() {
   .catch(err => {
     alert("Erro ao gravar na planilha: " + err);
   });
-}
+};
 
-function limparPMF() {
+window.limparPMF = function() {
   document.getElementById('pmf_prefixo').value = '';
   document.getElementById('pmf_linha').value = '';
   document.getElementById('pmf_horario').value = '';
@@ -1228,9 +1248,10 @@ function limparPMF() {
   document.getElementById('pmf_local_interrupcao').value = '';
   document.getElementById('pmf_carro_reserva').value = '';
   document.getElementById('pmf_motivo_vnr').value = '';
-  document.getElementById('resultado').value = '';
-}
-  
+  const campoResultado = document.getElementById('resultado');
+  if (campoResultado) campoResultado.value = '';
+};
+
 </script>
 </body>
 </html>
