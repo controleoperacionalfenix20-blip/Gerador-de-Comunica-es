@@ -1093,11 +1093,10 @@ window.addEventListener("DOMContentLoaded", () => {
 });
   
 // ==========================================================
-// CONFIGURAÇÃO DA PLANILHA (Troque pela sua URL real!)
+// CONFIGURAÇÃO DA PLANILHA (COLE SEU LINK ABAIXO)
 // ==========================================================
-const URL_MINHA_PLANILHA_PMF = "COLE_AQUI_SUA_URL_DO_PASSO_6";
+const URL_MINHA_PLANILHA_PMF = "https://script.google.com/macros/s/AKfycbwLqX0Layu-cT8pVRyM6IojajtDF3gLH895gJ4XTk7yeS3FB3nH2wS0HcWuJtA-Enno/exec";
 
-// Lógica para alternar entre as abas
 window.alternarAba = function(aba) {
   const comum = document.getElementById('containerComum');
   const pmf = document.getElementById('containerPMF');
@@ -1105,66 +1104,18 @@ window.alternarAba = function(aba) {
   const btnPMF = document.getElementById('btnAbaPMF');
 
   if (aba === 'pmf') {
-    if (comum) comum.style.display = 'none';
-    if (pmf) pmf.style.display = 'block';
-    if (btnComum) {
-      btnComum.classList.add('ghost');
-      btnComum.style.background = '#fff';
-      btnComum.style.color = 'var(--primary)';
-    }
-    if (btnPMF) {
-      btnPMF.classList.remove('ghost');
-      btnPMF.style.background = 'var(--primary)';
-      btnPMF.style.color = '#fff';
-    }
+    comum.style.display = 'none';
+    pmf.style.display = 'block';
+    btnComum.classList.add('ghost');
+    btnPMF.classList.remove('ghost');
   } else {
-    if (comum) comum.style.display = 'block';
-    if (pmf) pmf.style.display = 'none';
-    if (btnComum) {
-      btnComum.classList.remove('ghost');
-      btnComum.style.background = 'var(--primary)';
-      btnComum.style.color = '#fff';
-    }
-    if (btnPMF) {
-      btnPMF.classList.add('ghost');
-      btnPMF.style.background = '#fff';
-      btnPMF.style.color = 'var(--primary)';
-    }
+    comum.style.display = 'block';
+    pmf.style.display = 'none';
+    btnComum.classList.remove('ghost');
+    btnPMF.classList.add('ghost');
   }
 };
 
-// Controla quais campos aparecem dependendo do tipo (Quebra ou VNR)
-window.alternarCamposPMF = function() {
-  const tipo = document.getElementById('pmf_tipo').value;
-  const quebraDet = document.getElementById('secao_quebra_detalhes');
-  const vnrDet = document.getElementById('secao_vnr_detalhes');
-  const lblPrefixo = document.getElementById('lbl_prefixo');
-
-  if (tipo === 'QUEBRA') {
-    if (quebraDet) quebraDet.style.display = 'block';
-    if (vnrDet) vnrDet.style.display = 'none';
-    if (lblPrefixo) lblPrefixo.innerText = "Veículo (Prefixo):";
-  } else {
-    if (quebraDet) quebraDet.style.display = 'none';
-    if (vnrDet) vnrDet.style.display = 'block';
-    if (lblPrefixo) lblPrefixo.innerText = "Carro Programado (Prefixo):";
-  }
-};
-
-// Controla se mostra o campo do reserva
-window.alternarContinuidadePMF = function() {
-  const continuidade = document.getElementById('pmf_continuidade').value;
-  const blocoReserva = document.getElementById('bloco_veiculo_continuidade');
-  if (blocoReserva) {
-    if (continuidade === 'SIM') {
-      blocoReserva.style.display = 'block';
-    } else {
-      blocoReserva.style.display = 'none';
-    }
-  }
-};
-
-// Gera o texto formatado no padrão PMF e envia para a planilha
 window.gerarEEnviarPMF = function() {
   const tipo = document.getElementById('pmf_tipo').value;
   const prefixo = document.getElementById('pmf_prefixo').value.trim();
@@ -1172,11 +1123,6 @@ window.gerarEEnviarPMF = function() {
   const horario = document.getElementById('pmf_horario').value.trim();
   const sentido = document.getElementById('pmf_sentido').value.trim();
   
-  if (!prefixo || !linha || !horario || !sentido) {
-    alert("Por favor, preencha os campos essenciais: Prefixo, Linha, Horário e Sentido.");
-    return;
-  }
-
   let textoGerado = "";
   let motivoSalvar = "";
 
@@ -1188,81 +1134,60 @@ window.gerarEEnviarPMF = function() {
     
     motivoSalvar = motivo + " | Local: " + local;
 
-    // Formatação livre de erros de concordância
     if (continuidade === 'SIM') {
       textoGerado = `${prefixo} na linha ${linha} de ${horario} ${sentido}. O veículo ${motivo} quando se encontrava ${local}. Os passageiros foram realocados para outros veículos que passavam pelo local, e a fiscalização alocou o ${reserva}.`;
     } else {
       textoGerado = `${prefixo} na linha ${linha} de ${horario} ${sentido}. O veículo ${motivo} quando se encontrava ${local}. Os passageiros foram transferidos para o próximo coletivo que passou no local. A fiscalização informou que não foi possível enviar outro carro para continuar a viagem.`;
     }
   } else {
-    // VNR Ajustada exatamente ao seu modelo padrão
+    // MODELO VNR EXATO: Linha 1126 de 14h33 ida. O carro programado, 16101...
     const motivoVnr = document.getElementById('pmf_motivo_vnr').value.trim();
     motivoSalvar = motivoVnr;
     textoGerado = `Linha ${linha} de ${horario} ${sentido}. O carro programado, ${prefixo} ${motivoVnr}`;
   }
 
-  const campoResultado = document.getElementById('resultado_pmf');
-  if (campoResultado) campoResultado.value = textoGerado;
+  document.getElementById('resultado_pmf').value = textoGerado;
 
   const payload = {
-    ocorrencia: tipo,
-    veiculo: prefixo,
-    linha: linha,
-    horario: horario,
-    sentido: sentido,
-    motivo: motivoSalvar,
-    textoCompleto: textoGerado
+    ocorrencia: tipo, veiculo: prefixo, linha: linha, horario: horario, sentido: sentido, motivo: motivoSalvar, textoCompleto: textoGerado
   };
 
   fetch(URL_MINHA_PLANILHA_PMF, {
     method: 'POST',
     mode: 'no-cors',
-    headers: {
-      'Content-Type': 'application/json'
-    },
+    headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(payload)
-  })
-  .then(() => {
-    alert("Texto gerado! Informações enviadas para a planilha.");
-  })
-  .catch(err => {
-    alert("Erro ao gravar na planilha: " + err);
-  });
+  }).then(() => alert("Texto gerado e enviado para a planilha!"));
 };
 
-// Funções da nova área de resultados exclusiva do PMF
+// Funções de apoio
+window.alternarCamposPMF = function() {
+  const tipo = document.getElementById('pmf_tipo').value;
+  document.getElementById('secao_quebra_detalhes').style.display = tipo === 'QUEBRA' ? 'block' : 'none';
+  document.getElementById('secao_vnr_detalhes').style.display = tipo === 'VNR' ? 'block' : 'none';
+  document.getElementById('lbl_prefixo').innerText = tipo === 'QUEBRA' ? "Veículo (Prefixo):" : "Carro Programado (Prefixo):";
+};
+
+window.alternarContinuidadePMF = function() {
+  const cont = document.getElementById('pmf_continuidade').value;
+  document.getElementById('bloco_veiculo_continuidade').style.display = cont === 'SIM' ? 'block' : 'none';
+};
+
 window.copiarPMF = function() {
   const res = document.getElementById('resultado_pmf');
-  if (res) {
-    res.select();
-    document.execCommand('copy');
-    alert("Texto do PMF copiado!");
-  }
+  res.select();
+  document.execCommand('copy');
+  alert("Copiado!");
 };
 
 window.toggleEditarPMF = function() {
   const res = document.getElementById('resultado_pmf');
-  if (res) {
-    res.readOnly = !res.readOnly;
-    if (!res.readOnly) {
-      res.style.borderColor = "#ff4444";
-    } else {
-      res.style.borderColor = "var(--primary)";
-    }
-  }
+  res.readOnly = !res.readOnly;
+  res.style.borderColor = res.readOnly ? "var(--primary)" : "#ff4444";
 };
 
 window.limparPMF = function() {
-  document.getElementById('pmf_prefixo').value = '';
-  document.getElementById('pmf_linha').value = '';
-  document.getElementById('pmf_horario').value = '';
-  document.getElementById('pmf_sentido').value = '';
-  document.getElementById('pmf_motivo_quebra').value = '';
-  document.getElementById('pmf_local_interrupcao').value = '';
-  if(document.getElementById('pmf_carro_reserva')) document.getElementById('pmf_carro_reserva').value = '';
-  document.getElementById('pmf_motivo_vnr').value = '';
-  const campoResultado = document.getElementById('resultado_pmf');
-  if (campoResultado) campoResultado.value = '';
+  document.querySelectorAll('#containerPMF input, #containerPMF textarea').forEach(i => i.value = '');
 };
   
 </script>
