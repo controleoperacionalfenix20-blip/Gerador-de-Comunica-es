@@ -239,8 +239,8 @@ textarea{
   </div>
 </div>  
 <div class="header">
-  <div class="container">
-    </div> <div id="containerPMF" style="display: none;">
+  
+  </div> <div id="containerPMF" style="display: none;">
   <div class="card" style="border-left: 8px solid var(--primary);">
     <h2 style="color: var(--primary); margin-top: 0; font-size: 20px;">Registro de Ocorrências PMF</h2>
     
@@ -257,19 +257,19 @@ textarea{
     <div class="grid2" style="margin-top: 15px;">
       <div>
         <label id="lbl_prefixo" for="pmf_prefixo">Veículo (Prefixo):</label>
-        <input type="text" id="pmf_prefixo" placeholder="Ex: 1533 ou 16101">
+        <input type="text" id="pmf_prefixo" placeholder="Ex: 16101">
       </div>
       <div>
         <label for="pmf_linha">Linha:</label>
-        <input type="text" id="pmf_linha" placeholder="Ex: 221">
+        <input type="text" id="pmf_linha" placeholder="Ex: 1126">
       </div>
       <div>
         <label for="pmf_horario">Horário da Viagem:</label>
-        <input type="text" id="pmf_horario" placeholder="Ex: 15h00 ou 14h33">
+        <input type="text" id="pmf_horario" placeholder="Ex: 14h33">
       </div>
       <div>
         <label for="pmf_sentido">Sentido:</label>
-        <input type="text" id="pmf_sentido" placeholder="Ex: volta/TICAN ou ida">
+        <input type="text" id="pmf_sentido" placeholder="Ex: ida">
       </div>
     </div>
 
@@ -277,11 +277,11 @@ textarea{
       <div class="grid2">
         <div>
           <label for="pmf_motivo_quebra">Problema Apresentado (Motivo):</label>
-          <input type="text" id="pmf_motivo_quebra" placeholder="Ex: Problemas mecânicos">
+          <input type="text" id="pmf_motivo_quebra" placeholder="Ex: apresentou problemas mecânicos">
         </div>
         <div>
-          <label for="pmf_local_interrupcao">Local e Hora da Interrupção:</label>
-          <input type="text" id="pmf_local_interrupcao" placeholder="Ex: SC 401, próximo à Havan, por volta das 16h10">
+          <label for="pmf_local_interrupcao">Local da Interrupção:</label>
+          <input type="text" id="pmf_local_interrupcao" placeholder="Ex: na Av. Beira Mar Norte">
         </div>
       </div>
       
@@ -289,12 +289,12 @@ textarea{
         <div>
           <label for="pmf_continuidade">Houve continuidade por outro veículo?</label>
           <select id="pmf_continuidade" onchange="alternarContinuidadePMF()">
-            <option value="SIM">Sim (Outro autocarro foi alocado)</option>
-            <option value="NAO">Não (Viagem cancelada/Não foi possível enviar carro)</option>
+            <option value="SIM">Sim (Outro veículo foi alocado)</option>
+            <option value="NAO">Não (Viagem cancelada/Não foi enviado carro)</option>
           </select>
         </div>
         <div id="bloco_veiculo_continuidade">
-          <label for="pmf_carro_reserva">Veículo alocado para continuidade + Horário de Retomada:</label>
+          <label for="pmf_carro_reserva">Veículo alocado + Horário de Retomada:</label>
           <input type="text" id="pmf_carro_reserva" placeholder="Ex: veículo 11687, retomada às 16h33">
         </div>
       </div>
@@ -302,7 +302,7 @@ textarea{
 
     <div id="secao_vnr_detalhes" style="display: none; margin-top: 15px;">
       <label for="pmf_motivo_vnr">Descreva os detalhes da VNR (continuação do texto):</label>
-      <textarea id="pmf_motivo_vnr" style="min-height: 100px;" placeholder="Ex: apresentou problemas mecânicos..."></textarea>
+      <textarea id="pmf_motivo_vnr" style="min-height: 100px;" placeholder="Ex: apresentou problemas mecânicos durante o sentido volta. A mecânica foi acionada para resolver o problema no local, todavia, não foi possível arrumar o problema, não sendo mais viável, devido ao tempo passado, enviar o reserva para realizar a viagem."></textarea>
     </div>
 
     <div style="margin-top: 20px; display: flex; gap: 8px;">
@@ -310,22 +310,16 @@ textarea{
       <button class="btn ghost" onclick="limparPMF()">Limpar Campos</button>
     </div>
   </div>
-</div>
-    <div>
-      <div class="header-title">Gerador de Comunicações</div>
-      <div class="header-sub">Consórcio Fênix — Uso interno dos controladores</div>
+
+  <div class="card" style="border-left: 8px solid var(--primary); margin-top: 20px;">
+    <label>Resultado PMF:</label>
+    <textarea id="resultado_pmf" placeholder="O texto formatado do PMF aparecerá aqui..." readonly style="background-color: #fcfcfc;"></textarea>
+    <div class="actions" style="margin-top:10px">
+      <button class="btn" onclick="copiarPMF()">Copiar Texto</button>
+      <button class="btn ghost" onclick="toggleEditarPMF()">Editar manual</button>
     </div>
   </div>
 </div>
-  
-  <div class="container">
-    <h1>Gerador de Comunicações</h1>
-    
-<div style="margin-bottom: 20px; display: flex; gap: 10px;">
-  <button class="btn" id="btnAbaComum" onclick="alternarAba('comum')">Comunicação Diária (Geral)</button>
-  <button class="btn ghost" id="btnAbaPMF" onclick="alternarAba('pmf')">Gerador PMF (Fiscais/Quebras)</button>
-</div>
-</div> </div>
   
     <div class="card">
       <div class="row">
@@ -1099,17 +1093,16 @@ window.addEventListener("DOMContentLoaded", () => {
 });
   
 // ==========================================================
-// CONFIGURAÇÃO DA PLANILHA 
+// CONFIGURAÇÃO DA PLANILHA (Troque pela sua URL real!)
 // ==========================================================
-const URL_MINHA_PLANILHA_PMF = "https://script.google.com/macros/s/AKfycbwLqX0Layu-cT8pVRyM6IojajtDF3gLH895gJ4XTk7yeS3FB3nH2wS0HcWuJtA-Enno/exec";
+const URL_MINHA_PLANILHA_PMF = "COLE_AQUI_SUA_URL_DO_PASSO_6";
 
-// Lógica para alternar entre a aba Comum e a aba PMF (Global para o navegador encontrar)
+// Lógica para alternar entre as abas
 window.alternarAba = function(aba) {
   const comum = document.getElementById('containerComum');
   const pmf = document.getElementById('containerPMF');
   const btnComum = document.getElementById('btnAbaComum');
   const btnPMF = document.getElementById('btnAbaPMF');
-  const btnEnviarGForms = document.getElementById('btnEnviarGForms');
 
   if (aba === 'pmf') {
     if (comum) comum.style.display = 'none';
@@ -1124,7 +1117,6 @@ window.alternarAba = function(aba) {
       btnPMF.style.background = 'var(--primary)';
       btnPMF.style.color = '#fff';
     }
-    if (btnEnviarGForms) btnEnviarGForms.style.display = 'none';
   } else {
     if (comum) comum.style.display = 'block';
     if (pmf) pmf.style.display = 'none';
@@ -1138,10 +1130,7 @@ window.alternarAba = function(aba) {
       btnPMF.style.background = '#fff';
       btnPMF.style.color = 'var(--primary)';
     }
-    if (btnEnviarGForms) btnEnviarGForms.style.display = 'inline-block';
   }
-  const campoResultado = document.getElementById('resultado');
-  if (campoResultado) campoResultado.value = '';
 };
 
 // Controla quais campos aparecem dependendo do tipo (Quebra ou VNR)
@@ -1162,7 +1151,7 @@ window.alternarCamposPMF = function() {
   }
 };
 
-// Controla se mostra o campo do ônibus reserva
+// Controla se mostra o campo do reserva
 window.alternarContinuidadePMF = function() {
   const continuidade = document.getElementById('pmf_continuidade').value;
   const blocoReserva = document.getElementById('bloco_veiculo_continuidade');
@@ -1175,7 +1164,7 @@ window.alternarContinuidadePMF = function() {
   }
 };
 
-// Gera o texto formatado no padrão PMF e envia para a sua planilha do Google
+// Gera o texto formatado no padrão PMF e envia para a planilha
 window.gerarEEnviarPMF = function() {
   const tipo = document.getElementById('pmf_tipo').value;
   const prefixo = document.getElementById('pmf_prefixo').value.trim();
@@ -1197,20 +1186,22 @@ window.gerarEEnviarPMF = function() {
     const continuidade = document.getElementById('pmf_continuidade').value;
     const reserva = document.getElementById('pmf_carro_reserva').value.trim();
     
-    motivoSalvar = motivo + " | Interrupção em: " + local;
+    motivoSalvar = motivo + " | Local: " + local;
 
+    // Formatação livre de erros de concordância
     if (continuidade === 'SIM') {
-      textoGerado = `${prefixo} na linha ${linha} de ${horario} ${sentido}. ${motivo} quando se encontrava na ${local}. Os passageiros foram realocados para outros veículos que passavam pelo local, e a fiscalização alocou o ${reserva}.`;
+      textoGerado = `${prefixo} na linha ${linha} de ${horario} ${sentido}. O veículo ${motivo} quando se encontrava ${local}. Os passageiros foram realocados para outros veículos que passavam pelo local, e a fiscalização alocou o ${reserva}.`;
     } else {
-      textoGerado = `${prefixo} na linha ${linha} de ${horario} ${sentido}. ${motivo} quando se encontrava na ${local}. Os passageiros foram transferidos para o próximo coletivo que passou no local. A fiscalização informou que não foi possível enviar outro carro para continuar a viagem.`;
+      textoGerado = `${prefixo} na linha ${linha} de ${horario} ${sentido}. O veículo ${motivo} quando se encontrava ${local}. Os passageiros foram transferidos para o próximo coletivo que passou no local. A fiscalização informou que não foi possível enviar outro carro para continuar a viagem.`;
     }
   } else {
+    // VNR Ajustada exatamente ao seu modelo padrão
     const motivoVnr = document.getElementById('pmf_motivo_vnr').value.trim();
     motivoSalvar = motivoVnr;
     textoGerado = `Linha ${linha} de ${horario} ${sentido}. O carro programado, ${prefixo} ${motivoVnr}`;
   }
 
-  const campoResultado = document.getElementById('resultado');
+  const campoResultado = document.getElementById('resultado_pmf');
   if (campoResultado) campoResultado.value = textoGerado;
 
   const payload = {
@@ -1232,11 +1223,33 @@ window.gerarEEnviarPMF = function() {
     body: JSON.stringify(payload)
   })
   .then(() => {
-    alert("Texto gerado! Informações enviadas para a planilha dos Chefes.");
+    alert("Texto gerado! Informações enviadas para a planilha.");
   })
   .catch(err => {
     alert("Erro ao gravar na planilha: " + err);
   });
+};
+
+// Funções da nova área de resultados exclusiva do PMF
+window.copiarPMF = function() {
+  const res = document.getElementById('resultado_pmf');
+  if (res) {
+    res.select();
+    document.execCommand('copy');
+    alert("Texto do PMF copiado!");
+  }
+};
+
+window.toggleEditarPMF = function() {
+  const res = document.getElementById('resultado_pmf');
+  if (res) {
+    res.readOnly = !res.readOnly;
+    if (!res.readOnly) {
+      res.style.borderColor = "#ff4444";
+    } else {
+      res.style.borderColor = "var(--primary)";
+    }
+  }
 };
 
 window.limparPMF = function() {
@@ -1246,12 +1259,12 @@ window.limparPMF = function() {
   document.getElementById('pmf_sentido').value = '';
   document.getElementById('pmf_motivo_quebra').value = '';
   document.getElementById('pmf_local_interrupcao').value = '';
-  document.getElementById('pmf_carro_reserva').value = '';
+  if(document.getElementById('pmf_carro_reserva')) document.getElementById('pmf_carro_reserva').value = '';
   document.getElementById('pmf_motivo_vnr').value = '';
-  const campoResultado = document.getElementById('resultado');
+  const campoResultado = document.getElementById('resultado_pmf');
   if (campoResultado) campoResultado.value = '';
 };
-
+  
 </script>
 </body>
 </html>
