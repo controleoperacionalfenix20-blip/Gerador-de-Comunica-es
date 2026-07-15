@@ -493,18 +493,17 @@ textarea{
 
 </div>
 
-      <div style="margin-top: 20px; display: flex; gap: 8px;">
-        <button class="btn" onclick="gerarTextoPMF()">Gerar Texto</button>
+      <div style="margin-top:20px;display:flex;gap:8px">
 
-<button class="btn" onclick="enviarPMF()">
-    Enviar para Planilha
-</button>
+    <button class="btn" onclick="enviarPMF()">
+        Enviar para Planilha
+    </button>
 
-<button class="btn ghost" onclick="limparPMF()">
-    Limpar Campos
-</button>
-      </div>
-    </div>
+    <button class="btn ghost" onclick="limparPMF()">
+        Limpar Campos
+    </button>
+
+</div>
 
     <div class="card" style="border-left: 8px solid var(--primary); margin-top: 20px;">
       <label>Resultado PMF:</label>
@@ -953,56 +952,69 @@ if (reserva === "SIM") {
 
 }
 
-window.enviarPMF = function() {
+window.enviarPMF = function () {
 
-  const texto =
-    document.getElementById("resultado_pmf").value.trim();
+    const tipo = document.getElementById("pmf_tipo").value;
 
-  if (!texto) {
-    alert("Primeiro gere o texto.");
-    return;
-  }
+    let texto = "";
 
-  const tipo =
-    document.getElementById("pmf_tipo").value;
+    if (tipo === "texto_livre") {
 
-  const payload = {
+        texto = document.getElementById("pmf_texto_manual").value.trim();
 
-    ocorrencia: tipo,
+        if (!texto) {
+            alert("Digite o texto da ocorrência.");
+            return;
+        }
 
-    veiculo: document.getElementById('pmf_prefixo').value,
+    } else {
 
-    linha: document.getElementById('pmf_linha').value,
+        gerarTextoPMF();
 
-    horario: document.getElementById('pmf_horario').value,
+        texto = document.getElementById("resultado_pmf").value.trim();
 
-    sentido: tipo,
+        if (!texto) {
+            alert("Não foi possível gerar o texto.");
+            return;
+        }
 
-    motivo: document.getElementById('pmf_motivo_quebra_vnr').value,
+    }
 
-    textoCompleto: texto
+    const payload = {
 
-  };
+        ocorrencia: tipo,
 
-  fetch(URL_MINHA_PLANILHA_PMF, {
+        veiculo: document.getElementById("pmf_prefixo")?.value || "",
 
-    method: 'POST',
+        linha: document.getElementById("pmf_linha")?.value || "",
 
-    mode: 'no-cors',
+        horario: document.getElementById("pmf_horario")?.value || "",
 
-    headers: {
+        sentido: tipo,
 
-      'Content-Type': 'application/json'
+        motivo: document.getElementById("pmf_motivo_quebra_vnr")?.value || "",
 
-    },
+        textoCompleto: texto
 
-    body: JSON.stringify(payload)
+    };
 
-  });
+    fetch(URL_MINHA_PLANILHA_PMF, {
 
-  alert("Enviado para a planilha!");
+        method: "POST",
 
-}
+        mode: "no-cors",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(payload)
+
+    });
+
+    alert("Enviado para a planilha!");
+
+};
   
 window.copiarPMF = function() {
   const res = document.getElementById('resultado_pmf');
