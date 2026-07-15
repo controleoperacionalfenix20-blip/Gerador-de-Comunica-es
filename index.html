@@ -599,16 +599,16 @@ A energia foi totalmente restabelecida por volta das __hora_partida__.`
 };
 
 const FIELDS_BY_CATEGORY = {
-  "PM_SEM_SOCORRO": [{k:'hora', label:'Hora do ocorrido (ex: 13:05)'},{k:'local', label:'Local / Rua'},{k:'proximo', label:'Próximo a'},{k:'veiculo_resposta', label:'Veículo resposta'}],
-  "PM_COM_SOCORRO":[{k:'hora', label:'Hora'},{k:'local', label:'Local'},{k:'proximo', label:'Próximo a'},{k:'veiculo_enviado', label:'Veículo enviado'},{k:'hora_partida', label:'Hora da partida'}],
-  "PM_VNR_OUTRO_SENTIDO":[{k:'hora', label:'Hora'},{k:'local', label:'Local'},{k:'proximo', label:'Próximo a'},{k:'veiculo_resposta', label:'Veículo resposta'},{k:'hora_partida', label:'Horário da VNR'},{k:'sentido', label:'Sentido'}],
+  "PM_SEM_SOCORRO": [{k:'hora', label:'Hora do ocorrido (ex: 13:05)'},{k:'local', label:'Local / Rua'},{k:'proximo', label:'Próximo a'},{k:'Veículo_local', label:'Veículo que passou pelo local'}],
+  "PM_COM_SOCORRO":[{k:'hora', label:'Hora'},{k:'local', label:'Local'},{k:'proximo', label:'Próximo a'},{k:'veiculo_local', label:'Veículo que passou pelo local'},{k:'hora_partida', label:'Hora da partida'}],
+  "PM_VNR_OUTRO_SENTIDO":[{k:'hora', label:'Hora'},{k:'local', label:'Local'},{k:'proximo', label:'Próximo a'},{k:'veiculo_local', label:'Veículo que passou pelo local'},{k:'hora_partida', label:'Horário da VNR'},{k:'sentido', label:'Sentido'}],
   "VAL_SEM_ENVIO":[{k:'hora', label:'Hora'},{k:'local', label:'Local'},{k:'proximo', label:'Próximo a'}],
-  "VAL_COM_ENVIO":[{k:'hora', label:'Hora'},{k:'local', label:'Local'},{k:'proximo', label:'Próximo a'},{k:'veiculo_enviado', label:'Veículo enviado'},{k:'hora_partida', label:'Hora da partida'}],
+  "VAL_COM_ENVIO":[{k:'hora', label:'Hora'},{k:'local', label:'Local'},{k:'proximo', label:'Próximo a'},{k:'veiculo_local', label:'Veículo que passou pelo local'},{k:'hora_partida', label:'Hora da partida'}],
   "VAL_REINICIOU":[{k:'hora', label:'Hora'},{k:'hora_partida', label:'Hora de retomada'}],
   "VANDALISMO_GMF":[{k:'local', label:'Local'},{k:'hora', label:'Hora'}],
   "VANDALISMO_GMF_ESCOLTA": [{k:'local', label:'Local'},{k:'terminal', label:'Terminal'},{k:'hora', label:'Hora'}],
   "AVARIA_VITIMA_CONTINUOU": [{k:'hora', label:'Hora'},{k:'veiculo_terceiro', label:'Veículo de terceiro'},{k:'local', label:'Local'},{k:'proximo', label:'Próximo a'},{k:'hora_partida', label:'Hora da partida'}],
-  "AVARIA_VITIMA_NAO_CONTINUOU":[{k:'hora', label:'Hora'},{k:'veiculo_terceiro', label:'Veículo de terceiro'},{k:'local', label:'Local'},{k:'proximo', label:'Próximo a'},{k:'veiculo_resposta', label:'Veículo resposta'}],
+  "AVARIA_VITIMA_NAO_CONTINUOU":[{k:'hora', label:'Hora'},{k:'veiculo_terceiro', label:'Veículo de terceiro'},{k:'local', label:'Local'},{k:'proximo', label:'Próximo a'},{k:'veiculo_enviado', label:'Veículo enviado'}],
   "AVARIA_SEM_VITIMA_ENVIO":[{k:'hora', label:'Hora'},{k:'local', label:'Local'},{k:'proximo', label:'Próximo a'},{k:'veiculo_enviado', label:'Veículo enviado'},{k:'hora_partida', label:'Hora de partida'}],
   "AVARIA_SEM_VITIMA_NENVIO":[{k:'hora', label:'Hora'},{k:'local', label:'Local'},{k:'proximo', label:'Próximo a'}],
   "AVARIA_VITIMA_VNR_OUTRO_SENTIDO": [{ k: 'hora', label: 'Hora' },{ k: 'veiculo_terceiro', label: 'Veículo de terceiro' },{ k: 'local', label: 'Local' },{ k: 'proximo', label: 'Próximo a' },{ k: 'hora_partida', label: 'Horário da VNR' },{ k: 'sentido', label: 'Sentido' }],
