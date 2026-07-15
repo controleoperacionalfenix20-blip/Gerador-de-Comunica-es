@@ -960,8 +960,8 @@ if (reserva === "SIM") {
     textoGerado +=
     ", todavia, não foi possível solucionar o problema, não sendo mais viável enviar o veículo reserva para realizar a viagem.";
 
-}
-
+  }
+  }
   document.getElementById("resultado_pmf").value = textoGerado;
 
 }
@@ -1039,7 +1039,6 @@ window.limparPMF = function() {
   document.getElementById('pmf_hora_ocorrencia').value = '';
   if (document.getElementById('pmf_carro_reserva')) document.getElementById('pmf_carro_reserva').value = '';
   if (document.getElementById('pmf_hora_retomada')) document.getElementById('pmf_hora_retomada').value = '';
-  document.getElementById('pmf_motivo_vnr').value = '';
   if (document.getElementById('resultado_pmf')) document.getElementById('resultado_pmf').value = '';
 };
 </script>
