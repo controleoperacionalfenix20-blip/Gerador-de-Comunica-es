@@ -837,12 +837,12 @@ window.alternarAba = function(aba) {
 
 window.alternarCamposPMF = function() {
   const tipo = document.getElementById('pmf_tipo').value;
-
   const quebraDet = document.getElementById('secao_quebra_detalhes');
   const vnrDet = document.getElementById('secao_vnr_detalhes');
   const textoLivre = document.getElementById('pmf_texto_livre');
 const camposPrincipais =
     document.getElementById('campos_pmf_principais');
+    const btnGerar = document.getElementById("btnGerarPMF");
   
   const lblPrefixo = document.getElementById('lbl_prefixo');
   const lblMotivo = document.getElementById('lbl_motivo_pmf');
@@ -853,16 +853,14 @@ const camposPrincipais =
   if (vnrDet) vnrDet.style.display = 'none';
   if (textoLivre) textoLivre.style.display = 'none';
   if (camposPrincipais) camposPrincipais.style.display = 'grid';
+  if (btnGerar) btnGerar.style.display = 'inline-block';
   
-  // Texto Livre
-  if (tipo === 'texto_livre') {
-    if (textoLivre) textoLivre.style.display = 'block';
-    return;
-  }
+  // TEXTO LIVRE
+if (tipo === 'texto_livre') {
 
-  // Problemas Mecânicos
-  if (tipo === 'texto_livre') {
-
+if (btnGerar)
+    btnGerar.style.display = 'none';
+  
     if (textoLivre)
         textoLivre.style.display = 'block';
 
@@ -892,21 +890,6 @@ window.alternarContinuidadePMF = function() {
 window.gerarTextoPMF = function() {
 
   const tipo = document.getElementById('pmf_tipo').value;
-
-  // TEXTO LIVRE
-  if (tipo === "texto_livre") {
-
-    const texto = document.getElementById("pmf_texto_manual").value.trim();
-
-    if (!texto) {
-      alert("Digite o texto da ocorrência.");
-      return;
-    }
-
-    document.getElementById("resultado_pmf").value = texto;
-    return;
-  }
-
   const prefixo = document.getElementById('pmf_prefixo').value.trim();
   const linha = document.getElementById('pmf_linha').value.trim();
   const horario = document.getElementById('pmf_horario').value.trim();
