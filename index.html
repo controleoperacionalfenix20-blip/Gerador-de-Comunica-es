@@ -493,27 +493,24 @@ textarea{
 
 </div>
 
-      <div style="margin-top:20px;display:flex;gap:8px">
-
-    <button class="btn" onclick="enviarPMF()">
-        Enviar para Planilha
-    </button>
-
-    <button class="btn ghost" onclick="limparPMF()">
-        Limpar Campos
-    </button>
-
-</div>
-
-    <div class="card" style="border-left: 8px solid var(--primary); margin-top: 20px;">
-      <label>Resultado PMF:</label>
-      <textarea id="resultado_pmf" placeholder="O texto formatado do PMF aparecerá aqui..." readonly style="background-color: #fcfcfc;"></textarea>
-      <div class="actions" style="margin-top:10px">
-        <button class="btn" onclick="copiarPMF()">Copiar Texto</button>
-        <button class="btn ghost" onclick="toggleEditarPMF()">Editar manual</button>
+      <div style="margin-top:20px; display:flex; gap:8px;">
+        <button type="button" class="btn" onclick="gerarTextoQuebraVNR()">
+          Gerar Texto
+        </button>
+        <button type="button" class="btn ghost" onclick="limparPMF()">
+          Limpar Campos
+        </button>
       </div>
-    </div>
-  </div>
+
+      <div class="card" style="border-left: 8px solid var(--primary); margin-top: 20px;">
+        <label for="resultado_quebra_vnr">Texto da Ocorrência (Confirme e edite se necessário):</label>
+        <textarea id="resultado_quebra_vnr" placeholder="O texto gerado da ocorrência aparecerá aqui..." style="background-color: #fff;"></textarea>
+        
+        <div class="actions" style="margin-top:10px">
+          <button type="button" class="btn" onclick="copiarQuebraVNR()">Copiar Texto</button>
+          <button type="button" class="btn" style="background-color: #28a745;" onclick="enviarQuebraVNR()">Enviar para Planilha</button>
+        </div>
+      </div>
 
 </div> <script>
 document.addEventListener("keydown", function(e) {
@@ -952,81 +949,124 @@ if (reserva === "SIM") {
 
 }
 
-window.enviarPMF = function () {
+// 1. Função para gerar o texto de Quebra ou VNR e exibir na tela
+window.gerarTextoQuebraVNR = function() {
+    const tipo = document.getElementById('pmf_tipo')?.value;
+    const prefixo = document.getElementById('pmf_prefixo')?.value.trim() || "____";
+    const linha = document.getElementById('pmf_linha')?.value.trim() || "____";
+    const horario = document.getElementById('pmf_horario')?.value.trim() || "____";
+    const motivoPMF = document.getElementById('pmf_motivo_quebra_vnr')?.value.trim() || "____";
+    
+    let textoGerado = "";
 
-    const tipo = document.getElementById("pmf_tipo").value;
+    if (tipo === 'texto_livre') {
+        textoGerado = document.getElementById('pmf_texto_manual')?.value || "";
+    } else if (tipo === 'QUEBRA') {
+        const local = document.getElementById('pmf_local_interrupcao')?.value.trim() || "____";
+        const horaOcorrencia = document.getElementById('pmf_hora_ocorrencia')?.value.trim() || "____";
+        const continuidade = document.getElementById('pmf_continuidade')?.value;
 
-    let texto = "";
-
-    if (tipo === "texto_livre") {
-
-        texto = document.getElementById("pmf_texto_manual").value.trim();
-
-        if (!texto) {
-            alert("Digite o texto da ocorrência.");
-            return;
+        if (continuidade === 'SIM') {
+            const reservaCarro = document.getElementById('pmf_carro_reserva')?.value.trim() || "____";
+            const reservaHora = document.getElementById('pmf_hora_retomada')?.value.trim() || "____";
+            textoGerado = `${prefixo} na linha ${linha} de ${horario}. ${motivoPMF} quando se encontrava ${local}, por volta das ${horaOcorrencia}.\n\nOs passageiros foram realocados para outros veículos que passavam pelo local, e a fiscalização alocou o veículo ${reservaCarro} para dar continuidade à viagem, que aconteceu às ${reservaHora}.`;
+        } else {
+            textoGerado = `${prefixo} na linha ${linha} de ${horario}. ${motivoPMF} quando se encontrava ${local}, por volta das ${horaOcorrencia}.\n\nOs passageiros foram transferidos para o próximo coletivo que passou no local.\n\nA fiscalização informou que não foi possível enviar outro carro para continuar a viagem.`;
+        }
+    } else { // VNR
+        const sentido = document.getElementById('pmf_sentido')?.value || "";
+        const acao = document.getElementById('pmf_acao')?.value || "";
+        const reserva = document.getElementById('pmf_reserva')?.value || "";
+        
+        let acaoReserva = "";
+        if (reserva === 'SIM') {
+            acaoReserva = " Foi enviado veículo reserva.";
+        } else {
+            acaoReserva = " Não foi enviado veículo reserva.";
         }
 
+        textoGerado = `Linha ${linha} de ${horario}. O carro programado, ${prefixo} ${motivoPMF} ${sentido}. ${acao}.${acaoReserva}`;
+    }
+
+    const campoResultado = document.getElementById('resultado_quebra_vnr');
+    if (campoResultado) {
+        campoResultado.value = textoGerado;
+    }
+};
+
+// 2. Função para copiar o texto gerado
+window.copiarQuebraVNR = function() {
+    const res = document.getElementById('resultado_quebra_vnr');
+    if (res && res.value.trim() !== "") {
+        res.select();
+        document.execCommand('copy');
+        alert("Texto da ocorrência copiado!");
     } else {
+        alert("Gere o texto antes de copiar!");
+    }
+};
 
-        gerarTextoPMF();
+// 3. Função para enviar as informações atualizadas direto para a planilha
+window.enviarQuebraVNR = function() {
+    const textoCompleto = document.getElementById('resultado_quebra_vnr')?.value.trim() || "";
 
-        texto = document.getElementById("resultado_pmf").value.trim();
-
-        if (!texto) {
-            alert("Não foi possível gerar o texto.");
-            return;
-        }
-
+    if (!textoCompleto) {
+        alert("Por favor, gere o texto e ajuste-o antes de enviar!");
+        return;
     }
 
     const payload = {
+        tipo: document.getElementById('pmf_tipo')?.value || "",
+        prefixo: document.getElementById('pmf_prefixo')?.value || "",
+        linha: document.getElementById('pmf_linha')?.value || "",
+        horario: document.getElementById('pmf_horario')?.value || "",
+        motivo: document.getElementById('pmf_motivo_quebra_vnr')?.value || "",
+        
+        // Dados adicionais caso seja Quebra
+        local: document.getElementById('pmf_local_interrupcao')?.value || "",
+        hora_ocorrencia: document.getElementById('pmf_hora_ocorrencia')?.value || "",
+        continuidade: document.getElementById('pmf_continuidade')?.value || "",
+        carro_reserva: document.getElementById('pmf_carro_reserva')?.value || "",
+        hora_retomada: document.getElementById('pmf_hora_retomada')?.value || "",
+        
+        // Dados adicionais caso seja VNR
+        sentido: document.getElementById('pmf_sentido')?.value || "",
+        acao: document.getElementById('pmf_acao')?.value || "",
+        reserva: document.getElementById('pmf_reserva')?.value || "",
 
-        ocorrencia: tipo,
-
-        veiculo: document.getElementById("pmf_prefixo")?.value || "",
-
-        linha: document.getElementById("pmf_linha")?.value || "",
-
-        horario: document.getElementById("pmf_horario")?.value || "",
-
-        sentido: tipo,
-
-        motivo: document.getElementById("pmf_motivo_quebra_vnr")?.value || "",
-
-        textoCompleto: texto
-
+        // TEXTO EDITADO que será de fato registrado na planilha!
+        textoCompleto: textoCompleto
     };
 
     fetch(URL_MINHA_PLANILHA_PMF, {
-
         method: "POST",
-
         mode: "no-cors",
-
         headers: {
             "Content-Type": "application/json"
         },
-
         body: JSON.stringify(payload)
-
+    })
+    .then(() => {
+        alert("Enviado para a planilha com sucesso!");
+    })
+    .catch((err) => {
+        console.error(err);
+        alert("Ocorreu um erro ao enviar. Verifique sua conexão.");
     });
-
-    alert("Enviado para a planilha!");
-
-};
-  
-window.copiarPMF = function() {
-  const res = document.getElementById('resultado_pmf');
-  if (res) { res.select(); document.execCommand('copy'); alert("Texto do PMF copiado!"); }
 };
 
-window.toggleEditarPMF = function() {
-  const res = document.getElementById('resultado_pmf');
-  if (res) {
-    res.readOnly = !res.readOnly;
-    res.style.borderColor = !res.readOnly ? "#ff4444" : "var(--primary)";
-  }
+// 4. Limpar campos atualizados
+window.limparPMF = function() {
+    document.getElementById('pmf_prefixo').value = '';
+    document.getElementById('pmf_linha').value = '';
+    document.getElementById('pmf_horario').value = '';
+    document.getElementById('pmf_motivo_quebra_vnr').value = '';
+    if(document.getElementById('pmf_local_interrupcao')) document.getElementById('pmf_local_interrupcao').value = '';
+    if(document.getElementById('pmf_hora_ocorrencia')) document.getElementById('pmf_hora_ocorrencia').value = '';
+    if(document.getElementById('pmf_carro_reserva')) document.getElementById('pmf_carro_reserva').value = '';
+    if(document.getElementById('pmf_hora_retomada')) document.getElementById('pmf_hora_retomada').value = '';
+    if(document.getElementById('pmf_texto_manual')) document.getElementById('pmf_texto_manual').value = '';
+    if(document.getElementById('resultado_quebra_vnr')) document.getElementById('resultado_quebra_vnr').value = '';
 };
 
 window.limparPMF = function() {
