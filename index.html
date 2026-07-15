@@ -382,7 +382,7 @@ textarea{
         </div>
         <div>
           <label for="pmf_horario">Horário da Viagem + Sentido:</label>
-          <input type="text" id="pmf_horario" placeholder="Ex: 15h00 volta/TICAN">
+          <input type="text" id="pmf_horario" placeholder="Ex: 15:00 VOLTA/TICAN">
         </div>
         <div>
           <label for="pmf_motivo_quebra_vnr" id="lbl_motivo_pmf">Problema Apresentado (Motivo):</label>
@@ -423,10 +423,75 @@ textarea{
         </div>
       </div>
 
-      <div id="secao_vnr_detalhes" style="display: none; margin-top: 15px;">
-        <label for="pmf_motivo_vnr">Descreva o restante dos detalhes da VNR (continuação do texto):</label>
-        <textarea id="pmf_motivo_vnr" style="min-height: 100px;" placeholder="Ex: apresentou problemas mecânicos durante o sentido volta. A mecânica foi acionada para resolver o problema no local, todavia, não foi possível arrumar o problema, não sendo mais viável, devido ao tempo passado, enviar o reserva para realizar a viagem."></textarea>
-      </div>
+      <div id="secao_vnr_detalhes" style="display:none; margin-top:15px;">
+
+    <div class="grid2">
+
+        <div>
+            <label for="pmf_sentido">
+                Onde ocorreu o problema?
+            </label>
+
+            <select id="pmf_sentido">
+
+                <option value="antes de iniciar a viagem">
+                    Antes de iniciar a viagem
+                </option>
+
+                <option value="durante o sentido ida">
+                    Durante o sentido ida
+                </option>
+
+                <option value="durante o sentido volta">
+                    Durante o sentido volta
+                </option>
+
+            </select>
+        </div>
+
+        <div>
+            <label for="pmf_acao">
+                O que foi feito?
+            </label>
+
+            <select id="pmf_acao">
+
+                <option value="A mecânica foi acionada para resolver o problema no local">
+                    Mecânica acionada
+                </option>
+
+                <option value="Foi solicitado um guincho para o veículo">
+                    Guincho solicitado
+                </option>
+
+                <option value="A equipe operacional avaliou o veículo">
+                    Equipe operacional avaliou
+                </option>
+
+            </select>
+        </div>
+
+        <div>
+            <label for="pmf_reserva">
+                Veículo reserva foi enviado?
+            </label>
+
+            <select id="pmf_reserva">
+
+                <option value="NAO">
+                    Não
+                </option>
+
+                <option value="SIM">
+                    Sim
+                </option>
+
+            </select>
+        </div>
+
+    </div>
+
+</div>
 
       <div style="margin-top: 20px; display: flex; gap: 8px;">
         <button class="btn" onclick="gerarTextoPMF()">Gerar Texto</button>
@@ -873,13 +938,29 @@ window.gerarTextoPMF = function() {
 
   } else {
 
-    const motivoVnrResto =
-      document.getElementById('pmf_motivo_vnr').value.trim();
+    const sentido =
+  document.getElementById('pmf_sentido').value;
 
-    textoGerado =
-`Linha ${linha} de ${horario}. O carro programado, ${prefixo} ${motivoPMF} ${motivoVnrResto}`.trim();
+const acao =
+  document.getElementById('pmf_acao').value;
 
-  }
+const reserva =
+  document.getElementById('pmf_reserva').value;
+
+textoGerado =
+`Linha ${linha} de ${horario}. O carro programado, ${prefixo} ${motivoPMF} ${sentido}. ${acao}`;
+
+if (reserva === "SIM") {
+
+    textoGerado +=
+    ". Foi enviado um veículo reserva para realizar a viagem.";
+
+} else {
+
+    textoGerado +=
+    ", todavia, não foi possível solucionar o problema, não sendo mais viável enviar o veículo reserva para realizar a viagem.";
+
+}
 
   document.getElementById("resultado_pmf").value = textoGerado;
 
