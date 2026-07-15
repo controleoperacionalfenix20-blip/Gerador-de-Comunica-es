@@ -360,33 +360,32 @@ textarea{
           </select>
 
           <div id="pmf_texto_livre" style="display:none; margin-top:15px;">
-    <label for="pmf_texto_manual">Texto da ocorrência:</label>
-    <textarea
-        id="pmf_texto_manual"
-        rows="8"
-        style="width:100%; resize:vertical;"
-        placeholder="Cole ou digite o texto aqui..."></textarea>
-</div>
-        
+            <label for="pmf_texto_manual">Texto da ocorrência:</label>
+            <textarea id="pmf_texto_manual" rows="8" style="width:100%; resize:vertical;" placeholder="Cole ou digite o texto aqui..."></textarea>
+          </div>
         </div>
       </div>
 
       <div id="campos_pmf_principais" class="grid2" style="margin-top: 15px;">
         <div>
           <label id="lbl_prefixo" for="pmf_prefixo">Veículo (Prefixo):</label>
-          <input type="text" id="pmf_prefixo" placeholder="Ex: 50350">
+          <input type="text" id="pmf_prefixo" placeholder="Ex: 1533">
         </div>
         <div>
           <label for="pmf_linha">Linha:</label>
           <input type="text" id="pmf_linha" placeholder="Ex: 221">
         </div>
         <div>
-          <label for="pmf_horario">Horário da Viagem + Sentido:</label>
-          <input type="text" id="pmf_horario" placeholder="Ex: 15:00 VOLTA/TICAN">
+          <label for="pmf_horario">Horário da Viagem:</label>
+          <input type="text" id="pmf_horario" placeholder="Ex: 15h00">
         </div>
         <div>
+          <label for="pmf_sentido_pmf">Sentido / Destino:</label>
+          <input type="text" id="pmf_sentido_pmf" placeholder="Ex: volta/TICAN ou ida">
+        </div>
+        <div style="grid-column: span 2;">
           <label for="pmf_motivo_quebra_vnr" id="lbl_motivo_pmf">Problema Apresentado (Motivo):</label>
-          <input type="text" id="pmf_motivo_quebra_vnr" placeholder="Ex: Problemas mecânicos / Se envolveu em colisão">
+          <input type="text" id="pmf_motivo_quebra_vnr" placeholder="Ex: Problemas mecânicos">
         </div>
       </div>
 
@@ -394,11 +393,11 @@ textarea{
         <div class="grid2">
           <div>
             <label for="pmf_local_interrupcao">Local da Interrupção + ponto de referência:</label>
-            <input type="text" id="pmf_local_interrupcao" placeholder="Ex: na SC-401, próximo à Havan">
+            <input type="text" id="pmf_local_interrupcao" placeholder="Ex: na SC 401, próximo à Havan">
           </div>
           <div>
             <label id="lbl_hora_ocorrencia" for="pmf_hora_ocorrencia">Horário em que o veículo parou:</label>
-            <input type="text" id="pmf_hora_ocorrencia" placeholder="Ex: 16:10">
+            <input type="text" id="pmf_hora_ocorrencia" placeholder="Ex: 16h10">
           </div>
         </div>
         
@@ -410,6 +409,7 @@ textarea{
               <option value="NAO">Não (Viagem cancelada/Não foi enviado carro)</option>
             </select>
           </div>
+        
           <div id="bloco_veiculo_continuidade" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; grid-column: span 1;">
             <div>
               <label for="pmf_carro_reserva">Veículo alocado (Prefixo):</label>
@@ -417,81 +417,41 @@ textarea{
             </div>
             <div>
               <label for="pmf_hora_retomada">Horário que a viagem continuou:</label>
-              <input type="text" id="pmf_hora_retomada" placeholder="Ex: 16:35">
+              <input type="text" id="pmf_hora_retomada" placeholder="Ex: 16h33">
             </div>
           </div>
         </div>
       </div>
 
       <div id="secao_vnr_detalhes" style="display:none; margin-top:15px;">
-
-    <div class="grid2">
-
-        <div>
-            <label for="pmf_sentido">
-                Onde ocorreu o problema?
-            </label>
-
-            <select id="pmf_sentido">
-
-                <option value="antes de iniciar a viagem">
-                    Antes de iniciar a viagem
-                </option>
-
-                <option value="durante o sentido ida">
-                    Durante o sentido ida
-                </option>
-
-                <option value="durante o sentido volta">
-                    Durante o sentido volta
-                </option>
-
+        <div class="grid2">
+          <div>
+            <label for="pmf_sentido_vnr">Onde ocorreu o problema?</label>
+            <select id="pmf_sentido_vnr">
+              <option value="antes de iniciar a viagem">Antes de iniciar a viagem</option>
+              <option value="durante o sentido ida">Durante o sentido ida</option>
+              <option value="durante o sentido volta">Durante o sentido volta</option>
             </select>
-        </div>
+          </div>
 
-        <div>
-            <label for="pmf_acao">
-                O que foi feito?
-            </label>
-
+          <div>
+            <label for="pmf_acao">O que foi feito?</label>
             <select id="pmf_acao">
-
-                <option value="A mecânica foi acionada para resolver o problema no local">
-                    Mecânica acionada
-                </option>
-
-                <option value="Foi solicitado um guincho para o veículo">
-                    Guincho solicitado
-                </option>
-
-                <option value="A equipe operacional avaliou o veículo">
-                    Equipe operacional avaliou
-                </option>
-
+              <option value="A mecânica foi acionada para resolver o problema no local">Mecânica acionada</option>
+              <option value="Foi solicitado um guincho para o veículo">Guincho solicitado</option>
+              <option value="A equipe operacional avaliou o veículo">Equipe operacional avaliou</option>
             </select>
-        </div>
+          </div>
 
-        <div>
-            <label for="pmf_reserva">
-                Veículo reserva foi enviado?
-            </label>
-
+          <div>
+            <label for="pmf_reserva">Veículo reserva foi enviado?</label>
             <select id="pmf_reserva">
-
-                <option value="NAO">
-                    Não
-                </option>
-
-                <option value="SIM">
-                    Sim
-                </option>
-
+              <option value="NAO">Não (Não foi viável enviar reserva devido ao tempo)</option>
+              <option value="SIM">Sim (Foi enviado veículo reserva)</option>
             </select>
+          </div>
         </div>
-
-    </div>
-
-</div>
+      </div>
 
       <div style="margin-top:20px; display:flex; gap:8px;">
         <button type="button" class="btn" onclick="gerarTextoQuebraVNR()">
@@ -511,6 +471,8 @@ textarea{
           <button type="button" class="btn" style="background-color: #28a745;" onclick="enviarQuebraVNR()">Enviar para Planilha</button>
         </div>
       </div>
+    </div>
+  </div>
 
 </div> <script>
 document.addEventListener("keydown", function(e) {
@@ -831,50 +793,160 @@ window.alternarAba = function(aba) {
   }
 };
 
+// Controla quais blocos mostrar no PMF
 window.alternarCamposPMF = function() {
-  const tipo = document.getElementById('pmf_tipo').value;
-  const quebraDet = document.getElementById('secao_quebra_detalhes');
-  const vnrDet = document.getElementById('secao_vnr_detalhes');
-  const textoLivre = document.getElementById('pmf_texto_livre');
-const camposPrincipais =
-    document.getElementById('campos_pmf_principais');
-    const btnGerar = document.getElementById("btnGerarPMF");
-  
-  const lblPrefixo = document.getElementById('lbl_prefixo');
-  const lblMotivo = document.getElementById('lbl_motivo_pmf');
-  const lblHoraOcorrencia = document.getElementById('lbl_hora_ocorrencia');
+    const tipo = document.getElementById('pmf_tipo').value;
+    const principais = document.getElementById('campos_pmf_principais');
+    const quebra = document.getElementById('secao_quebra_detalhes');
+    const vnr = document.getElementById('secao_vnr_detalhes');
+    const manual = document.getElementById('pmf_texto_livre');
 
-  // Esconde tudo primeiro
-  if (quebraDet) quebraDet.style.display = 'none';
-  if (vnrDet) vnrDet.style.display = 'none';
-  if (textoLivre) textoLivre.style.display = 'none';
-  if (camposPrincipais) camposPrincipais.style.display = 'grid';
-  if (btnGerar) btnGerar.style.display = 'inline-block';
-  
-  // TEXTO LIVRE
-if (tipo === 'texto_livre') {
+    if (tipo === 'texto_livre') {
+        principais.style.display = 'none';
+        quebra.style.display = 'none';
+        vnr.style.display = 'none';
+        manual.style.display = 'block';
+    } else if (tipo === 'QUEBRA') {
+        principais.style.display = 'grid';
+        quebra.style.display = 'block';
+        vnr.style.display = 'none';
+        manual.style.display = 'none';
+        alternarContinuidadePMF();
+    } else if (tipo === 'VNR') {
+        principais.style.display = 'grid';
+        quebra.style.display = 'none';
+        vnr.style.display = 'block';
+        manual.style.display = 'none';
+    }
+};
 
-if (btnGerar)
-    btnGerar.style.display = 'none';
-  
-    if (textoLivre)
-        textoLivre.style.display = 'block';
+window.alternarContinuidadePMF = function() {
+    const cont = document.getElementById('pmf_continuidade').value;
+    const bloco = document.getElementById('bloco_veiculo_continuidade');
+    if (cont === 'SIM') {
+        bloco.style.display = 'grid';
+    } else {
+        bloco.style.display = 'none';
+    }
+};
 
-    if (camposPrincipais)
-        camposPrincipais.style.display = 'none';
+// GERA O TEXTO EXATAMENTE IGUAL AOS MODELOS BASE INFORMADOS
+window.gerarTextoQuebraVNR = function() {
+    const tipo = document.getElementById('pmf_tipo')?.value;
+    
+    if (tipo === 'texto_livre') {
+        const textoManual = document.getElementById('pmf_texto_manual')?.value || "";
+        document.getElementById('resultado_quebra_vnr').value = textoManual;
+        return;
+    }
 
-    return;
-}
+    const prefixo = document.getElementById('pmf_prefixo')?.value.trim() || "____";
+    const mountain_linha = document.getElementById('pmf_linha')?.value.trim() || "____";
+    const horario = document.getElementById('pmf_horario')?.value.trim() || "____";
+    const sentido = document.getElementById('pmf_sentido_pmf')?.value.trim() || "____";
+    const motivoPMF = document.getElementById('pmf_motivo_quebra_vnr')?.value.trim() || "____";
+    
+    let textoGerado = "";
 
-  // VNR
-  if (tipo === 'VNR') {
-    if (vnrDet) vnrDet.style.display = 'block';
+    if (tipo === 'QUEBRA') {
+        const local = document.getElementById('pmf_local_interrupcao')?.value.trim() || "____";
+        const horaOcorrencia = document.getElementById('pmf_hora_ocorrencia')?.value.trim() || "____";
+        const continuidade = document.getElementById('pmf_continuidade')?.value;
 
-    if (lblPrefixo) lblPrefixo.innerText = "Carro Programado (Prefixo):";
-    if (lblMotivo) lblMotivo.innerText = "Descreva a VNR (Início do texto):";
+        if (continuidade === 'SIM') {
+            const reservaCarro = document.getElementById('pmf_carro_reserva')?.value.trim() || "____";
+            const reservaHora = document.getElementById('pmf_hora_retomada')?.value.trim() || "____";
+            
+            // Exemplo 1: 1533 na linha 221 de 15h00 volta/TICAN. Problemas mecânicos quando se encontrava na SC 401, próximo à Havan, por volta das 16h10. Os passageiros foram realocados para outros veículos que passavam pelo local, e a fiscalização alocou o veículo 11687 para dar continuidade à viagem, que aconteceu às 16h33.
+            textoGerado = `${prefixo} na linha ${mountain_linha} de ${horario} ${sentido}. ${motivoPMF} quando se encontrava ${local}, por volta das ${horaOcorrencia}. Os passageiros foram realocados para outros veículos que passavam pelo local, e a fiscalização alocou o veículo ${reservaCarro} para dar continuidade à viagem, que aconteceu às ${reservaHora}.`;
+        } else {
+            // Exemplo 2: 50361 na linha 320 de 12h55 volta/TILAG. Problemas na embreagem quando se encontrava na Av. Afonso Delambert Neto, por volta das 13h40. Os passageiros foram transferidos para o próximo coletivo que passou no local. A fiscalização informou que não foi possível enviar outro carro para continuar a viagem.
+            textoGerado = `${prefixo} na linha ${mountain_linha} de ${horario} ${sentido}. ${motivoPMF} quando se encontrava ${local}, por volta das ${horaOcorrencia}. Os passageiros foram transferidos para o próximo coletivo que passou no local. A fiscalização informou que não foi possível enviar outro carro para continuar a viagem.`;
+        }
+    } else if (tipo === 'VNR') {
+        const localVnr = document.getElementById('pmf_sentido_vnr')?.value || "";
+        const acao = document.getElementById('pmf_acao')?.value || "";
+        const reserva = document.getElementById('pmf_reserva')?.value;
+        
+        let acaoReserva = "";
+        if (reserva === 'SIM') {
+            acaoReserva = "enviar o reserva para realizar a viagem.";
+        } else {
+            acaoReserva = "não sendo mais viável, devido ao tempo passado, enviar o reserva para realizar a viagem.";
+        }
 
-    return;
-  }
+        // Exemplo VNR: Linha 1126 de 14h33 ida. O carro programado, 16101 apresentou problemas mecânicos durante o sentido volta. A mecânica foi acionada para resolver o problema no local, todavia, não foi possível arrumar o problema, não sendo mais viável, devido ao tempo passado, enviar o reserva para realizar a viagem.
+        textoGerado = `Linha ${mountain_linha} de ${horario} ${sentido}. O carro programado, ${prefixo} apresentou ${motivoPMF} ${localVnr}. ${acao}, todavia, não foi possível arrumar o problema, ${acaoReserva}`;
+    }
+
+    const campoResultado = document.getElementById('resultado_quebra_vnr');
+    if (campoResultado) {
+        campoResultado.value = textoGerado;
+    }
+};
+
+// COPIA O TEXTO DO PMF
+window.copiarQuebraVNR = function() {
+    const res = document.getElementById('resultado_quebra_vnr');
+    if (res && res.value.trim() !== "") {
+        res.select();
+        document.execCommand('copy');
+        alert("Texto da ocorrência copiado!");
+    } else {
+        alert("Gere o texto antes de copiar!");
+    }
+};
+
+// ENVIA O CONTEÚDO EXATAMENTE COMO ESTIVER ESCRITO NA TELA (EDITADO)
+window.enviarQuebraVNR = function() {
+    const textoCompleto = document.getElementById('resultado_quebra_vnr')?.value.trim() || "";
+
+    if (!textoCompleto) {
+        alert("Por favor, gere o texto e ajuste-o antes de enviar!");
+        return;
+    }
+
+    const payload = {
+        tipo: document.getElementById('pmf_tipo')?.value || "",
+        prefixo: document.getElementById('pmf_prefixo')?.value || "",
+        linha: document.getElementById('pmf_linha')?.value || "",
+        horario: document.getElementById('pmf_horario')?.value || "",
+        sentido: document.getElementById('pmf_sentido_pmf')?.value || "",
+        motivo: document.getElementById('pmf_motivo_quebra_vnr')?.value || "",
+        textoCompleto: textoCompleto
+    };
+
+    fetch(URL_MINHA_PLANILHA_PMF, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(() => {
+        alert("Enviado para a planilha!");
+    })
+    .catch((err) => {
+        console.error(err);
+        alert("Erro ao enviar dados.");
+    });
+};
+
+// LIMPA TODOS OS CAMPOS DO FORMULÁRIO DO PMF
+window.limparPMF = function() {
+    document.getElementById('pmf_prefixo').value = '';
+    document.getElementById('pmf_linha').value = '';
+    document.getElementById('pmf_horario').value = '';
+    document.getElementById('pmf_sentido_pmf').value = '';
+    document.getElementById('pmf_motivo_quebra_vnr').value = '';
+    
+    if (document.getElementById('pmf_local_interrupcao')) document.getElementById('pmf_local_interrupcao').value = '';
+    if (document.getElementById('pmf_hora_ocorrencia')) document.getElementById('pmf_hora_ocorrencia').value = '';
+    if (document.getElementById('pmf_carro_reserva')) document.getElementById('pmf_carro_reserva').value = '';
+    if (document.getElementById('pmf_hora_retomada')) document.getElementById('pmf_hora_retomada').value = '';
+    if (document.getElementById('pmf_texto_manual')) document.getElementById('pmf_texto_manual').value = '';
+    if (document.getElementById('resultado_quebra_vnr')) document.getElementById('resultado_quebra_vnr').value = '';
 };
 
 window.alternarContinuidadePMF = function() {
