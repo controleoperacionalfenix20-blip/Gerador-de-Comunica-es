@@ -414,7 +414,7 @@ const TEMPLATES = {
 
   "VNR_TRANSITO_INTENSO": `Em razão do trânsito intenso __local__, sentido __sentido__, entre outros problemas operacionais, não foi possível realizar essa viagem.`,
 
-  "VNR_MECANICO_OUTRO_SENTIDO": `Em razão de problemas mecânicos no veículo programado durante o percurso no sentido __sentido__, entre outros problemas operacionais, não foi possível realizar a viagem.`,
+  "VNR_MECANICO_OUTRO_SENTIDO": `Em razão de falha mecânica no veículo programado, ocorrida durante o percurso no sentido __sentido__, no horário das __hora__, entre outras intercorrências operacionais, não foi possível realizar a viagem.`,
 
   "VNR_PROBLEMAS_OPERACIONAIS": `Segundo a fiscalização, em virtude da falta de veículo para realizar esta viagem, não foi possível executá-la.`,
 
@@ -573,7 +573,10 @@ const FIELDS_BY_CATEGORY = {
     {k:'local', label:'Trecho/avenida'},
     {k:'sentido', label:'Sentido (IDA / VOLTA)'}
   ],
-  "VNR_MECANICO_OUTRO_SENTIDO":[ {k:'sentido', label:'Sentido onde houve problema'} ],
+  "VNR_MECANICO_OUTRO_SENTIDO": [
+  {k:'sentido', label:'Sentido onde houve problema (IDA / VOLTA)'},
+  {k:'hora', label:'Horário da ocorrência (ex: 14:30)'}
+],
   "VNR_PROBLEMAS_OPERACIONAIS": [],
   "VNR_MECANICO_ANTES_PARTIDA": [],
   "VNR_SUSPENSAO_LINHAS_D": [],
