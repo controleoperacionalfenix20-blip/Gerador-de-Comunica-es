@@ -680,170 +680,146 @@ if (Object.values(dadosAnteriores).some(v => v.trim() !== "")) {
 /**********************
  *  PREPOSIÇÃO AUTOMÁTICA
  **********************/
+
 function formatarLocal(chave, valor, isProximo = false) {
-  if (!valor) return "____";
+  if (!valor || !valor.trim()) return "____";
 
-  let v = valor.trim();
-  if (!v) return "____";
+  const v = valor.trim().replace(/\s+/g, " ");
 
-  // 1 — Se já tiver preposição manual, mantém
-  if (/^(do|da|dos|das|no|na|nos|nas|em|à|ao|a)\b/i.test(v)) return v;
+  // Normaliza texto para comparação
+  function normalizar(texto) {
+    return texto
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim();
+  }
 
-  const rawFirst = v.split(/\s+/)[0].replace(/[^A-Za-zÀ-ÿ0-9-]/g, "");
-  const firstLower = rawFirst.toLowerCase();
-  const isAllUpper = /^[A-Z0-9]{2,10}$/.test(rawFirst);
+  const nome = normalizar(v);
 
-  // =========================
-  // 2 — TIPOS DE LOCAIS
-  // =========================
-  const FEMININOS = [
-    "rua", "r", "r.", "avenida", "av", "av.", "travessa",
-    "servidao", "estrada", "rodovia", "praça"
+  // Se a pessoa já colocou uma preposição, respeita
+  if (/^(ao|à|aos|às|no|na|nos|nas|do|da|dos|das|em)\s+/i.test(v)) {
+    return v;
+  }
+
+  // Dicionário de locais conhecidos
+  const locais = {
+    // Masculinos
+    "saco grande": "m",
+    "corrego grande": "m",
+    "rio tavares": "m",
+    "campeche": "m",
+    "estreito": "m",
+    "itacorubi": "m",
+    "centro": "m",
+    "monte verde": "m",
+    "pantanal": "m",
+    "joao paulo": "m",
+    "abraao": "m",
+    "bom abrigo": "m",
+    "jardim atlantico": "m",
+    "jardim anchieta": "m",
+    "saco dos limoes": "m",
+    "santinho": "m",
+    "ratones": "m",
+    "costeira do pirajubae": "f",
+
+    // Femininos
+    "trindade": "f",
+    "lagoa da conceicao": "f",
+    "barra da lagoa": "f",
+    "canasvieiras": "f",
+    "cachoeira do bom jesus": "f",
+    "praia brava": "f",
+    "praia dos ingleses": "f",
+    "armação": "f",
+    "armacao": "f",
+    "tapera": "f",
+    "carvoeira": "f",
+    "coloninha": "f",
+    "capoeiras": "f",
+    "agronomica": "f",
+    "santa monica": "f",
+    "coqueiros": "m",
+    "ingleses": "m"
+  };
+
+  // Identifica local exato do dicionário
+  if (locais[nome]) {
+    const genero = locais[nome];
+    if (isProximo) {
+      return (genero === "f" ? "à " : "ao ") + v;
+    }
+    return (genero === "f" ? "na " : "no ") + v;
+  }
+
+  // Tipos de lugares femininos
+  const femininos = [
+    "rua", "r.", "avenida", "av.", "travessa",
+    "servidao", "estrada", "rodovia", "praca",
+    "ponte", "alameda", "via", "rotatoria",
+    "lagoa", "praia", "escola", "universidade",
+    "clinica", "farmacia", "igreja",
+    "beira-mar", "marginal"
   ];
 
-  const MASCULINOS = [
-    "terminal", "shopping", "hospital", "trevo",
-    "viaduto", "posto", "mercado"
+  // Tipos de lugares masculinos
+  const masculinos = [
+    "terminal", "shopping", "hospital",
+    "trevo", "viaduto", "posto", "mercado",
+    "bairro", "centro", "parque",
+    "ponto", "acesso", "retorno", "elevado",
+    "tunel", "cruzamento", "supermercado",
+    "estadio", "colegio", "predio",
+    "condominio", "restaurante"
   ];
 
-  const ESPECIAIS = [
-    "ponte", "beira-mar"
-  ];
+  // Verifica primeira palavra
+  const primeira = nome.split(" ")[0];
 
-  const siglasMasc = [
-    "TICEN", "TITRI", "TICAN", "TISAC", "TIFOR",
-    "TIREI", "COC", "IFSC", "IGP", "TREVO", "TERMINAL", "HOSPITAL"
-  ];
+  if (femininos.includes(primeira)) {
+    return (isProximo ? "à " : "na ") + v;
+  }
 
-  // =========================
-  // 3 — REGRAS ESPECIAIS
-  // =========================
-
-  // SIGLAS (sempre masculino)
-  if (siglasMasc.includes(rawFirst.toUpperCase())) {
+  if (masculinos.includes(primeira)) {
     return (isProximo ? "ao " : "no ") + v;
   }
 
-  // RODOVIAS
-  if (/^(sc|br)-?\d+/i.test(v) || /^rod(ovia)?\b/i.test(firstLower)) {
+  // Rodovias SC e BR
+  if (/^(sc|br)[-\s]?\d+/i.test(nome)) {
     return (isProximo ? "à " : "na ") + v;
   }
 
-  // PONTE / BEIRA-MAR
-  if (ESPECIAIS.some(p => v.toLowerCase().startsWith(p))) {
-    return (isProximo ? "à " : "na ") + v;
+  // Siglas conhecidas
+  const siglas = {
+    "ticen": "m",
+    "titri": "m",
+    "tican": "m",
+    "tisac": "m",
+    "tifor": "m",
+    "tirei": "m",
+    "tilag": "m",
+    "ufsc": "f",
+    "ifsc": "m",
+    "upa": "f",
+    "g m f": "f"
+  };
+
+  if (siglas[nome]) {
+    const genero = siglas[nome];
+    return (isProximo
+      ? (genero === "f" ? "à " : "ao ")
+      : (genero === "f" ? "na " : "no ")) + v;
   }
 
-  // =========================
-  // 4 — PREFIXOS
-  // =========================
-  const isFeminino = FEMININOS.includes(firstLower);
-  const isMasculino = MASCULINOS.includes(firstLower);
-
-  if (isFeminino) {
-    return (isProximo ? "à " : "na ") + v;
-  }
-
-  if (isMasculino) {
-    return (isProximo ? "ao " : "no ") + v;
-  }
-
-  // =========================
-  // 5 — CASO SEM PREFIXO (RUA AUTOMÁTICA)
-  // =========================
-  if (!isProximo && !isAllUpper) {
+  // Se for campo de rua, mantém a regra existente
+  if (!isProximo) {
     return "na R. " + v;
   }
 
-  // =========================
-  // 6 — PRÓXIMO A (REFERÊNCIA)
-  // =========================
-
- if (isProximo) {
-
-  let texto = v.trim().replace(/\s+/g, " ");
-
-  // 🔒 Se já tem preposição → não mexe
-  if (/^(ao|à|a|no|na|em|do|da|dos|das)\b/i.test(texto)) return texto;
-
-  const lower = texto.toLowerCase();
-
-  // =========================
-  // 📚 DICIONÁRIO (BASE FORTE)
-  // =========================
-
-  const mapaGenero = {
-    // feminino
-    "rua":"f","r":"f","avenida":"f","av":"f","travessa":"f","servidao":"f",
-    "estrada":"f","rodovia":"f","praça":"f","ponte":"f","alameda":"f",
-    "via":"f","marginal":"f","orla":"f","serra":"f","ladeira":"f",
-    "escadaria":"f","esquina":"f","rotatória":"f","beira-mar":"f",
-
-    // masculino
-    "terminal":"m","shopping":"m","hospital":"m","trevo":"m","viaduto":"m",
-    "posto":"m","mercado":"m","bairro":"m","centro":"m","parque":"m",
-    "ponto":"m","acesso":"m","retorno":"m","elevado":"m","túnel":"m",
-    "tunel":"m","cruzamento":"m","entroncamento":"m"
-  };
-
-  const siglas = /^(TICEN|TITRI|TICAN|TISAC|TIFOR|TIREI|UFSC|IFSC|UPA|SAMU|GMF|PM|PRF|DNIT)$/i;
-
-  // =========================
-  // 🚧 REGRAS ESPECIAIS
-  // =========================
-
-  // rodovias (SC-401 etc)
-  if (/^(sc|br|sp|rs|mg|pr)-?\d+/i.test(texto)) return "à " + texto;
-
-  // apenas número
-  if (/^\d+/.test(texto)) return "ao " + texto;
-
-  // siglas
-  if (siglas.test(texto)) return "ao " + texto;
-
-  // =========================
-  // 🔍 PALAVRA PRINCIPAL
-  // =========================
-
-  const primeira = lower.split(" ")[0];
-
-  if (mapaGenero[primeira]) {
-    return mapaGenero[primeira] === "f" ? "à " + texto : "ao " + texto;
-  }
-
-  // =========================
-  // 🧠 BUSCA INTERNA
-  // =========================
-
-  for (let chave in mapaGenero) {
-    if (lower.includes(chave)) {
-      return mapaGenero[chave] === "f" ? "à " + texto : "ao " + texto;
-    }
-  }
-
-  // =========================
-  // 🔤 HEURÍSTICA INTELIGENTE
-  // =========================
-
-  // terminações
-  if (/[aã]$/.test(lower)) return "à " + texto;
-  if (/[o]$/.test(lower)) return "ao " + texto;
-
-  // nomes próprios (bairro/cidade)
-  if (/^[A-ZÀ-Ú]/.test(texto)) return "no " + texto;
-
-  // palavras curtas (ex: “árvore”, “praça”)
-  if (lower.length <= 6) return "à " + texto;
-
-  // =========================
-  // 🔄 FALLBACK FINAL
-  // =========================
-
-  return "ao " + texto;
-
-}
-
-   return v;
+  // Referência desconhecida:
+  // evita adivinhar gênero pela última letra
+  return "ao " + v;
 }
   
 /**********************
